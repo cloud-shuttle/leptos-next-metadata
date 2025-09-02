@@ -1,0 +1,65 @@
+[book]
+authors = ["leptos-next-metadata contributors"]
+description = "Next.js-style metadata management for Leptos"
+language = "en"
+multilingual = false
+src = "src"
+title = "leptos-next-metadata"
+
+[build]
+build-dir = "book"
+create-missing = true
+use-default-preprocessors = true
+
+[preprocessor.links]
+# Enable link checking
+
+[output.html]
+additional-css = ["theme/custom.css"]
+additional-js = ["theme/custom.js"]
+default-theme = "navy"
+preferred-dark-theme = "navy" 
+git-repository-url = "https://github.com/yourusername/leptos-next-metadata"
+edit-url-template = "https://github.com/yourusername/leptos-next-metadata/edit/main/docs/book/{path}"
+site-url = "/leptos-next-metadata/"
+cname = "leptos-next-metadata.dev"
+google-analytics = "G-XXXXXXXXXX"
+
+[output.html.fold]
+enable = true
+level = 1
+
+[output.html.playground]
+copyable = true
+editable = true
+line-numbers = true
+runnable = true
+
+[output.html.search]
+enable = true
+limit-results = 30
+teaser-word-count = 30
+use-boolean-and = true
+boost-hierarchy = 2
+boost-paragraph = 1
+expand = true
+heading-split-level = 2
+
+[output.html.print]
+enable = true
+page-break = true
+
+# Theme customization
+[output.html.theme]
+favicon-svg = "favicon.svg"
+favicon-png = "favicon.png"
+
+# Additional output formats
+[output.linkcheck]
+# Check external links
+follow-web-links = true
+warning-policy = "warn"
+
+# Optional: Generate PDF version
+# [output.pandoc.pdf]
+# optional = true
