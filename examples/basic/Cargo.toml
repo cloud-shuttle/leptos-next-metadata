@@ -1,0 +1,15 @@
+[package]
+name = "leptos-next-metadata-basic-example"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+leptos = { version = "0.8", features = ["macros"] }
+leptos_router = { version = "0.8", features = ["macros"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+# Local dependency (for development)
+leptos-next-metadata = { path = "../.." }
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3"
