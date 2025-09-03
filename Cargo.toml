@@ -2,11 +2,11 @@
 name = "leptos-next-metadata"
 version = "0.1.0"
 edition = "2021"
-authors = ["Your Name <your.email@example.com>"]
+authors = ["Peter Hanssens <peter@cloudshuttle.com.au>"]
 description = "Next.js-style metadata management for Leptos applications with type-safe APIs and blazing-fast OG image generation"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/yourusername/leptos-next-metadata"
-homepage = "https://github.com/yourusername/leptos-next-metadata"
+repository = "https://github.com/cloud-shuttle/leptos-next-metadata"
+homepage = "https://github.com/cloud-shuttle/leptos-next-metadata"
 documentation = "https://docs.rs/leptos-next-metadata"
 keywords = ["leptos", "metadata", "seo", "og-image", "nextjs", "web"]
 categories = ["web-programming", "asynchronous", "web-framework"]
@@ -16,7 +16,7 @@ readme = "README.md"
 # Core dependencies
 leptos = { version = "0.8", features = ["ssr"] }
 serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
+serde_json = { version = "1.0", optional = true }
 tokio = { version = "1.0", features = ["full"] }
 thiserror = "1.0"
 anyhow = "1.0"
@@ -27,19 +27,28 @@ parking_lot = "0.12"
 chrono = { version = "0.4", features = ["serde"] }
 url = "2.0"
 regex = "1.0"
-liquid = "0.26"
+urlencoding = "2.1"
+leptos_meta = { version = "0.8", features = ["ssr"] }
+leptos_router = { version = "0.8", features = ["ssr"] }
+leptos-next-metadata-macros = { path = "./macros", optional = true }
+
+# Optional dependencies
+liquid = { version = "0.26", optional = true }
 image = { version = "0.24", optional = true }
 resvg = { version = "0.36", optional = true }
 usvg = { version = "0.36", optional = true }
-fontdue = "0.8"
+fontdue = { version = "0.8", optional = true }
 mime_guess = { version = "2.0", optional = true }
 walkdir = { version = "2.0", optional = true }
-
-# Optional dependencies
 reqwest = { version = "0.11", optional = true, features = ["json"] }
 cached = { version = "0.45", optional = true }
 lru = { version = "0.12", optional = true }
 tempfile = { version = "3.0", optional = true }
+
+# Procedural macro dependencies
+proc-macro2 = { version = "1.0", optional = true }
+quote = { version = "1.0", optional = true }
+syn = { version = "2.0", features = ["full"], optional = true }
 
 [dev-dependencies]
 criterion = "0.5"
@@ -49,28 +58,21 @@ tokio-test = "0.4"
 tempfile = "3.0"
 
 [features]
-default = ["ssr", "og-images", "file-conventions"]
+default = ["ssr", "og-images", "file-conventions", "macros", "json-ld"]
 ssr = ["leptos/ssr"]
 csr = ["leptos/csr"]
 hydrate = ["leptos/hydrate"]
-og-images = ["image", "resvg", "usvg", "fontdue"]
+og-images = ["image", "resvg", "usvg", "fontdue", "liquid"]
 file-conventions = ["walkdir", "mime_guess"]
 json-ld = ["serde_json"]
 caching = ["cached", "lru"]
 http = ["reqwest"]
+macros = ["leptos-next-metadata-macros", "proc-macro2", "quote", "syn"]
 debug = []
 
 [lib]
 name = "leptos_next_metadata"
 path = "src/lib.rs"
-
-[[bench]]
-name = "og_image_generation"
-harness = false
-
-[[bench]]
-name = "metadata_resolution"
-harness = false
 
 [package.metadata.docs.rs]
 all-features = true
