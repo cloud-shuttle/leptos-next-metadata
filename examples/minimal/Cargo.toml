@@ -1,0 +1,11 @@
+[package]
+name = "minimal-example"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "minimal-example"
+path = "main.rs"
+
+[dependencies]
+leptos-next-metadata = { path = "../..", default-features = false, features = ["ssr"] }

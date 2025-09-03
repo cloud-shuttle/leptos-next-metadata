@@ -1,0 +1,10 @@
+/Users/peterhanssens/consulting/CloudShuttle/leptos-next-metadata/examples/minimal/target/debug/deps/toml_datetime-22d8e0ac75bde040.d: /Users/peterhanssens/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/toml_datetime-0.7.0/src/lib.rs /Users/peterhanssens/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/toml_datetime-0.7.0/src/datetime.rs /Users/peterhanssens/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/toml_datetime-0.7.0/src/de.rs /Users/peterhanssens/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/toml_datetime-0.7.0/src/ser.rs
+
+/Users/peterhanssens/consulting/CloudShuttle/leptos-next-metadata/examples/minimal/target/debug/deps/libtoml_datetime-22d8e0ac75bde040.rlib: /Users/peterhanssens/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/toml_datetime-0.7.0/src/lib.rs /Users/peterhanssens/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/toml_datetime-0.7.0/src/datetime.rs /Users/peterhanssens/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/toml_datetime-0.7.0/src/de.rs /Users/peterhanssens/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/toml_datetime-0.7.0/src/ser.rs
+
+/Users/peterhanssens/consulting/CloudShuttle/leptos-next-metadata/examples/minimal/target/debug/deps/libtoml_datetime-22d8e0ac75bde040.rmeta: /Users/peterhanssens/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/toml_datetime-0.7.0/src/lib.rs /Users/peterhanssens/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/toml_datetime-0.7.0/src/datetime.rs /Users/peterhanssens/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/toml_datetime-0.7.0/src/de.rs /Users/peterhanssens/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/toml_datetime-0.7.0/src/ser.rs
+
+/Users/peterhanssens/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/toml_datetime-0.7.0/src/lib.rs:
+/Users/peterhanssens/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/toml_datetime-0.7.0/src/datetime.rs:
+/Users/peterhanssens/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/toml_datetime-0.7.0/src/de.rs:
+/Users/peterhanssens/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/toml_datetime-0.7.0/src/ser.rs:

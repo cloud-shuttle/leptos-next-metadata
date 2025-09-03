@@ -251,7 +251,7 @@ impl Metadata {
                         });
                     } else if s.len() > 60 {
                         result.add_warning(ValidationWarning {
-                            code: ValidationWarningCode::FieldTooLong,
+                            code: ValidationWarningCode::CouldImprove,
                             message: "Title is quite long".to_string(),
                             field: Some("title".to_string()),
                             suggestion: Some("Consider shortening the title to under 60 characters".to_string()),
@@ -276,9 +276,7 @@ impl Metadata {
                         });
                     }
                 }
-                Title::Dynamic { .. } => {
-                    // Dynamic titles are validated at runtime
-                }
+
             }
         } else {
             result.add_warning(ValidationWarning {
@@ -309,7 +307,7 @@ impl Metadata {
                 });
             } else if description.len() > 160 {
                 result.add_warning(ValidationWarning {
-                    code: ValidationWarningCode::FieldTooLong,
+                    code: ValidationWarningCode::CouldImprove,
                     message: "Description is quite long".to_string(),
                     field: Some("description".to_string()),
                     suggestion: Some("Consider shortening the description to under 160 characters".to_string()),
@@ -414,7 +412,7 @@ impl Metadata {
     }
     
     /// Validate JSON-LD structured data
-    fn validate_json_ld(&self, json_ld: &serde_json::Value, result: &mut ValidationResult) {
+    fn validate_json_ld(&self, json_ld: &crate::json_ld::JsonLd, result: &mut ValidationResult) {
         // Basic JSON-LD validation
         if let Some(schema_type) = json_ld.get("@type") {
             if let Some(type_str) = schema_type.as_str() {
@@ -540,7 +538,7 @@ impl MetadataValidator {
         
         if title.len() > 60 {
             warnings.push(ValidationWarning {
-                code: ValidationWarningCode::FieldTooLong,
+                code: ValidationWarningCode::CouldImprove,
                 message: "Title is quite long".to_string(),
                 field: Some("title".to_string()),
                 suggestion: Some("Consider shortening the title to under 60 characters".to_string()),
@@ -565,7 +563,7 @@ impl MetadataValidator {
         
         if description.len() > 160 {
             warnings.push(ValidationWarning {
-                code: ValidationWarningCode::FieldTooLong,
+                code: ValidationWarningCode::CouldImprove,
                 message: "Description is quite long".to_string(),
                 field: Some("description".to_string()),
                 suggestion: Some("Consider shortening the description to under 160 characters".to_string()),
@@ -640,7 +638,7 @@ mod tests {
     
     #[test]
     fn test_validation_score() {
-        let metadata = Metadata::new();
+        let metadata = Metadata::default();
         let result = metadata.validate();
         
         // Should have warnings but no errors

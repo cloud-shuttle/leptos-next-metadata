@@ -1,0 +1,103 @@
+{
+  "title": {
+    "Static": "Example Blog Post Title"
+  },
+  "description": "This is an example blog post that demonstrates the leptos-next-metadata library capabilities with comprehensive metadata configuration.",
+  "keywords": [
+    "rust",
+    "leptos", 
+    "metadata",
+    "seo",
+    "web-development",
+    "nextjs",
+    "ssr"
+  ],
+  "open_graph": {
+    "title": "Example Blog Post - Enhanced for Social Sharing",
+    "description": "Discover how leptos-next-metadata makes SEO and social sharing effortless in Leptos applications.",
+    "type": "article",
+    "url": "https://example.com/blog/leptos-metadata-example",
+    "site_name": "Leptos Examples",
+    "locale": "en_US",
+    "images": [
+      {
+        "url": "https://example.com/og-images/blog-post-1200x630.jpg",
+        "width": 1200,
+        "height": 630,
+        "alt": "Leptos metadata library example demonstration"
+      },
+      {
+        "url": "https://example.com/og-images/blog-post-600x314.jpg",
+        "width": 600,
+        "height": 314,
+        "alt": "Leptos metadata library example demonstration (small)"
+      }
+    ]
+  },
+  "twitter": {
+    "card": "summary_large_image",
+    "site": "@leptos_rs",
+    "creator": "@example_dev",
+    "title": "Example Blog Post - Leptos Metadata",
+    "description": "Learn how to implement Next.js-style metadata in Leptos applications",
+    "image": "https://example.com/twitter-images/blog-post.jpg"
+  },
+  "robots": {
+    "index": true,
+    "follow": true,
+    "noarchive": false,
+    "nosnippet": false,
+    "noimageindex": false,
+    "max_snippet": 160,
+    "max_image_preview": 200,
+    "max_video_preview": 300
+  },
+  "icons": {
+    "icon": [
+      {
+        "url": "/favicon.ico",
+        "sizes": "16x16",
+        "type": "image/x-icon"
+      },
+      {
+        "url": "/favicon-32x32.png", 
+        "sizes": "32x32",
+        "type": "image/png"
+      }
+    ],
+    "apple": [
+      {
+        "url": "/apple-touch-icon.png",
+        "sizes": "180x180",
+        "type": "image/png"
+      }
+    ]
+  },
+  "alternates": {
+    "canonical": "https://example.com/blog/leptos-metadata-example",
+    "languages": {
+      "en": "https://example.com/en/blog/leptos-metadata-example",
+      "es": "https://example.com/es/blog/leptos-metadata-example",
+      "fr": "https://example.com/fr/blog/leptos-metadata-example"
+    },
+    "types": [
+      {
+        "url": "/rss.xml",
+        "type": "application/rss+xml",
+        "title": "RSS Feed"
+      }
+    ]
+  },
+  "viewport": {
+    "width": "device-width",
+    "initial_scale": 1.0,
+    "maximum_scale": 2.0,
+    "user_scalable": true
+  },
+  "manifest": "/manifest.json",
+  "other": {
+    "theme-color": "#667eea",
+    "msapplication-TileColor": "#667eea",
+    "application-name": "Leptos Metadata Example"
+  }
+}

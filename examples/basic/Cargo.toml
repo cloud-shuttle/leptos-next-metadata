@@ -3,9 +3,13 @@ name = "leptos-next-metadata-basic-example"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "basic-example"
+path = "main.rs"
+
 [dependencies]
 leptos = { version = "0.8", features = ["macros"] }
-leptos_router = { version = "0.8", features = ["macros"] }
+leptos_router = { version = "0.8" }
 chrono = { version = "0.4", features = ["serde"] }
 
 # Local dependency (for development)

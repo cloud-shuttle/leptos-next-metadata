@@ -1,0 +1,87 @@
+# Configuration for cargo-deny
+
+[licenses]
+# Allow these licenses
+allow = [
+    "MIT",
+    "Apache-2.0", 
+    "Apache-2.0 WITH LLVM-exception",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "Unicode-DFS-2016",
+    "CC0-1.0",
+]
+
+# Deny these licenses
+deny = [
+    "GPL-2.0",
+    "GPL-3.0", 
+    "AGPL-1.0",
+    "AGPL-3.0",
+    "EUPL-1.2",
+]
+
+# Allow 1 or more licenses on a per-crate basis
+exceptions = [
+    # ring has a custom license but is widely used and trusted
+    { allow = ["LicenseRef-ring"], name = "ring" },
+    # webpki has a custom license but is part of the rustls ecosystem
+    { allow = ["LicenseRef-webpki"], name = "webpki" },
+]
+
+[bans]
+# Deny multiple versions of these crates
+multiple-versions = "warn"
+wildcards = "deny"
+
+# Skip analyzing these crates
+skip = [
+    # System dependencies that may have multiple versions
+    { name = "windows-sys" },
+    { name = "windows_*" },
+]
+
+# Deny these specific crates
+deny = [
+    # Security-sensitive crates with known issues
+    { name = "openssl", reason = "Use rustls instead" },
+    { name = "native-tls", reason = "Use rustls instead" },
+    
+    # Outdated crypto crates
+    { name = "md-5", reason = "Use sha2 or blake3 instead" },
+    { name = "sha1", reason = "SHA1 is cryptographically broken" },
+    
+    # Unmaintained crates
+    { name = "tempdir", reason = "Use tempfile instead" },
+    { name = "rand_os", reason = "Integrated into rand" },
+]
+
+[advisories]
+# Database of known security advisories  
+db-path = "~/.cargo/advisory-db"
+db-urls = ["https://github.com/rustsec/advisory-db"]
+
+# Vulnerabilities to ignore (use sparingly and with good reason)
+ignore = [
+    # Example: "RUSTSEC-2020-0001",
+]
+
+# Security vulnerability severity threshold
+severity-threshold = "low"
+
+[sources]
+# Crate sources configuration
+unknown-registry = "deny"
+unknown-git = "deny"
+
+# Allow these git repositories
+allow-git = [
+    "https://github.com/rust-lang/",
+    "https://github.com/leptos-rs/",
+]
+
+# Allow these registries
+allow-registry = [
+    "https://github.com/rust-lang/crates.io-index",
+]
