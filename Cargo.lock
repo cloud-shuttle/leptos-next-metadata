@@ -1786,7 +1786,7 @@ dependencies = [
 
 [[package]]
 name = "leptos-next-metadata-macros"
-version = "0.1.0-alpha"
+version = "0.1.0-alpha.1"
 dependencies = [
  "proc-macro2",
  "quote",
