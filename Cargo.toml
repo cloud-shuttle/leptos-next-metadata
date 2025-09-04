@@ -31,7 +31,7 @@ regex = "1.0"
 urlencoding = "2.1"
 leptos_meta = { version = "0.8", features = ["ssr"] }
 leptos_router = { version = "0.8", features = ["ssr"] }
-leptos-next-metadata-macros = { path = "./macros", optional = true }
+leptos-next-metadata-macros = { path = "./macros", version = "0.1.0-alpha.1", optional = true }
 
 # Optional dependencies
 liquid = { version = "0.26", optional = true }
