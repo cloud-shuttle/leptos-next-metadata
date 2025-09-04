@@ -1,0 +1,37 @@
+[package]
+name = "leptos-next-metadata-macros"
+version = "0.1.0-beta.1"
+edition = "2021"
+authors = ["Peter Hanssens <peter@cloudshuttle.com.au>"]
+description = "Procedural macros for leptos-next-metadata - providing clean, declarative metadata syntax for Leptos v0.8+"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/cloud-shuttle/leptos-next-metadata"
+homepage = "https://github.com/cloud-shuttle/leptos-next-metadata"
+documentation = "https://docs.rs/leptos-next-metadata-macros"
+keywords = ["leptos", "metadata", "macros", "procedural-macros", "rust"]
+categories = ["web-programming", "asynchronous"]
+readme = "../README.md"
+date = "2025-09-03"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1.0"
+quote = "1.0"
+syn = { version = "2.0", features = ["full"] }
+
+# Project status metadata
+[package.metadata]
+project_status = "Active Development"
+release_target = "Q4 2025"
+leptos_version = "0.8+"
+rust_version = "1.75+"
+last_updated = "2025-09-03"
+completed_features = [
+    "metadata! macro for static metadata",
+    "generate_metadata! macro for dynamic metadata",
+    "Integration with Leptos 0.8+ signal system",
+    "Type-safe metadata generation",
+    "Reactive metadata updates"
+]
