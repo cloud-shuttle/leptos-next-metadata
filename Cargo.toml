@@ -8,8 +8,8 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/cloud-shuttle/leptos-next-metadata"
 homepage = "https://github.com/cloud-shuttle/leptos-next-metadata"
 documentation = "https://docs.rs/leptos-next-metadata"
-keywords = ["leptos", "metadata", "seo", "og-image", "nextjs", "web", "rust", "leptos-0.8"]
-categories = ["web-programming", "asynchronous", "web-framework"]
+keywords = ["leptos", "metadata", "seo", "og-image", "web"]
+categories = ["web-programming", "asynchronous"]
 readme = "README.md"
 date = "2025-09-03"
 
