@@ -3,13 +3,17 @@
 //! This module provides type-safe JSON-LD generation for Schema.org types,
 //! enabling rich snippets and better search engine understanding.
 
+#[cfg(feature = "json-ld")]
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "json-ld")]
 use std::collections::HashMap;
 
 /// JSON-LD structured data (uses serde_json::Value)
+#[cfg(feature = "json-ld")]
 pub type JsonLd = serde_json::Value;
 
 /// Schema.org types for structured data
+#[cfg(feature = "json-ld")]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum SchemaOrg {
@@ -42,6 +46,7 @@ pub enum SchemaOrg {
 }
 
 /// Web page schema
+#[cfg(feature = "json-ld")]
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct WebPage {
     #[serde(rename = "@context")]
@@ -59,6 +64,7 @@ pub struct WebPage {
 }
 
 /// Article schema
+#[cfg(feature = "json-ld")]
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct Article {
     #[serde(rename = "@context")]
@@ -80,6 +86,7 @@ pub struct Article {
 }
 
 /// Blog posting schema
+#[cfg(feature = "json-ld")]
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct BlogPosting {
     #[serde(rename = "@context")]
@@ -102,6 +109,7 @@ pub struct BlogPosting {
 }
 
 /// Product schema
+#[cfg(feature = "json-ld")]
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct Product {
     #[serde(rename = "@context")]
@@ -122,6 +130,7 @@ pub struct Product {
 }
 
 /// Organization schema
+#[cfg(feature = "json-ld")]
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct Organization {
     #[serde(rename = "@context")]
@@ -141,6 +150,7 @@ pub struct Organization {
 }
 
 /// Person schema
+#[cfg(feature = "json-ld")]
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct Person {
     #[serde(rename = "@context")]
@@ -161,6 +171,7 @@ pub struct Person {
 }
 
 /// FAQ page schema
+#[cfg(feature = "json-ld")]
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct FAQPage {
     #[serde(rename = "@context")]
@@ -176,6 +187,7 @@ pub struct FAQPage {
 }
 
 /// Question schema for FAQ
+#[cfg(feature = "json-ld")]
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct Question {
     #[serde(rename = "@type")]
@@ -189,6 +201,7 @@ pub struct Question {
 }
 
 /// Answer schema for FAQ
+#[cfg(feature = "json-ld")]
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct Answer {
     #[serde(rename = "@type")]
@@ -201,6 +214,7 @@ pub struct Answer {
 }
 
 /// Breadcrumb list schema
+#[cfg(feature = "json-ld")]
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct BreadcrumbList {
     #[serde(rename = "@context")]
@@ -216,6 +230,7 @@ pub struct BreadcrumbList {
 }
 
 /// List item for breadcrumbs
+#[cfg(feature = "json-ld")]
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ListItem {
     #[serde(rename = "@type")]
@@ -229,6 +244,7 @@ pub struct ListItem {
     pub additional: HashMap<String, serde_json::Value>,
 }
 
+#[cfg(feature = "json-ld")]
 impl SchemaOrg {
     /// Create a web page schema
     pub fn web_page(name: &str, description: Option<&str>, url: Option<&str>) -> Self {
@@ -348,6 +364,7 @@ impl SchemaOrg {
 }
 
 /// Validate JSON-LD structure
+#[cfg(feature = "json-ld")]
 pub fn validate_json_ld(json_ld: &JsonLd) -> crate::Result<()> {
     // Basic validation - ensure we have @context and @type
     if let Some(obj) = json_ld.as_object() {
@@ -372,6 +389,7 @@ pub fn validate_json_ld(json_ld: &JsonLd) -> crate::Result<()> {
 }
 
 #[cfg(test)]
+#[cfg(feature = "json-ld")]
 mod tests {
     use super::*;
     

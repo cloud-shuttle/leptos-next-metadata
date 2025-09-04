@@ -1,6 +1,6 @@
 # RFC 0001: API Design Principles
 
-- **Start Date**: 2024-03-15
+- **Start Date**: 2025-09-03
 - **RFC PR**: [#1](https://github.com/yourusername/leptos-next-metadata/pull/1)
 - **Implementation PR**: [#2](https://github.com/yourusername/leptos-next-metadata/pull/2)
 

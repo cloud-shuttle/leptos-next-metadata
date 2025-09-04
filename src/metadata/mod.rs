@@ -22,7 +22,7 @@ use std::collections::HashMap;
 /// # Examples
 /// 
 /// ```rust
-/// use leptos_next_metadata::metadata::Metadata;
+/// use leptos_next_metadata::metadata::{Metadata, Title};
 /// 
 /// let meta = Metadata {
 ///     title: Some(Title::Static("My Page".into())),
@@ -54,7 +54,12 @@ pub struct Metadata {
     pub twitter: Option<Twitter>,
     
     /// JSON-LD structured data
+    #[cfg(feature = "json-ld")]
     pub json_ld: Option<JsonLd>,
+    
+    /// JSON-LD structured data (fallback when json-ld feature is disabled)
+    #[cfg(not(feature = "json-ld"))]
+    pub json_ld: Option<String>,
     
     /// Canonical URL
     pub canonical: Option<CanonicalUrl>,
@@ -79,7 +84,7 @@ pub struct Metadata {
     
     /// Additional metadata fields
     #[serde(flatten)]
-    pub additional: HashMap<String, serde_json::Value>,
+    pub additional: HashMap<String, AdditionalValue>,
 }
 
 /// Page title with support for templates and dynamic values
@@ -250,7 +255,7 @@ pub struct OpenGraph {
     
     /// Additional Open Graph properties
     #[serde(flatten)]
-    pub additional: HashMap<String, serde_json::Value>,
+    pub additional: HashMap<String, AdditionalValue>,
 }
 
 /// Open Graph image
@@ -418,7 +423,42 @@ pub enum TwitterCard {
 }
 
 /// JSON-LD structured data
+#[cfg(feature = "json-ld")]
 pub type JsonLd = serde_json::Value;
+
+/// JSON-LD structured data (fallback when json-ld feature is disabled)
+#[cfg(not(feature = "json-ld"))]
+pub type JsonLd = String;
+
+/// Additional metadata value that can handle both json-ld and fallback cases
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum AdditionalValue {
+    String(String),
+    #[cfg(feature = "json-ld")]
+    Json(serde_json::Value),
+}
+
+impl From<String> for AdditionalValue {
+    fn from(s: String) -> Self {
+        AdditionalValue::String(s)
+    }
+}
+
+impl From<&str> for AdditionalValue {
+    fn from(s: &str) -> Self {
+        AdditionalValue::String(s.to_string())
+    }
+}
+
+#[cfg(feature = "json-ld")]
+impl From<serde_json::Value> for AdditionalValue {
+    fn from(v: serde_json::Value) -> Self {
+        AdditionalValue::Json(v)
+    }
+}
+
+
 
 /// Canonical URL
 pub type CanonicalUrl = String;
@@ -648,8 +688,8 @@ impl Metadata {
     }
     
     /// Add additional metadata field
-    pub fn additional(mut self, key: impl Into<String>, value: serde_json::Value) -> Self {
-        self.additional.insert(key.into(), value);
+    pub fn additional(mut self, key: impl Into<String>, value: impl Into<AdditionalValue>) -> Self {
+        self.additional.insert(key.into(), value.into());
         self
     }
 }
@@ -1137,6 +1177,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(feature = "json-ld")]
     fn test_metadata_additional_fields() {
         let metadata = Metadata::new()
             .additional("custom_field", serde_json::json!("custom_value"))
@@ -1144,12 +1185,27 @@ mod tests {
             .additional("bool_field", serde_json::json!(true));
 
         assert_eq!(metadata.additional.len(), 3);
-        assert_eq!(metadata.additional["custom_field"], serde_json::json!("custom_value"));
-        assert_eq!(metadata.additional["number_field"], serde_json::json!(42));
-        assert_eq!(metadata.additional["bool_field"], serde_json::json!(true));
+        assert_eq!(metadata.additional["custom_field"], AdditionalValue::Json(serde_json::json!("custom_value")));
+        assert_eq!(metadata.additional["number_field"], AdditionalValue::Json(serde_json::json!(42)));
+        assert_eq!(metadata.additional["bool_field"], AdditionalValue::Json(serde_json::json!(true)));
+    }
+    
+    #[test]
+    #[cfg(not(feature = "json-ld"))]
+    fn test_metadata_additional_fields_fallback() {
+        let metadata = Metadata::new()
+            .additional("custom_field", "custom_value".to_string())
+            .additional("number_field", "42".to_string())
+            .additional("bool_field", "true".to_string());
+
+        assert_eq!(metadata.additional.len(), 3);
+        assert_eq!(metadata.additional["custom_field"], AdditionalValue::String("custom_value".to_string()));
+        assert_eq!(metadata.additional["number_field"], AdditionalValue::String("42".to_string()));
+        assert_eq!(metadata.additional["bool_field"], AdditionalValue::String("true".to_string()));
     }
 
     #[test]
+    #[cfg(feature = "json-ld")]
     fn test_metadata_serialization() {
         let metadata = Metadata::new()
             .title("Test Title")
@@ -1164,5 +1220,22 @@ mod tests {
         assert_eq!(metadata.description, deserialized.description);
         assert_eq!(metadata.keywords, deserialized.keywords);
         assert_eq!(metadata.canonical, deserialized.canonical);
+    }
+    
+    #[test]
+    #[cfg(not(feature = "json-ld"))]
+    fn test_metadata_serialization_fallback() {
+        let metadata = Metadata::new()
+            .title("Test Title")
+            .description("Test Description")
+            .keywords(vec!["test".to_string(), "metadata".to_string()])
+            .canonical("https://example.com");
+
+        // When json-ld feature is disabled, we can't test serialization
+        // but we can test that the metadata was created correctly
+        assert_eq!(metadata.title, Some(Title::Static("Test Title".to_string())));
+        assert_eq!(metadata.description, Some("Test Description".to_string()));
+        assert_eq!(metadata.keywords, Some(Keywords::Multiple(vec!["test".to_string(), "metadata".to_string()])));
+        assert_eq!(metadata.canonical, Some("https://example.com".to_string()));
     }
 }

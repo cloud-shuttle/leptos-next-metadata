@@ -1,0 +1,276 @@
+{
+  "summary": {
+    "totalTests": 21,
+    "totalPassed": 0,
+    "totalFailed": 21,
+    "totalSkipped": 0,
+    "successRate": 0,
+    "totalDuration": 0
+  },
+  "browserResults": {
+    "CHROMIUM": [
+      {
+        "browser": "CHROMIUM",
+        "testSuite": "real_metadata_validation",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      },
+      {
+        "browser": "CHROMIUM",
+        "testSuite": "cross_browser_metadata",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      },
+      {
+        "browser": "CHROMIUM",
+        "testSuite": "tdd_basic_infrastructure",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      },
+      {
+        "browser": "CHROMIUM",
+        "testSuite": "tdd_report_generator",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      },
+      {
+        "browser": "CHROMIUM",
+        "testSuite": "tdd_edge_cases",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      },
+      {
+        "browser": "CHROMIUM",
+        "testSuite": "tdd_error_conditions",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      },
+      {
+        "browser": "CHROMIUM",
+        "testSuite": "tdd_performance_stress",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      }
+    ],
+    "FIREFOX": [
+      {
+        "browser": "FIREFOX",
+        "testSuite": "real_metadata_validation",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      },
+      {
+        "browser": "FIREFOX",
+        "testSuite": "cross_browser_metadata",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      },
+      {
+        "browser": "FIREFOX",
+        "testSuite": "tdd_basic_infrastructure",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      },
+      {
+        "browser": "FIREFOX",
+        "testSuite": "tdd_report_generator",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      },
+      {
+        "browser": "FIREFOX",
+        "testSuite": "tdd_edge_cases",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      },
+      {
+        "browser": "FIREFOX",
+        "testSuite": "tdd_error_conditions",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      },
+      {
+        "browser": "FIREFOX",
+        "testSuite": "tdd_performance_stress",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      }
+    ],
+    "WEBKIT": [
+      {
+        "browser": "WEBKIT",
+        "testSuite": "real_metadata_validation",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      },
+      {
+        "browser": "WEBKIT",
+        "testSuite": "cross_browser_metadata",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      },
+      {
+        "browser": "WEBKIT",
+        "testSuite": "tdd_basic_infrastructure",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      },
+      {
+        "browser": "WEBKIT",
+        "testSuite": "tdd_report_generator",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      },
+      {
+        "browser": "WEBKIT",
+        "testSuite": "tdd_edge_cases",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      },
+      {
+        "browser": "WEBKIT",
+        "testSuite": "tdd_error_conditions",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      },
+      {
+        "browser": "WEBKIT",
+        "testSuite": "tdd_performance_stress",
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "duration": 0,
+        "successRate": 0,
+        "errors": [
+          "No valid JSON output found in test results"
+        ]
+      }
+    ]
+  },
+  "metadataValidation": {
+    "seo": false,
+    "openGraph": false,
+    "twitter": false,
+    "jsonLd": false
+  }
+}

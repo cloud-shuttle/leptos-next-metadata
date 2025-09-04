@@ -1,10 +1,9 @@
 //! Utility functions and helpers for leptos-next-metadata
 
-use crate::Result;
 
 /// Common utility functions for metadata operations
 pub mod common {
-    use super::*;
+    
     
     /// Truncate a string to a maximum length, adding ellipsis if needed
     pub fn truncate_string(s: &str, max_len: usize) -> String {
@@ -33,7 +32,7 @@ pub mod common {
 
 /// Image utility functions
 pub mod image {
-    use super::*;
+    
     
     /// Calculate aspect ratio from dimensions
     pub fn aspect_ratio(width: u32, height: u32) -> f64 {
@@ -52,7 +51,7 @@ pub mod image {
 
 /// SEO utility functions
 pub mod seo {
-    use super::*;
+    
     
     /// Generate a slug from a title
     pub fn title_to_slug(title: &str) -> String {
@@ -80,7 +79,7 @@ pub mod seo {
 
 /// Cache utility functions
 pub mod cache {
-    use super::*;
+    
     
     /// Generate a cache key from metadata
     pub fn generate_cache_key(metadata: &crate::metadata::Metadata) -> String {

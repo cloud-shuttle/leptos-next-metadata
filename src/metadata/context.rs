@@ -2,7 +2,7 @@
 //! 
 //! This module provides context management for sharing metadata across the component tree.
 
-use crate::{Metadata, MetadataConfig, Result};
+use crate::{Metadata, MetadataConfig};
 use std::sync::Arc;
 use parking_lot::RwLock;
 

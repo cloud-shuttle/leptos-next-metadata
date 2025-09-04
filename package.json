@@ -1,0 +1,42 @@
+{
+  "name": "leptos-next-metadata",
+  "version": "0.1.0",
+  "description": "Next.js-style metadata management for Leptos applications",
+  "private": true,
+  "scripts": {
+    "install:playwright": "playwright install",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:codegen": "playwright codegen",
+    "test:e2e:show-report": "playwright show-report",
+    "test:e2e:install-deps": "playwright install-deps",
+    "test:metadata": "playwright test tests/e2e/*metadata*.spec.ts",
+    "test:metadata:ui": "playwright test tests/e2e/*metadata*.spec.ts --ui",
+    "test:metadata:headed": "playwright test tests/e2e/*metadata*.spec.ts --headed",
+    "test:metadata:report": "ts-node tests/e2e/run_metadata_tests.ts",
+    "test:metadata:compilation": "playwright test tests/e2e/metadata_macro_compilation.spec.ts",
+    "test:metadata:simple": "SKIP_WEBSERVER=true playwright test tests/e2e/simple_metadata_test.spec.ts",
+    "test:metadata:real": "playwright test tests/e2e/real_metadata_validation.spec.ts --reporter=line",
+    "test:metadata:cross-browser": "playwright test tests/e2e/cross_browser_metadata.spec.ts --reporter=line",
+    "test:metadata:comprehensive": "ts-node tests/e2e/generate_comprehensive_report.ts",
+    "test:metadata:all": "./tests/e2e/run_tests_with_server.sh",
+    "test:metadata:quick": "playwright test tests/e2e/real_metadata_validation.spec.ts --project=chromium --reporter=line",
+    "dev:test-server": "cargo run --example basic",
+    "dev:watch": "cargo watch -x 'run --example basic'",
+    "build:examples": "cargo build --examples",
+    "clean": "cargo clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.0"
+}

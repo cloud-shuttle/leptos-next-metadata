@@ -6,18 +6,16 @@
 //! ## Quick Example
 //! 
 //! ```rust
-//! use leptos::*;
 //! use leptos_next_metadata::prelude::*;
 //! 
-//! #[component]
-//! fn MyPage() -> impl IntoView {
-//!     metadata! {
-//!         title: "My Page",
-//!         description: "Page description",
-//!     }
-//!     
-//!     view! { <h1>"My Page"</h1> }
-//! }
+//! // Create metadata for a page
+//! let metadata = Metadata {
+//!     title: Some(Title::Static("My Page".into())),
+//!     description: Some("Page description".into()),
+//!     ..Default::default()
+//! };
+//! 
+//! // Use in your Leptos component
 //! ```
 //! 
 //! ## Features
@@ -71,6 +69,7 @@ pub mod prelude {
     };
     
     pub use crate::og_image::{GeneratedOgImage, OgImageGenerator, OgImageParams};
+    #[cfg(feature = "json-ld")]
     pub use crate::json_ld::{JsonLd, SchemaOrg};
     pub use crate::conventions::{ConventionScanner, FileConventions};
     
@@ -81,10 +80,11 @@ pub mod prelude {
 }
 
 /// Re-export commonly used types
-pub use metadata::*;
-pub use og_image::*;
-pub use json_ld::*;
-pub use conventions::*;
+pub use metadata::{Metadata, Title, Description, Keywords, Authors, Robots, OpenGraph, Twitter, TwitterCard, CanonicalUrl, Viewport, ThemeColor, ColorScheme, ReferrerPolicy, FormatDetection};
+pub use og_image::{GeneratedOgImage, OgImageGenerator, OgImageParams};
+#[cfg(feature = "json-ld")]
+pub use json_ld::{JsonLd, SchemaOrg, Article, Organization, Person, WebPage, BlogPosting, Product, FAQPage, Question, Answer, BreadcrumbList, ListItem};
+pub use conventions::{ConventionScanner, FileConventions};
 
 #[cfg(feature = "macros")]
 pub use macros::*;

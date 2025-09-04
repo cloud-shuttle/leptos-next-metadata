@@ -1,6 +1,6 @@
 # RFC 0002: Performance Targets and Benchmarks
 
-- **Start Date**: 2024-03-20
+- **Start Date**: 2025-09-03
 - **RFC PR**: [#3](https://github.com/yourusername/leptos-next-metadata/pull/3)
 - **Implementation PR**: [#4](https://github.com/yourusername/leptos-next-metadata/pull/4)
 

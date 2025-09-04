@@ -1,16 +1,17 @@
 [package]
 name = "leptos-next-metadata"
-version = "0.1.0"
+version = "0.1.0-alpha.1"
 edition = "2021"
 authors = ["Peter Hanssens <peter@cloudshuttle.com.au>"]
-description = "Next.js-style metadata management for Leptos applications with type-safe APIs and blazing-fast OG image generation"
+description = "Next.js-style metadata management for Leptos v0.8+ with type-safe APIs and blazing-fast OG image generation"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/cloud-shuttle/leptos-next-metadata"
 homepage = "https://github.com/cloud-shuttle/leptos-next-metadata"
 documentation = "https://docs.rs/leptos-next-metadata"
-keywords = ["leptos", "metadata", "seo", "og-image", "nextjs", "web"]
+keywords = ["leptos", "metadata", "seo", "og-image", "nextjs", "web", "rust", "leptos-0.8"]
 categories = ["web-programming", "asynchronous", "web-framework"]
 readme = "README.md"
+date = "2025-09-03"
 
 [dependencies]
 # Core dependencies
@@ -37,6 +38,7 @@ liquid = { version = "0.26", optional = true }
 image = { version = "0.24", optional = true }
 resvg = { version = "0.36", optional = true }
 usvg = { version = "0.36", optional = true }
+tiny-skia = { version = "0.11", optional = true }
 fontdue = { version = "0.8", optional = true }
 mime_guess = { version = "2.0", optional = true }
 walkdir = { version = "2.0", optional = true }
@@ -56,14 +58,16 @@ proptest = "1.0"
 mockall = "0.12"
 tokio-test = "0.4"
 tempfile = "3.0"
+axum = "0.7"
+tower-http = { version = "0.5", features = ["fs", "cors"] }
 
 [features]
 default = ["ssr", "og-images", "file-conventions", "macros", "json-ld"]
 ssr = ["leptos/ssr"]
 csr = ["leptos/csr"]
 hydrate = ["leptos/hydrate"]
-og-images = ["image", "resvg", "usvg", "fontdue", "liquid"]
-file-conventions = ["walkdir", "mime_guess"]
+og-images = ["image", "resvg", "usvg", "tiny-skia", "fontdue", "liquid"]
+file-conventions = ["walkdir", "mime_guess", "image"]
 json-ld = ["serde_json"]
 caching = ["cached", "lru"]
 http = ["reqwest"]
@@ -77,3 +81,34 @@ path = "src/lib.rs"
 [package.metadata.docs.rs]
 all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
+
+# Project status metadata
+[package.metadata]
+project_status = "Alpha Release"
+release_target = "Q4 2025"
+leptos_version = "0.8+"
+rust_version = "1.75+"
+last_updated = "2025-09-03"
+completed_features = [
+    "Core metadata structures and types",
+    "metadata! macro for static metadata",
+    "generate_metadata! macro for dynamic metadata",
+    "Basic OpenGraph and Twitter Card support",
+    "JSON-LD foundation with conditional compilation",
+    "Procedural macro system",
+    "Integration with Leptos 0.8+ signal system"
+]
+in_progress_features = [
+    "OG image generation pipeline",
+    "File convention scanner",
+    "Advanced caching strategies",
+    "Performance optimizations",
+    "Integration with Leptos ecosystem"
+]
+planned_features = [
+    "Comprehensive testing suite with Playwright",
+    "Performance benchmarking",
+    "Migration tools from Next.js",
+    "Advanced template system",
+    "Complete documentation book"
+]

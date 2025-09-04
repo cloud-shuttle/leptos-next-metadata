@@ -4,8 +4,6 @@
 //! SEO best practices and is properly formatted.
 
 use super::*;
-use crate::Result;
-use std::collections::HashMap;
 
 /// Validation result containing warnings and errors
 #[derive(Debug, Clone)]
@@ -412,7 +410,8 @@ impl Metadata {
     }
     
     /// Validate JSON-LD structured data
-    fn validate_json_ld(&self, json_ld: &crate::json_ld::JsonLd, result: &mut ValidationResult) {
+    #[cfg(feature = "json-ld")]
+    fn validate_json_ld(&self, json_ld: &crate::metadata::JsonLd, result: &mut ValidationResult) {
         // Basic JSON-LD validation
         if let Some(schema_type) = json_ld.get("@type") {
             if let Some(type_str) = schema_type.as_str() {
@@ -434,6 +433,12 @@ impl Metadata {
                 suggestion: Some("Add @type for proper structured data".to_string()),
             });
         }
+    }
+    
+    /// Validate JSON-LD structured data (fallback when json-ld feature is disabled)
+    #[cfg(not(feature = "json-ld"))]
+    fn validate_json_ld(&self, _json_ld: &crate::metadata::JsonLd, _result: &mut ValidationResult) {
+        // No validation when json-ld feature is disabled
     }
     
     /// Validate URLs in the metadata

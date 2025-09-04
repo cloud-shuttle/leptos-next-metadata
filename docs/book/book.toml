@@ -1,6 +1,6 @@
 [book]
 authors = ["leptos-next-metadata contributors"]
-description = "Next.js-style metadata management for Leptos"
+description = "Next.js-style metadata management for Leptos v0.8+ with type-safe APIs and blazing-fast OG image generation"
 language = "en"
 multilingual = false
 src = "src"
@@ -19,8 +19,8 @@ additional-css = ["theme/custom.css"]
 additional-js = ["theme/custom.js"]
 default-theme = "navy"
 preferred-dark-theme = "navy" 
-git-repository-url = "https://github.com/yourusername/leptos-next-metadata"
-edit-url-template = "https://github.com/yourusername/leptos-next-metadata/edit/main/docs/book/{path}"
+git-repository-url = "https://github.com/cloud-shuttle/leptos-next-metadata"
+edit-url-template = "https://github.com/cloud-shuttle/leptos-next-metadata/edit/main/docs/book/{path}"
 site-url = "/leptos-next-metadata/"
 cname = "leptos-next-metadata.dev"
 google-analytics = "G-XXXXXXXXXX"
@@ -63,3 +63,12 @@ warning-policy = "warn"
 # Optional: Generate PDF version
 # [output.pandoc.pdf]
 # optional = true
+
+# Project status information
+[output.html.variables]
+project_status = "Active Development"
+current_version = "0.1.0-alpha"
+release_target = "Q4 2025"
+leptos_version = "0.8+"
+rust_version = "1.75+"
+last_updated = "September 3rd, 2025"
