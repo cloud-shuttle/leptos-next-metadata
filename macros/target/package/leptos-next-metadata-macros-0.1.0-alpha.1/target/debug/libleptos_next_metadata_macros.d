@@ -1,0 +1,1 @@
+/Users/peterhanssens/consulting/CloudShuttle/leptos-next-metadata/macros/target/package/leptos-next-metadata-macros-0.1.0-alpha.1/target/debug/libleptos_next_metadata_macros.dylib: /Users/peterhanssens/consulting/CloudShuttle/leptos-next-metadata/macros/target/package/leptos-next-metadata-macros-0.1.0-alpha.1/src/lib.rs

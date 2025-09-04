@@ -59,4 +59,13 @@ impl<T> CacheEntry<T> {
     pub fn is_expired(&self) -> bool {
         self.created_at.elapsed() > self.ttl
     }
+    
+    pub fn remaining_ttl(&self) -> std::time::Duration {
+        let elapsed = self.created_at.elapsed();
+        if elapsed > self.ttl {
+            std::time::Duration::ZERO
+        } else {
+            self.ttl - elapsed
+        }
+    }
 }

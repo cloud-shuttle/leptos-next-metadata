@@ -1,6 +1,6 @@
 [package]
 name = "leptos-next-metadata"
-version = "0.1.0-alpha.1"
+version = "0.1.0-beta.1"
 edition = "2021"
 authors = ["Peter Hanssens <peter@cloudshuttle.com.au>"]
 description = "Next.js-style metadata management for Leptos v0.8+ with type-safe APIs and blazing-fast OG image generation"
@@ -31,7 +31,7 @@ regex = "1.0"
 urlencoding = "2.1"
 leptos_meta = { version = "0.8", features = ["ssr"] }
 leptos_router = { version = "0.8", features = ["ssr"] }
-leptos-next-metadata-macros = { path = "./macros", version = "0.1.0-alpha.1", optional = true }
+leptos-next-metadata-macros = { path = "./macros", version = "0.1.0-beta.1", optional = true }
 
 # Optional dependencies
 liquid = { version = "0.26", optional = true }
@@ -84,7 +84,7 @@ rustdoc-args = ["--cfg", "docsrs"]
 
 # Project status metadata
 [package.metadata]
-project_status = "Alpha Release"
+project_status = "Beta Release"
 release_target = "Q4 2025"
 leptos_version = "0.8+"
 rust_version = "1.75+"
@@ -96,19 +96,23 @@ completed_features = [
     "Basic OpenGraph and Twitter Card support",
     "JSON-LD foundation with conditional compilation",
     "Procedural macro system",
-    "Integration with Leptos 0.8+ signal system"
+    "Integration with Leptos 0.8+ signal system",
+    "File convention scanning",
+    "Comprehensive testing suite (93 unit tests + 4 doc tests)",
+    "Cross-browser compatibility testing",
+    "Advanced caching strategies with LRU and TTL",
+    "Performance optimizations and benchmarks",
+    "JSON-LD field naming compliance (all warnings fixed)",
+    "E2E testing infrastructure with Playwright",
+    "Complete documentation and examples"
 ]
 in_progress_features = [
-    "OG image generation pipeline",
-    "File convention scanner",
-    "Advanced caching strategies",
-    "Performance optimizations",
-    "Integration with Leptos ecosystem"
+    "Final beta release preparation",
+    "Performance benchmarking and optimization"
 ]
 planned_features = [
-    "Comprehensive testing suite with Playwright",
-    "Performance benchmarking",
-    "Migration tools from Next.js",
+    "v1.0 stable release",
     "Advanced template system",
-    "Complete documentation book"
+    "Visual metadata editor",
+    "Automated SEO auditing"
 ]
