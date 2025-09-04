@@ -125,3 +125,46 @@ macros/Cargo.lock
 
 # Local configuration
 .cargo/config.toml
+
+# Rust-specific additions
+**/target/
+Cargo.lock
+*.orig
+*.rej
+
+# Generated files
+*.generated.*
+*.auto.*
+
+# Cache directories
+.cache/
+.rustup/
+.cargo/registry/
+
+# IDE specific
+*.sublime-project
+*.sublime-workspace
+.vscode/settings.json
+.vscode/launch.json
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# Documentation build
+/book/
+/docs/book/
+
+# Package files
+*.crate
+*.tar.gz
+*.zip
+
+# Local test files
+/test-output/
+/bench-results/
