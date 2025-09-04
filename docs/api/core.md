@@ -14,6 +14,118 @@ The core API provides the fundamental building blocks for metadata management in
 
 The central metadata container that holds all page metadata information.
 
+### **Component Types**
+
+#### **`MetaTags` Component**
+
+A component that injects meta tags into the document head during server-side rendering.
+
+```rust
+use leptos_next_metadata::prelude::*;
+
+#[component]
+fn App() -> impl IntoView {
+    view! {
+        <MetaTags />
+        // ... rest of your app
+    }
+}
+```
+
+#### **`Body` Component**
+
+A component to set metadata on the document's `<body>` element from within the application.
+
+```rust
+use leptos_next_metadata::prelude::*;
+
+#[component]
+fn App() -> impl IntoView {
+    view! {
+        <Body class="dark-theme" lang="en" dir="ltr" />
+        // ... rest of your app
+    }
+}
+```
+
+#### **`Html` Component**
+
+A component to set metadata on the document's `<html>` element from within the application.
+
+```rust
+use leptos_next_metadata::prelude::*;
+
+#[component]
+fn App() -> impl IntoView {
+    view! {
+        <Html lang="en" dir="ltr" data-theme="dark" />
+        // ... rest of your app
+    }
+}
+```
+
+#### **`HashedStylesheet` Component**
+
+A component that injects a hashed stylesheet link into the document head for cargo-leptos integration.
+
+```rust
+use leptos_next_metadata::prelude::*;
+use leptos::prelude::LeptosOptions;
+
+#[component]
+fn App() -> impl IntoView {
+    let options = LeptosOptions::builder()
+        .output_name("my-app")
+        .build();
+        
+    view! {
+        <HashedStylesheet 
+            options=options 
+            id="main-stylesheet" 
+            root="/assets" 
+        />
+        // ... rest of your app
+    }
+}
+```
+
+#### **`EnhancedTitle` Component**
+
+An enhanced title component with formatter support for dynamic title generation.
+
+```rust
+use leptos_next_metadata::prelude::*;
+
+#[component]
+fn App() -> impl IntoView {
+    // Basic usage
+    let _title = view! { <EnhancedTitle text="My Page" /> };
+    
+    // With formatter
+    let formatter = |text: &str| format!("{} | My Site", text);
+    let _formatted_title = view! { 
+        <EnhancedTitle text="My Page" formatter=formatter />
+    };
+    
+    // With template
+    let _template_title = view! { 
+        <EnhancedTitle 
+            text="My Page" 
+            template="{} | My Site"
+        />
+    };
+    
+    // With prefix and suffix
+    let _prefixed_title = view! { 
+        <EnhancedTitle 
+            text="My Page" 
+            prefix="Welcome to"
+            suffix="| My Site"
+        />
+    };
+}
+```
+
 ```rust
 pub struct Metadata {
     pub title: Option<Title>,

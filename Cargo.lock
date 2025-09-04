@@ -1742,7 +1742,7 @@ dependencies = [
 
 [[package]]
 name = "leptos-next-metadata"
-version = "0.1.0-beta.1"
+version = "1.0.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1786,7 +1786,7 @@ dependencies = [
 
 [[package]]
 name = "leptos-next-metadata-macros"
-version = "0.1.0-beta.1"
+version = "1.0.0"
 dependencies = [
  "proc-macro2",
  "quote",

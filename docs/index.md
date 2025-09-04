@@ -34,6 +34,7 @@ fn MyPage() -> impl IntoView {
 - **[Basic Examples](examples/basic/README.md)** - Simple use cases to get started
 
 ### 📚 **Guides & Tutorials**
+- **[Components Guide](guides/components.md)** - Using metadata components for flexible metadata management
 - **[Design Document](guides/design.md)** - Architecture and design decisions
 - **[Implementation Plan](guides/implementation_plan.md)** - Technical implementation details
 - **[Testing Strategy](guides/testing_strategy.md)** - Testing approach and coverage

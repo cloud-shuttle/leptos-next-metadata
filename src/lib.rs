@@ -58,6 +58,11 @@ pub mod json_ld;
 pub mod conventions;
 pub mod macros;
 pub mod utils;
+pub mod meta_tags;
+pub mod body;
+pub mod html;
+pub mod hashed_stylesheet;
+pub mod enhanced_title;
 
 /// Re-exports for common use cases
 pub mod prelude {
@@ -77,6 +82,11 @@ pub mod prelude {
     pub use crate::macros::{metadata, generate_metadata};
     
     pub use crate::metadata::context::{MetadataContext, MetadataProvider, provide_metadata_context};
+    pub use crate::meta_tags::MetaTags;
+    pub use crate::body::Body;
+    pub use crate::html::Html;
+    pub use crate::hashed_stylesheet::HashedStylesheet;
+    pub use crate::enhanced_title::EnhancedTitle;
 }
 
 /// Re-export commonly used types
@@ -85,6 +95,11 @@ pub use og_image::{GeneratedOgImage, OgImageGenerator, OgImageParams};
 #[cfg(feature = "json-ld")]
 pub use json_ld::{JsonLd, SchemaOrg, Article, Organization, Person, WebPage, BlogPosting, Product, FAQPage, Question, Answer, BreadcrumbList, ListItem};
 pub use conventions::{ConventionScanner, FileConventions};
+pub use meta_tags::MetaTags;
+pub use body::Body;
+pub use html::Html;
+pub use hashed_stylesheet::HashedStylesheet;
+pub use enhanced_title::EnhancedTitle;
 
 #[cfg(feature = "macros")]
 pub use macros::*;

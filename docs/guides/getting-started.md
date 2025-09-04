@@ -30,6 +30,38 @@ cargo add leptos-next-metadata --features "og-images,json-ld,file-conventions"
 
 ## 🎯 **Basic Usage**
 
+### **Using Components for Metadata**
+
+Our new components provide a more flexible way to manage metadata:
+
+```rust
+use leptos::*;
+use leptos_next_metadata::prelude::*;
+
+#[component]
+fn MyPage() -> impl IntoView {
+    view! {
+        <Html lang="en" dir="ltr" />
+        <Body class="my-app" lang="en" />
+        <MetaTags />
+        <EnhancedTitle 
+            text="My Awesome Page" 
+            template="{} | My Site"
+        />
+        <HashedStylesheet 
+            options=leptos::prelude::LeptosOptions::builder()
+                .output_name("my-app")
+                .build()
+        />
+        
+        <div>
+            <h1>"Welcome to My Page"</h1>
+            <p>"This page uses our new metadata components!"</p>
+        </div>
+    }
+}
+```
+
 ### **Simple Page with Metadata**
 
 ```rust

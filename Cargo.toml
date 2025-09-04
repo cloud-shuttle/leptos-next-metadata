@@ -1,6 +1,6 @@
 [package]
 name = "leptos-next-metadata"
-version = "0.1.0-beta.1"
+version = "1.0.0"
 edition = "2021"
 authors = ["Peter Hanssens <peter@cloudshuttle.com.au>"]
 description = "Next.js-style metadata management for Leptos v0.8+ with type-safe APIs and blazing-fast OG image generation"
@@ -31,7 +31,7 @@ regex = "1.0"
 urlencoding = "2.1"
 leptos_meta = { version = "0.8", features = ["ssr"] }
 leptos_router = { version = "0.8", features = ["ssr"] }
-leptos-next-metadata-macros = { path = "./macros", version = "0.1.0-beta.1", optional = true }
+leptos-next-metadata-macros = { path = "./macros", version = "1.0.0", optional = true }
 
 # Optional dependencies
 liquid = { version = "0.26", optional = true }

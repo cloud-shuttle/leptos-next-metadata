@@ -7,21 +7,23 @@
 [![License](https://img.shields.io/crates/l/leptos-next-metadata)](LICENSE)
 [![Rust](https://img.shields.io/badge/rust-1.75+-blue.svg)](https://www.rust-lang.org)
 
-**Status**: 🚀 **Beta Release v0.1.0-beta.1** - Feature Complete & Production Ready  
-**Next Target**: 🎯 **v1.0.0 Stable Release** (Q4 2025)
+**Status**: 🎉 **Stable Release v1.0.0** - Production Ready & Feature Complete  
+**Achievement**: 🏆 **100% Feature Parity with leptos_meta + Advanced Features**
 
 ---
 
-## ✨ **What's New in Beta**
+## ✨ **What's New in v1.0.0**
 
-- **✅ Feature Complete**: All planned functionality implemented and tested
+- **🎉 Stable Release**: Production-ready with 100% feature parity
+- **🧩 New Components**: MetaTags, Body, Html, HashedStylesheet, EnhancedTitle
 - **🚀 Performance Optimized**: 2-7x faster than browser-based solutions
 - **🔒 Type Safe**: Full Rust type safety with compile-time validation
 - **📱 OG Image Generation**: High-performance image generation with caching
 - **🏷️ JSON-LD Support**: Schema.org compliance with structured data
 - **📁 File Conventions**: Automatic asset detection and management
 - **🗄️ Advanced Caching**: LRU cache with TTL and statistics
-- **🧪 Comprehensive Testing**: 93 unit tests + E2E testing with Playwright
+- **🧪 Comprehensive Testing**: 191 total tests (129 unit + 20 integration + 42 E2E)
+- **📚 Complete Documentation**: Full guides and API reference
 
 ---
 
@@ -34,6 +36,38 @@ cargo add leptos-next-metadata
 ```
 
 ### **Basic Usage**
+
+#### **Using Components (Recommended)**
+
+```rust
+use leptos::*;
+use leptos_next_metadata::prelude::*;
+
+#[component]
+fn MyPage() -> impl IntoView {
+    view! {
+        <Html lang="en" dir="ltr" />
+        <Body class="my-app" lang="en" />
+        <MetaTags />
+        <EnhancedTitle 
+            text="My Awesome Page" 
+            template="{} | My Site"
+        />
+        <HashedStylesheet 
+            options=leptos::prelude::LeptosOptions::builder()
+                .output_name("my-app")
+                .build()
+        />
+        
+        <div>
+            <h1>"Welcome to My Page"</h1>
+            <p>"This page uses our new metadata components!"</p>
+        </div>
+    }
+}
+```
+
+#### **Using Macros (Traditional)**
 
 ```rust
 use leptos::*;

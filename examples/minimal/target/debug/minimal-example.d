@@ -1,1 +1,0 @@
-/Users/peterhanssens/consulting/CloudShuttle/leptos-next-metadata/examples/minimal/target/debug/minimal-example: /Users/peterhanssens/consulting/CloudShuttle/leptos-next-metadata/examples/minimal/main.rs /Users/peterhanssens/consulting/CloudShuttle/leptos-next-metadata/src/lib.rs
