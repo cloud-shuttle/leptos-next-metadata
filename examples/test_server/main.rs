@@ -28,7 +28,7 @@ struct MetadataResponse {
 #[tokio::main]
 async fn main() {
     println!("🚀 Starting Metadata Test Server");
-    
+
     // Build our application with a route
     let app = Router::new()
         .route("/", get(serve_test_page))
@@ -43,7 +43,7 @@ async fn main() {
     println!("📄 Serving metadata test page at /");
     println!("🔧 API endpoints available at /api/*");
     println!("🧪 Test cases available at /test/*");
-    
+
     axum::serve(
         tokio::net::TcpListener::bind(addr).await.unwrap(),
         app
@@ -70,7 +70,7 @@ async fn serve_test_page() -> Html<String> {
             </html>
             "#.to_string()
         });
-    
+
     Html(html_content)
 }
 
@@ -86,7 +86,7 @@ async fn handle_metadata(
     Json(payload): Json<MetadataRequest>,
 ) -> Json<MetadataResponse> {
     let mut metadata = HashMap::new();
-    
+
     if let Some(title) = payload.title {
         metadata.insert("title".to_string(), title);
     }
@@ -99,7 +99,7 @@ async fn handle_metadata(
     if let Some(og_type) = payload.og_type {
         metadata.insert("og:type".to_string(), og_type);
     }
-    
+
     Json(MetadataResponse {
         success: true,
         message: "Metadata processed successfully".to_string(),
@@ -113,7 +113,7 @@ async fn serve_test_case(
 ) -> Html<String> {
     let title = params.get("title").cloned().unwrap_or_else(|| "Test Page".to_string());
     let description = params.get("description").cloned().unwrap_or_else(|| "A test page for metadata validation".to_string());
-    
+
     let html = match test_type.as_str() {
         "basic" => format!(
             r#"
@@ -171,6 +171,6 @@ async fn serve_test_case(
             test_type, test_type
         ),
     };
-    
+
     Html(html)
 }

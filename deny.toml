@@ -4,7 +4,7 @@
 # Allow these licenses
 allow = [
     "MIT",
-    "Apache-2.0", 
+    "Apache-2.0",
     "Apache-2.0 WITH LLVM-exception",
     "BSD-2-Clause",
     "BSD-3-Clause",
@@ -13,14 +13,8 @@ allow = [
     "CC0-1.0",
 ]
 
-# Deny these licenses
-deny = [
-    "GPL-2.0",
-    "GPL-3.0", 
-    "AGPL-1.0",
-    "AGPL-3.0",
-    "EUPL-1.2",
-]
+# Deny unlicensed crates
+unlicensed = "deny"
 
 # Allow 1 or more licenses on a per-crate basis
 exceptions = [
@@ -47,18 +41,18 @@ deny = [
     # Security-sensitive crates with known issues
     { name = "openssl", reason = "Use rustls instead" },
     { name = "native-tls", reason = "Use rustls instead" },
-    
+
     # Outdated crypto crates
     { name = "md-5", reason = "Use sha2 or blake3 instead" },
     { name = "sha1", reason = "SHA1 is cryptographically broken" },
-    
+
     # Unmaintained crates
     { name = "tempdir", reason = "Use tempfile instead" },
     { name = "rand_os", reason = "Integrated into rand" },
 ]
 
 [advisories]
-# Database of known security advisories  
+# Database of known security advisories
 db-path = "~/.cargo/advisory-db"
 db-urls = ["https://github.com/rustsec/advisory-db"]
 
@@ -68,7 +62,7 @@ ignore = [
 ]
 
 # Security vulnerability severity threshold
-severity-threshold = "low"
+# severity-threshold = "low"  # Deprecated in newer versions
 
 [sources]
 # Crate sources configuration

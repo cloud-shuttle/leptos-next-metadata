@@ -1,5 +1,5 @@
 //! Macro performance and stress tests
-//! 
+//!
 //! These tests verify that the macros perform well under various conditions
 //! including high load, complex metadata, and edge cases.
 
@@ -11,7 +11,7 @@ use std::time::Instant;
 #[test]
 fn test_macro_large_metadata_performance() {
     let start = Instant::now();
-    
+
     // Generate large metadata with many fields
     let _result = metadata! {
         title: "Large Metadata Performance Test",
@@ -74,9 +74,9 @@ fn test_macro_large_metadata_performance() {
             "keywords": (0..300).map(|i| format!("ld_keyword_{}", i)).collect::<Vec<_>>()
         }
     };
-    
+
     let duration = start.elapsed();
-    
+
     // Large metadata should compile in under 100ms
     assert!(duration.as_millis() < 100, "Large metadata compilation took {}ms, expected <100ms", duration.as_millis());
 }
@@ -85,7 +85,7 @@ fn test_macro_large_metadata_performance() {
 #[test]
 fn test_macro_deep_nesting_performance() {
     let start = Instant::now();
-    
+
     // Generate deeply nested metadata
     let _result = metadata! {
         title: "Deep Nesting Performance Test",
@@ -139,9 +139,9 @@ fn test_macro_deep_nesting_performance() {
             }
         }
     };
-    
+
     let duration = start.elapsed();
-    
+
     // Deep nesting should compile in under 50ms
     assert!(duration.as_millis() < 50, "Deep nesting compilation took {}ms, expected <50ms", duration.as_millis());
 }
@@ -150,7 +150,7 @@ fn test_macro_deep_nesting_performance() {
 #[test]
 fn test_macro_many_components_performance() {
     let start = Instant::now();
-    
+
     // Generate many components with metadata
     for i in 0..100 {
         let _component = metadata! {
@@ -159,9 +159,9 @@ fn test_macro_many_components_performance() {
             keywords: vec![format!("component_{}", i), "performance".to_string(), "test".to_string()]
         };
     }
-    
+
     let duration = start.elapsed();
-    
+
     // 100 components should compile in under 200ms
     assert!(duration.as_millis() < 200, "100 components compilation took {}ms, expected <200ms", duration.as_millis());
 }
@@ -170,7 +170,7 @@ fn test_macro_many_components_performance() {
 #[test]
 fn test_macro_complex_expressions_performance() {
     let start = Instant::now();
-    
+
     // Generate metadata with complex expressions
     let _result = metadata! {
         title: {
@@ -201,9 +201,9 @@ fn test_macro_complex_expressions_performance() {
             }
         }
     };
-    
+
     let duration = start.elapsed();
-    
+
     // Complex expressions should compile in under 100ms
     assert!(duration.as_millis() < 100, "Complex expressions compilation took {}ms, expected <100ms", duration.as_millis());
 }
@@ -212,13 +212,13 @@ fn test_macro_complex_expressions_performance() {
 #[test]
 fn test_macro_memory_pressure_performance() {
     let start = Instant::now();
-    
+
     // Allocate memory to simulate pressure
     let mut memory_blocks = Vec::new();
     for _ in 0..1000 {
         memory_blocks.push(vec![0u8; 1024]); // 1KB blocks
     }
-    
+
     // Generate metadata under memory pressure
     let _result = metadata! {
         title: "Memory Pressure Test",
@@ -230,12 +230,12 @@ fn test_macro_memory_pressure_performance() {
             type: "website"
         }
     };
-    
+
     // Clean up memory
     drop(memory_blocks);
-    
+
     let duration = start.elapsed();
-    
+
     // Should still compile reasonably fast under memory pressure
     assert!(duration.as_millis() < 150, "Memory pressure compilation took {}ms, expected <150ms", duration.as_millis());
 }
@@ -244,7 +244,7 @@ fn test_macro_memory_pressure_performance() {
 #[test]
 fn test_macro_concurrent_access_performance() {
     let start = Instant::now();
-    
+
     // Simulate concurrent access by compiling many macros rapidly
     let mut results = Vec::new();
     for i in 0..200 {
@@ -255,9 +255,9 @@ fn test_macro_concurrent_access_performance() {
         };
         results.push(result);
     }
-    
+
     let duration = start.elapsed();
-    
+
     // 200 concurrent compilations should complete in under 300ms
     assert!(duration.as_millis() < 300, "Concurrent access compilation took {}ms, expected <300ms", duration.as_millis());
 }
@@ -266,12 +266,12 @@ fn test_macro_concurrent_access_performance() {
 #[test]
 fn test_macro_large_strings_performance() {
     let start = Instant::now();
-    
+
     // Generate very long strings
     let long_title = "A".repeat(10000); // 10KB title
     let long_description = "B".repeat(20000); // 20KB description
     let long_keywords: Vec<String> = (0..100).map(|i| format!("keyword_{}", "X".repeat(100))).collect();
-    
+
     let _result = metadata! {
         title: long_title,
         description: long_description,
@@ -281,9 +281,9 @@ fn test_macro_large_strings_performance() {
             description: "Testing with large strings"
         }
     };
-    
+
     let duration = start.elapsed();
-    
+
     // Large strings should compile in under 200ms
     assert!(duration.as_millis() < 200, "Large strings compilation took {}ms, expected <200ms", duration.as_millis());
 }
@@ -292,7 +292,7 @@ fn test_macro_large_strings_performance() {
 #[test]
 fn test_macro_many_optional_fields_performance() {
     let start = Instant::now();
-    
+
     // Generate metadata with many optional fields
     let _result = metadata! {
         title: "Many Optional Fields Test",
@@ -349,9 +349,9 @@ fn test_macro_many_optional_fields_performance() {
             "description": "Testing with many optional fields"
         })
     };
-    
+
     let duration = start.elapsed();
-    
+
     // Many optional fields should compile in under 100ms
     assert!(duration.as_millis() < 100, "Many optional fields compilation took {}ms, expected <100ms", duration.as_millis());
 }
@@ -360,7 +360,7 @@ fn test_macro_many_optional_fields_performance() {
 #[test]
 fn test_macro_template_strings_performance() {
     let start = Instant::now();
-    
+
     // Generate metadata with template strings
     let _result = metadata! {
         title: {
@@ -381,9 +381,9 @@ fn test_macro_template_strings_performance() {
             }
         }
     };
-    
+
     let duration = start.elapsed();
-    
+
     // Template strings should compile in under 50ms
     assert!(duration.as_millis() < 50, "Template strings compilation took {}ms, expected <50ms", duration.as_millis());
 }
@@ -392,7 +392,7 @@ fn test_macro_template_strings_performance() {
 #[test]
 fn test_macro_conditional_compilation_performance() {
     let start = Instant::now();
-    
+
     // Generate metadata with conditional compilation
     let _result = metadata! {
         title: "Conditional Compilation Test",
@@ -412,9 +412,9 @@ fn test_macro_conditional_compilation_performance() {
             description: "Basic features only"
         }
     };
-    
+
     let duration = start.elapsed();
-    
+
     // Conditional compilation should compile in under 50ms
     assert!(duration.as_millis() < 50, "Conditional compilation took {}ms, expected <50ms", duration.as_millis());
 }
@@ -423,7 +423,7 @@ fn test_macro_conditional_compilation_performance() {
 #[test]
 fn test_macro_error_recovery_performance() {
     let start = Instant::now();
-    
+
     // Generate metadata that might have errors but should recover
     let _result = metadata! {
         title: "Error Recovery Test",
@@ -435,9 +435,9 @@ fn test_macro_error_recovery_performance() {
             // Intentionally omit required fields to test error handling
         }
     };
-    
+
     let duration = start.elapsed();
-    
+
     // Error recovery should still be fast
     assert!(duration.as_millis() < 100, "Error recovery compilation took {}ms, expected <100ms", duration.as_millis());
 }
@@ -446,13 +446,13 @@ fn test_macro_error_recovery_performance() {
 #[test]
 fn test_macro_incremental_updates_performance() {
     let start = Instant::now();
-    
+
     // Simulate incremental metadata updates
     let mut base_metadata = metadata! {
         title: "Base Metadata",
         description: "Base description"
     };
-    
+
     // Update metadata incrementally
     for i in 0..50 {
         let _updated = metadata! {
@@ -461,9 +461,9 @@ fn test_macro_incremental_updates_performance() {
             keywords: vec![format!("update_{}", i), "incremental".to_string()]
         };
     }
-    
+
     let duration = start.elapsed();
-    
+
     // Incremental updates should be fast
     assert!(duration.as_millis() < 200, "Incremental updates took {}ms, expected <200ms", duration.as_millis());
 }

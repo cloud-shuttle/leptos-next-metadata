@@ -6,7 +6,7 @@ use crate::Result;
 pub fn join_url_paths(base: &str, path: &str) -> String {
     let base = base.trim_end_matches('/');
     let path = path.trim_start_matches('/');
-    
+
     if path.is_empty() {
         base.to_string()
     } else if base.is_empty() {
@@ -37,7 +37,7 @@ pub fn extract_domain(url: &str) -> Result<String> {
     let url = url::Url::parse(url).map_err(|e| {
         crate::Error::UrlError(url::ParseError::from(e))
     })?;
-    
+
     url.host_str()
         .map(|host| host.to_string())
         .ok_or_else(|| crate::Error::ValidationError("No host found in URL".to_string()))
@@ -48,13 +48,13 @@ pub fn build_url_with_params(base: &str, params: &[(&str, &str)]) -> String {
     if params.is_empty() {
         return base.to_string();
     }
-    
+
     let query_string = params
         .iter()
         .map(|(k, v)| format!("{}={}", urlencoding::encode(k), urlencoding::encode(v)))
         .collect::<Vec<_>>()
         .join("&");
-    
+
     if base.contains('?') {
         format!("{}&{}", base, query_string)
     } else {
@@ -67,10 +67,10 @@ pub fn normalize_url(url: &str) -> Result<String> {
     let mut parsed = url::Url::parse(url).map_err(|e| {
         crate::Error::UrlError(url::ParseError::from(e))
     })?;
-    
+
     // Remove fragment
     parsed.set_fragment(None);
-    
+
     // Normalize path
     let path = parsed.path().trim_end_matches('/');
     if path.is_empty() {
@@ -78,6 +78,6 @@ pub fn normalize_url(url: &str) -> Result<String> {
     } else {
         parsed.set_path(path);
     }
-    
+
     Ok(parsed.to_string())
 }

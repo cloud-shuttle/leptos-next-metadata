@@ -1,5 +1,5 @@
 //! Metadata validation functionality for leptos-next-metadata
-//! 
+//!
 //! This module provides validation for metadata to ensure it follows
 //! SEO best practices and is properly formatted.
 
@@ -10,10 +10,10 @@ use super::*;
 pub struct ValidationResult {
     /// Validation errors that should be fixed
     pub errors: Vec<ValidationError>,
-    
+
     /// Validation warnings that could be improved
     pub warnings: Vec<ValidationWarning>,
-    
+
     /// Overall validation score (0-100)
     pub score: u8,
 }
@@ -23,13 +23,13 @@ pub struct ValidationResult {
 pub struct ValidationError {
     /// Error code for programmatic handling
     pub code: ValidationErrorCode,
-    
+
     /// Human-readable error message
     pub message: String,
-    
+
     /// Field that caused the error
     pub field: Option<String>,
-    
+
     /// Suggested fix for the error
     pub suggestion: Option<String>,
 }
@@ -39,13 +39,13 @@ pub struct ValidationError {
 pub struct ValidationWarning {
     /// Warning code for programmatic handling
     pub code: ValidationWarningCode,
-    
+
     /// Human-readable warning message
     pub message: String,
-    
+
     /// Field that caused the warning
     pub field: Option<String>,
-    
+
     /// Suggested improvement
     pub suggestion: Option<String>,
 }
@@ -55,28 +55,28 @@ pub struct ValidationWarning {
 pub enum ValidationErrorCode {
     /// Missing required field
     MissingRequired,
-    
+
     /// Invalid URL format
     InvalidUrl,
-    
+
     /// Invalid email format
     InvalidEmail,
-    
+
     /// Invalid date format
     InvalidDate,
-    
+
     /// Field too long
     FieldTooLong,
-    
+
     /// Field too short
     FieldTooShort,
-    
+
     /// Invalid character in field
     InvalidCharacters,
-    
+
     /// Duplicate value
     DuplicateValue,
-    
+
     /// Invalid format
     InvalidFormat,
 }
@@ -86,16 +86,16 @@ pub enum ValidationErrorCode {
 pub enum ValidationWarningCode {
     /// Field could be optimized
     CouldOptimize,
-    
+
     /// Missing recommended field
     MissingRecommended,
-    
+
     /// Field value could be improved
     CouldImprove,
-    
+
     /// Performance consideration
     PerformanceConsideration,
-    
+
     /// Accessibility consideration
     AccessibilityConsideration,
 }
@@ -109,29 +109,37 @@ impl ValidationResult {
             score: 100,
         }
     }
-    
+}
+
+impl Default for ValidationResult {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl ValidationResult {
     /// Add an error to the validation result
     pub fn add_error(&mut self, error: ValidationError) {
         self.errors.push(error);
         self.update_score();
     }
-    
+
     /// Add a warning to the validation result
     pub fn add_warning(&mut self, warning: ValidationWarning) {
         self.warnings.push(warning);
         self.update_score();
     }
-    
+
     /// Check if validation passed (no errors)
     pub fn is_valid(&self) -> bool {
         self.errors.is_empty()
     }
-    
+
     /// Check if validation has warnings
     pub fn has_warnings(&self) -> bool {
         !self.warnings.is_empty()
     }
-    
+
     /// Get the overall validation status
     pub fn status(&self) -> ValidationStatus {
         if self.errors.is_empty() && self.warnings.is_empty() {
@@ -144,12 +152,12 @@ impl ValidationResult {
             ValidationStatus::Poor
         }
     }
-    
+
     /// Update the validation score based on errors and warnings
     fn update_score(&mut self) {
         let error_penalty = self.errors.len() * 15; // Each error costs 15 points
         let warning_penalty = self.warnings.len() * 5; // Each warning costs 5 points
-        
+
         let total_penalty = error_penalty + warning_penalty;
         self.score = if total_penalty >= 100 { 0 } else { 100 - total_penalty as u8 };
     }
@@ -160,30 +168,30 @@ impl ValidationResult {
 pub enum ValidationStatus {
     /// Perfect score (100)
     Perfect,
-    
+
     /// Good score (80-99)
     Good,
-    
+
     /// Fair score (70-79)
     Fair,
-    
+
     /// Poor score (0-69)
     Poor,
 }
 
 impl Metadata {
     /// Validate this metadata instance
-    /// 
+    ///
     /// Returns a `ValidationResult` with any issues found and an overall score.
-    /// 
+    ///
     /// # Example
-    /// 
+    ///
     /// ```rust
     /// use leptos_next_metadata::metadata::Metadata;
-    /// 
+    ///
     /// let metadata = Metadata::with_title("My Page");
     /// let result = metadata.validate();
-    /// 
+    ///
     /// if !result.is_valid() {
     ///     for error in &result.errors {
     ///         eprintln!("Error: {}", error.message);
@@ -192,42 +200,42 @@ impl Metadata {
     /// ```
     pub fn validate(&self) -> ValidationResult {
         let mut result = ValidationResult::new();
-        
+
         // Validate title
         self.validate_title(&mut result);
-        
+
         // Validate description
         self.validate_description(&mut result);
-        
+
         // Validate Open Graph
         if let Some(ref og) = self.open_graph {
             self.validate_open_graph(og, &mut result);
         }
-        
+
         // Validate Twitter
         if let Some(ref twitter) = self.twitter {
             self.validate_twitter(twitter, &mut result);
         }
-        
+
         // Validate JSON-LD
         if let Some(ref json_ld) = self.json_ld {
             self.validate_json_ld(json_ld, &mut result);
         }
-        
+
         // Validate URLs
         self.validate_urls(&mut result);
-        
+
         // Validate robots
         if let Some(ref robots) = self.robots {
             self.validate_robots(robots, &mut result);
         }
-        
+
         // Check for missing recommended fields
         self.check_missing_recommended(&mut result);
-        
+
         result
     }
-    
+
     /// Validate the title field
     fn validate_title(&self, result: &mut ValidationResult) {
         if let Some(ref title) = self.title {
@@ -285,7 +293,7 @@ impl Metadata {
             });
         }
     }
-    
+
     /// Validate the description field
     fn validate_description(&self, result: &mut ValidationResult) {
         if let Some(ref description) = self.description {
@@ -320,7 +328,7 @@ impl Metadata {
             });
         }
     }
-    
+
     /// Validate Open Graph metadata
     fn validate_open_graph(&self, og: &OpenGraph, result: &mut ValidationResult) {
         // Check for required OG fields
@@ -332,7 +340,7 @@ impl Metadata {
                 suggestion: Some("Add an Open Graph title for better social sharing".to_string()),
             });
         }
-        
+
         if og.description.is_none() {
             result.add_warning(ValidationWarning {
                 code: ValidationWarningCode::MissingRecommended,
@@ -341,7 +349,7 @@ impl Metadata {
                 suggestion: Some("Add an Open Graph description for better social sharing".to_string()),
             });
         }
-        
+
         // Validate images
         if og.images.is_empty() {
             result.add_warning(ValidationWarning {
@@ -360,7 +368,7 @@ impl Metadata {
                         suggestion: Some("Provide a valid absolute URL".to_string()),
                     });
                 }
-                
+
                 if image.width.is_none() || image.height.is_none() {
                     result.add_warning(ValidationWarning {
                         code: ValidationWarningCode::CouldImprove,
@@ -371,7 +379,7 @@ impl Metadata {
                 }
             }
         }
-        
+
         // Validate type
         if let Some(ref og_type) = og.r#type {
             let valid_types = ["website", "article", "book", "profile", "music.song", "music.album", "music.playlist", "music.radio_station", "video.movie", "video.episode", "video.tv_show", "video.other"];
@@ -385,7 +393,7 @@ impl Metadata {
             }
         }
     }
-    
+
     /// Validate Twitter metadata
     fn validate_twitter(&self, twitter: &Twitter, result: &mut ValidationResult) {
         if twitter.card.is_none() {
@@ -396,7 +404,7 @@ impl Metadata {
                 suggestion: Some("Add a Twitter card type for better Twitter sharing".to_string()),
             });
         }
-        
+
         if let Some(ref image) = twitter.image {
             if !self.is_valid_url(image) {
                 result.add_error(ValidationError {
@@ -408,7 +416,7 @@ impl Metadata {
             }
         }
     }
-    
+
     /// Validate JSON-LD structured data
     #[cfg(feature = "json-ld")]
     fn validate_json_ld(&self, json_ld: &crate::metadata::JsonLd, result: &mut ValidationResult) {
@@ -434,13 +442,13 @@ impl Metadata {
             });
         }
     }
-    
+
     /// Validate JSON-LD structured data (fallback when json-ld feature is disabled)
     #[cfg(not(feature = "json-ld"))]
     fn validate_json_ld(&self, _json_ld: &crate::metadata::JsonLd, _result: &mut ValidationResult) {
         // No validation when json-ld feature is disabled
     }
-    
+
     /// Validate URLs in the metadata
     fn validate_urls(&self, result: &mut ValidationResult) {
         if let Some(ref canonical) = self.canonical {
@@ -453,7 +461,7 @@ impl Metadata {
                 });
             }
         }
-        
+
         if let Some(ref alternates) = self.alternates {
             for (hreflang, link) in alternates {
                 if !self.is_valid_url(&link.href) {
@@ -467,7 +475,7 @@ impl Metadata {
             }
         }
     }
-    
+
     /// Validate robots directives
     fn validate_robots(&self, robots: &Robots, result: &mut ValidationResult) {
         if let Some(delay) = robots.crawl_delay {
@@ -481,7 +489,7 @@ impl Metadata {
             }
         }
     }
-    
+
     /// Check for missing recommended fields
     fn check_missing_recommended(&self, result: &mut ValidationResult) {
         if self.keywords.is_none() {
@@ -492,7 +500,7 @@ impl Metadata {
                 suggestion: Some("Add relevant keywords for better SEO".to_string()),
             });
         }
-        
+
         if self.authors.is_none() {
             result.add_warning(ValidationWarning {
                 code: ValidationWarningCode::MissingRecommended,
@@ -501,7 +509,7 @@ impl Metadata {
                 suggestion: Some("Add author information for better attribution".to_string()),
             });
         }
-        
+
         if self.viewport.is_none() {
             result.add_warning(ValidationWarning {
                 code: ValidationWarningCode::MissingRecommended,
@@ -511,7 +519,7 @@ impl Metadata {
             });
         }
     }
-    
+
     /// Check if a URL is valid
     fn is_valid_url(&self, url: &str) -> bool {
         if url.starts_with("http://") || url.starts_with("https://") {
@@ -531,7 +539,7 @@ impl MetadataValidator {
     /// Validate a title string
     pub fn validate_title(title: &str) -> Vec<ValidationWarning> {
         let mut warnings = Vec::new();
-        
+
         if title.len() < 10 {
             warnings.push(ValidationWarning {
                 code: ValidationWarningCode::CouldImprove,
@@ -540,7 +548,7 @@ impl MetadataValidator {
                 suggestion: Some("Consider making the title more descriptive (10-60 characters)".to_string()),
             });
         }
-        
+
         if title.len() > 60 {
             warnings.push(ValidationWarning {
                 code: ValidationWarningCode::CouldImprove,
@@ -549,14 +557,14 @@ impl MetadataValidator {
                 suggestion: Some("Consider shortening the title to under 60 characters".to_string()),
             });
         }
-        
+
         warnings
     }
-    
+
     /// Validate a description string
     pub fn validate_description(description: &str) -> Vec<ValidationWarning> {
         let mut warnings = Vec::new();
-        
+
         if description.len() < 50 {
             warnings.push(ValidationWarning {
                 code: ValidationWarningCode::CouldImprove,
@@ -565,7 +573,7 @@ impl MetadataValidator {
                 suggestion: Some("Consider making the description more detailed (50-160 characters)".to_string()),
             });
         }
-        
+
         if description.len() > 160 {
             warnings.push(ValidationWarning {
                 code: ValidationWarningCode::CouldImprove,
@@ -574,15 +582,15 @@ impl MetadataValidator {
                 suggestion: Some("Consider shortening the description to under 160 characters".to_string()),
             });
         }
-        
+
         warnings
     }
-    
+
     /// Validate an Open Graph image
     pub fn validate_og_image(image: &OgImage) -> Vec<ValidationError> {
         let mut errors = Vec::new();
-        
-        if !url::Url::parse(&image.url).is_ok() {
+
+        if url::Url::parse(&image.url).is_err() {
             errors.push(ValidationError {
                 code: ValidationErrorCode::InvalidUrl,
                 message: format!("Invalid Open Graph image URL: {}", image.url),
@@ -590,7 +598,7 @@ impl MetadataValidator {
                 suggestion: Some("Provide a valid absolute URL".to_string()),
             });
         }
-        
+
         if image.width.is_none() || image.height.is_none() {
             errors.push(ValidationError {
                 code: ValidationErrorCode::MissingRequired,
@@ -599,7 +607,7 @@ impl MetadataValidator {
                 suggestion: Some("Add width and height for better performance".to_string()),
             });
         }
-        
+
         errors
     }
 }
@@ -607,59 +615,59 @@ impl MetadataValidator {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_title_validation() {
         let metadata = Metadata::with_title("");
         let result = metadata.validate();
-        
+
         assert!(!result.is_valid());
         assert!(result.errors.iter().any(|e| e.field.as_ref().unwrap() == "title"));
     }
-    
+
     #[test]
     fn test_description_validation() {
         let metadata = Metadata::with_title_and_description("Title", "Short");
         let result = metadata.validate();
-        
+
         assert!(result.is_valid());
         assert!(result.has_warnings());
         assert!(result.warnings.iter().any(|w| w.field.as_ref().unwrap() == "description"));
     }
-    
+
     #[test]
     fn test_open_graph_validation() {
         let og = OpenGraph {
             images: vec![OgImage::new("invalid-url")],
             ..Default::default()
         };
-        
+
         let metadata = Metadata::default().open_graph(og);
         let result = metadata.validate();
-        
+
         assert!(!result.is_valid());
         assert!(result.errors.iter().any(|e| e.field.as_ref().unwrap().contains("openGraph.images")));
     }
-    
+
     #[test]
     fn test_validation_score() {
         let metadata = Metadata::default();
         let result = metadata.validate();
-        
+
         // Should have warnings but no errors
         assert!(result.is_valid());
         assert!(result.has_warnings());
         assert!(result.score < 100);
     }
-    
+
     #[test]
     fn test_validator_utility_functions() {
         let title_warnings = MetadataValidator::validate_title("Short");
         assert!(!title_warnings.is_empty());
-        
+
         let desc_warnings = MetadataValidator::validate_description("Short description");
         assert!(!desc_warnings.is_empty());
-        
+
         let image_errors = MetadataValidator::validate_og_image(&OgImage::new("invalid-url"));
         assert!(!image_errors.is_empty());
     }

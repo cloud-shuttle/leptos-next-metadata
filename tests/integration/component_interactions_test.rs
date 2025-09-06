@@ -3,7 +3,7 @@ use leptos_next_metadata::prelude::*;
 use leptos_meta::*;
 
 /// Integration tests for component interactions
-/// 
+///
 /// These tests verify that all our new components work together
 /// and can be used in combination without conflicts.
 mod tests {
@@ -16,18 +16,18 @@ mod tests {
             <Html lang="en" dir="ltr" />
             <Body class="dark-theme" lang="en" />
             <MetaTags />
-            <EnhancedTitle 
-                text="Integration Test Page" 
+            <EnhancedTitle
+                text="Integration Test Page"
                 template="{} | Test Site"
             />
-            <HashedStylesheet 
+            <HashedStylesheet
                 options=leptos::prelude::LeptosOptions::builder()
                     .output_name("test-app")
                     .build()
                 id="main-stylesheet"
             />
         };
-        
+
         // Test passes if all components compile together
     }
 
@@ -36,12 +36,12 @@ mod tests {
         // Test EnhancedTitle works with MetaTags for SSR
         let _app = view! {
             <MetaTags />
-            <EnhancedTitle 
-                text="SSR Test Page" 
+            <EnhancedTitle
+                text="SSR Test Page"
                 formatter=|text| format!("{} | SSR Site", text)
             />
         };
-        
+
         // Test passes if components work together
     }
 
@@ -49,20 +49,20 @@ mod tests {
     fn test_html_body_attributes_together() {
         // Test Html and Body components with various attributes
         let _app = view! {
-            <Html 
-                lang="en" 
-                dir="ltr" 
+            <Html
+                lang="en"
+                dir="ltr"
                 data-theme="dark"
                 id="main-html"
             />
-            <Body 
-                class="dark-theme" 
-                lang="en" 
+            <Body
+                class="dark-theme"
+                lang="en"
                 dir="ltr"
                 id="main-body"
             />
         };
-        
+
         // Test passes if both components work with attributes
     }
 
@@ -73,19 +73,19 @@ mod tests {
             .output_name("test-app")
             .hash_files(true)
             .build();
-            
+
         let _app = view! {
-            <HashedStylesheet 
+            <HashedStylesheet
                 options=options
                 id="main-stylesheet"
                 root="/assets"
             />
-            <EnhancedTitle 
-                text="Styled Page" 
+            <EnhancedTitle
+                text="Styled Page"
                 suffix="| Styled Site"
             />
         };
-        
+
         // Test passes if components work together
     }
 
@@ -96,18 +96,18 @@ mod tests {
             <Html lang="en" />
             <Body class="app-body" />
             <MetaTags />
-            <EnhancedTitle 
-                text="Complete Test Page" 
+            <EnhancedTitle
+                text="Complete Test Page"
                 prefix="Welcome to"
                 suffix="| Complete Site"
             />
-            <HashedStylesheet 
+            <HashedStylesheet
                 options=leptos::prelude::LeptosOptions::builder()
                     .output_name("complete-app")
                     .build()
             />
         };
-        
+
         // Test passes if all components work together
     }
 
@@ -115,17 +115,17 @@ mod tests {
     fn test_dynamic_title_with_static_components() {
         // Test dynamic EnhancedTitle with static components
         let dynamic_title = "Dynamic Page Title".to_string();
-        
+
         let _app = view! {
             <Html lang="en" />
             <Body class="dynamic-body" />
             <MetaTags />
-            <EnhancedTitle 
+            <EnhancedTitle
                 text=dynamic_title
                 formatter=|text| format!("{} | Dynamic Site", text)
             />
         };
-        
+
         // Test passes if dynamic title works with static components
     }
 
@@ -136,14 +136,14 @@ mod tests {
             <Html lang="en" dir="ltr" />
             <Body class="priority-test" lang="en" />
             <MetaTags />
-            <EnhancedTitle 
-                text="Priority Test" 
+            <EnhancedTitle
+                text="Priority Test"
                 formatter=|text| format!("{} | Priority Site", text)
                 template="{} | Template Site"
                 prefix="Welcome to"
                 suffix="| Suffix Site"
             />
-            <HashedStylesheet 
+            <HashedStylesheet
                 options=leptos::prelude::LeptosOptions::builder()
                     .output_name("priority-app")
                     .build()
@@ -151,7 +151,7 @@ mod tests {
                 root="/priority-assets"
             />
         };
-        
+
         // Test passes if all components work without conflicts
     }
 
@@ -162,12 +162,12 @@ mod tests {
             <Html lang="en" />
             <Body class="ssr-body" />
             <MetaTags />
-            <EnhancedTitle 
-                text="SSR Page" 
+            <EnhancedTitle
+                text="SSR Page"
                 template="{} | SSR Site"
             />
         };
-        
+
         // Test passes if SSR components work together
     }
 
@@ -177,17 +177,17 @@ mod tests {
         let _app = view! {
             <Html lang="en" />
             <Body class="csr-body" />
-            <EnhancedTitle 
-                text="CSR Page" 
+            <EnhancedTitle
+                text="CSR Page"
                 formatter=|text| format!("{} | CSR Site", text)
             />
-            <HashedStylesheet 
+            <HashedStylesheet
                 options=leptos::prelude::LeptosOptions::builder()
                     .output_name("csr-app")
                     .build()
             />
         };
-        
+
         // Test passes if CSR components work together
     }
 
@@ -195,17 +195,17 @@ mod tests {
     fn test_component_error_handling() {
         // Test that components handle errors gracefully
         let empty_title = "".to_string();
-        
+
         let _app = view! {
             <Html lang="en" />
             <Body class="error-test" />
             <MetaTags />
-            <EnhancedTitle 
+            <EnhancedTitle
                 text=empty_title
                 template="{} | Error Site"
             />
         };
-        
+
         // Test passes if components handle empty values gracefully
     }
 
@@ -216,17 +216,17 @@ mod tests {
             <Html lang="en" />
             <Body class="performance-test" />
             <MetaTags />
-            <EnhancedTitle 
-                text="Performance Test Page" 
+            <EnhancedTitle
+                text="Performance Test Page"
                 formatter=|text| format!("{} | Performance Site", text)
             />
-            <HashedStylesheet 
+            <HashedStylesheet
                 options=leptos::prelude::LeptosOptions::builder()
                     .output_name("performance-app")
                     .build()
             />
         };
-        
+
         // Test passes if components compile efficiently
     }
 }

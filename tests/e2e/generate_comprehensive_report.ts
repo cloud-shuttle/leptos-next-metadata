@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import { chromium, firefox, webkit } from '@playwright/test';
-import { writeFileSync, mkdirSync } from 'fs';
-import { join } from 'path';
-import { execSync } from 'child_process';
+import { chromium, firefox, webkit } from "@playwright/test";
+import { writeFileSync, mkdirSync } from "fs";
+import { join } from "path";
+import { execSync } from "child_process";
 
 interface TestResult {
   browser: string;
@@ -36,43 +36,45 @@ interface ComprehensiveReport {
 
 class ComprehensiveReportGenerator {
   private results: TestResult[] = [];
-  private reportDir = 'reports';
+  private reportDir = "reports";
 
   constructor() {
     // Ensure reports directory exists
-    if (!require('fs').existsSync(this.reportDir)) {
+    if (!require("fs").existsSync(this.reportDir)) {
       mkdirSync(this.reportDir, { recursive: true });
     }
   }
 
   async generateReport(): Promise<void> {
-    console.log('🚀 Starting comprehensive metadata testing and reporting...\n');
+    console.log(
+      "🚀 Starting comprehensive metadata testing and reporting...\n",
+    );
 
     const browsers = [
-      { name: 'CHROMIUM', launcher: chromium },
-      { name: 'FIREFOX', launcher: firefox },
-      { name: 'WEBKIT', launcher: webkit }
+      { name: "CHROMIUM", launcher: chromium },
+      { name: "FIREFOX", launcher: firefox },
+      { name: "WEBKIT", launcher: webkit },
     ];
 
     // Only test files that actually exist and work
     const testSuites = [
-      'real_metadata_validation',
-      'cross_browser_metadata',
-      'tdd_basic_infrastructure',
-      'tdd_report_generator',
-      'tdd_edge_cases',
-      'tdd_error_conditions',
-      'tdd_performance_stress'
+      "real_metadata_validation",
+      "cross_browser_metadata",
+      "tdd_basic_infrastructure",
+      "tdd_report_generator",
+      "tdd_edge_cases",
+      "tdd_error_conditions",
+      "tdd_performance_stress",
     ];
 
     for (const browser of browsers) {
       console.log(`🌐 Testing in ${browser.name}...`);
-      
+
       for (const testSuite of testSuites) {
         console.log(`  📝 Running ${testSuite}...`);
         const result = await this.runPlaywrightTest(testSuite, browser.name);
         this.results.push(result);
-        
+
         if (result.failed === 0) {
           console.log(`    ✅ All tests passed`);
         } else {
@@ -84,31 +86,34 @@ class ComprehensiveReportGenerator {
     // Generate comprehensive report
     const report = this.generateComprehensiveReport();
     this.saveReports(report);
-    
+
     // Print summary
     this.printSummary(report);
   }
 
-  private async runPlaywrightTest(testSuite: string, browserName: string): Promise<TestResult> {
+  private async runPlaywrightTest(
+    testSuite: string,
+    browserName: string,
+  ): Promise<TestResult> {
     try {
       // Run the actual Playwright test
       const command = `npx playwright test tests/e2e/${testSuite}.spec.ts --project=${browserName.toLowerCase()} --reporter=json`;
       console.log(`    Running: ${command}`);
-      
-      const output = execSync(command, { 
-        encoding: 'utf8',
+
+      const output = execSync(command, {
+        encoding: "utf8",
         cwd: process.cwd(),
-        timeout: 120000 // 2 minute timeout
+        timeout: 120000, // 2 minute timeout
       });
 
       // Parse the JSON output - look for the last valid JSON line
-      const lines = output.trim().split('\n');
-      let jsonLine = '';
-      
+      const lines = output.trim().split("\n");
+      let jsonLine = "";
+
       // Find the last line that starts with '{' and contains valid JSON
       for (let i = lines.length - 1; i >= 0; i--) {
         const line = lines[i].trim();
-        if (line.startsWith('{') && line.endsWith('}')) {
+        if (line.startsWith("{") && line.endsWith("}")) {
           try {
             JSON.parse(line);
             jsonLine = line;
@@ -118,16 +123,19 @@ class ComprehensiveReportGenerator {
           }
         }
       }
-      
+
       if (jsonLine) {
         const testResult = JSON.parse(jsonLine);
         return this.parseTestOutput(testResult, testSuite, browserName);
       } else {
-        throw new Error('No valid JSON output found in test results');
+        throw new Error("No valid JSON output found in test results");
       }
     } catch (error: any) {
-      console.error(`    Error running ${testSuite} for ${browserName}:`, error.message);
-      
+      console.error(
+        `    Error running ${testSuite} for ${browserName}:`,
+        error.message,
+      );
+
       // Return error result
       return {
         browser: browserName,
@@ -137,18 +145,22 @@ class ComprehensiveReportGenerator {
         skipped: 0,
         duration: 0,
         successRate: 0,
-        errors: [error.message]
+        errors: [error.message],
       };
     }
   }
 
-  private parseTestOutput(output: any, testSuite: string, browserName: string): TestResult {
+  private parseTestOutput(
+    output: any,
+    testSuite: string,
+    browserName: string,
+  ): TestResult {
     const stats = output.stats || {};
     const passed = stats.passed || 0;
     const failed = stats.failed || 0;
     const skipped = stats.skipped || 0;
     const duration = stats.duration || 0;
-    
+
     return {
       browser: browserName,
       testSuite,
@@ -156,13 +168,19 @@ class ComprehensiveReportGenerator {
       failed,
       skipped,
       duration,
-      successRate: passed + failed + skipped > 0 ? (passed / (passed + failed + skipped)) * 100 : 0,
-      errors: output.errors || []
+      successRate:
+        passed + failed + skipped > 0
+          ? (passed / (passed + failed + skipped)) * 100
+          : 0,
+      errors: output.errors || [],
     };
   }
 
   private generateComprehensiveReport(): ComprehensiveReport {
-    const totalTests = this.results.reduce((sum, r) => sum + r.passed + r.failed + r.skipped, 0);
+    const totalTests = this.results.reduce(
+      (sum, r) => sum + r.passed + r.failed + r.skipped,
+      0,
+    );
     const totalPassed = this.results.reduce((sum, r) => sum + r.passed, 0);
     const totalFailed = this.results.reduce((sum, r) => sum + r.failed, 0);
     const totalSkipped = this.results.reduce((sum, r) => sum + r.skipped, 0);
@@ -170,7 +188,7 @@ class ComprehensiveReportGenerator {
 
     // Group results by browser
     const browserResults: { [browser: string]: TestResult[] } = {};
-    this.results.forEach(result => {
+    this.results.forEach((result) => {
       if (!browserResults[result.browser]) {
         browserResults[result.browser] = [];
       }
@@ -179,10 +197,18 @@ class ComprehensiveReportGenerator {
 
     // Determine metadata validation status based on test results
     const metadataValidation = {
-      seo: this.results.some(r => r.testSuite === 'real_metadata_validation' && r.failed === 0),
-      openGraph: this.results.some(r => r.testSuite === 'real_metadata_validation' && r.failed === 0),
-      twitter: this.results.some(r => r.testSuite === 'real_metadata_validation' && r.failed === 0),
-      jsonLd: this.results.some(r => r.testSuite === 'real_metadata_validation' && r.failed === 0)
+      seo: this.results.some(
+        (r) => r.testSuite === "real_metadata_validation" && r.failed === 0,
+      ),
+      openGraph: this.results.some(
+        (r) => r.testSuite === "real_metadata_validation" && r.failed === 0,
+      ),
+      twitter: this.results.some(
+        (r) => r.testSuite === "real_metadata_validation" && r.failed === 0,
+      ),
+      jsonLd: this.results.some(
+        (r) => r.testSuite === "real_metadata_validation" && r.failed === 0,
+      ),
     };
 
     return {
@@ -192,25 +218,34 @@ class ComprehensiveReportGenerator {
         totalFailed,
         totalSkipped,
         successRate: totalTests > 0 ? (totalPassed / totalTests) * 100 : 0,
-        totalDuration
+        totalDuration,
       },
       browserResults,
-      metadataValidation
+      metadataValidation,
     };
   }
 
   private saveReports(report: ComprehensiveReport): void {
     // Save HTML report
     const htmlReport = this.generateHTMLReport(report);
-    writeFileSync(join(this.reportDir, 'comprehensive-metadata-report.html'), htmlReport);
+    writeFileSync(
+      join(this.reportDir, "comprehensive-metadata-report.html"),
+      htmlReport,
+    );
 
     // Save JSON report
     const jsonReport = JSON.stringify(report, null, 2);
-    writeFileSync(join(this.reportDir, 'comprehensive-metadata-report.json'), jsonReport);
+    writeFileSync(
+      join(this.reportDir, "comprehensive-metadata-report.json"),
+      jsonReport,
+    );
 
     // Save Markdown report
     const markdownReport = this.generateMarkdownReport(report);
-    writeFileSync(join(this.reportDir, 'comprehensive-metadata-report.md'), markdownReport);
+    writeFileSync(
+      join(this.reportDir, "comprehensive-metadata-report.md"),
+      markdownReport,
+    );
   }
 
   private generateHTMLReport(report: ComprehensiveReport): string {
@@ -243,7 +278,7 @@ class ComprehensiveReportGenerator {
             <h1>🚀 Comprehensive Metadata Test Report</h1>
             <p>Generated on ${new Date().toLocaleString()}</p>
         </div>
-        
+
         <div class="summary">
             <h2>📊 Test Summary</h2>
             <div class="stats">
@@ -252,15 +287,21 @@ class ComprehensiveReportGenerator {
                     <div>Total Tests</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number success-rate">${report.summary.totalPassed}</div>
+                    <div class="stat-number success-rate">${
+                      report.summary.totalPassed
+                    }</div>
                     <div>Passed</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number failure-rate">${report.summary.totalFailed}</div>
+                    <div class="stat-number failure-rate">${
+                      report.summary.totalFailed
+                    }</div>
                     <div>Failed</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">${report.summary.successRate.toFixed(1)}%</div>
+                    <div class="stat-number">${report.summary.successRate.toFixed(
+                      1,
+                    )}%</div>
                     <div>Success Rate</div>
                 </div>
             </div>
@@ -268,37 +309,71 @@ class ComprehensiveReportGenerator {
 
         <div class="browser-results">
             <h2>🌐 Browser Results</h2>
-            ${Object.entries(report.browserResults).map(([browser, results]) => `
+            ${Object.entries(report.browserResults)
+              .map(
+                ([browser, results]) => `
                 <div class="browser-section">
                     <h3>${browser}</h3>
-                    ${results.map(result => `
-                        <div class="test-suite ${result.failed === 0 ? 'success' : 'failure'}">
+                    ${results
+                      .map(
+                        (result) => `
+                        <div class="test-suite ${
+                          result.failed === 0 ? "success" : "failure"
+                        }">
                             <strong>${result.testSuite}</strong><br>
-                            ✅ ${result.passed} passed | ❌ ${result.failed} failed | ⏭️ ${result.skipped} skipped<br>
-                            <small>Duration: ${result.duration}ms | Success Rate: ${result.successRate.toFixed(1)}%</small>
+                            ✅ ${result.passed} passed | ❌ ${
+                              result.failed
+                            } failed | ⏭️ ${result.skipped} skipped<br>
+                            <small>Duration: ${
+                              result.duration
+                            }ms | Success Rate: ${result.successRate.toFixed(
+                              1,
+                            )}%</small>
                         </div>
-                    `).join('')}
+                    `,
+                      )
+                      .join("")}
                 </div>
-            `).join('')}
+            `,
+              )
+              .join("")}
         </div>
 
         <div class="metadata-validation">
             <h2>🔍 Metadata Validation Status</h2>
             <div class="stats">
                 <div class="stat-card">
-                    <div class="stat-number ${report.metadataValidation.seo ? 'success-rate' : 'failure-rate'}">${report.metadataValidation.seo ? '✅' : '❌'}</div>
+                    <div class="stat-number ${
+                      report.metadataValidation.seo
+                        ? "success-rate"
+                        : "failure-rate"
+                    }">${report.metadataValidation.seo ? "✅" : "❌"}</div>
                     <div>SEO</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number ${report.metadataValidation.openGraph ? 'success-rate' : 'failure-rate'}">${report.metadataValidation.openGraph ? '✅' : '❌'}</div>
+                    <div class="stat-number ${
+                      report.metadataValidation.openGraph
+                        ? "success-rate"
+                        : "failure-rate"
+                    }">${
+                      report.metadataValidation.openGraph ? "✅" : "❌"
+                    }</div>
                     <div>OpenGraph</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number ${report.metadataValidation.twitter ? 'success-rate' : 'failure-rate'}">${report.metadataValidation.twitter ? '✅' : '❌'}</div>
+                    <div class="stat-number ${
+                      report.metadataValidation.twitter
+                        ? "success-rate"
+                        : "failure-rate"
+                    }">${report.metadataValidation.twitter ? "✅" : "❌"}</div>
                     <div>Twitter</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number ${report.metadataValidation.jsonLd ? 'success-rate' : 'failure-rate'}">${report.metadataValidation.jsonLd ? '✅' : '❌'}</div>
+                    <div class="stat-number ${
+                      report.metadataValidation.jsonLd
+                        ? "success-rate"
+                        : "failure-rate"
+                    }">${report.metadataValidation.jsonLd ? "✅" : "❌"}</div>
                     <div>JSON-LD</div>
                 </div>
             </div>
@@ -324,29 +399,39 @@ Generated on ${new Date().toLocaleString()}
 
 ## 🌐 Browser Results
 
-${Object.entries(report.browserResults).map(([browser, results]) => `
+${Object.entries(report.browserResults)
+  .map(
+    ([browser, results]) => `
 ### ${browser}
 
-${results.map(result => `
+${results
+  .map(
+    (result) => `
 - **${result.testSuite}**
-  - ✅ ${result.passed} passed | ❌ ${result.failed} failed | ⏭️ ${result.skipped} skipped
+  - ✅ ${result.passed} passed | ❌ ${result.failed} failed | ⏭️ ${
+    result.skipped
+  } skipped
   - Duration: ${result.duration}ms
   - Success Rate: ${result.successRate.toFixed(1)}%
-`).join('')}
-`).join('')}
+`,
+  )
+  .join("")}
+`,
+  )
+  .join("")}
 
 ## 🔍 Metadata Validation Status
 
-- **SEO**: ${report.metadataValidation.seo ? '✅' : '❌'}
-- **OpenGraph**: ${report.metadataValidation.openGraph ? '✅' : '❌'}
-- **Twitter**: ${report.metadataValidation.twitter ? '✅' : '❌'}
-- **JSON-LD**: ${report.metadataValidation.jsonLd ? '✅' : '❌'}
+- **SEO**: ${report.metadataValidation.seo ? "✅" : "❌"}
+- **OpenGraph**: ${report.metadataValidation.openGraph ? "✅" : "❌"}
+- **Twitter**: ${report.metadataValidation.twitter ? "✅" : "❌"}
+- **JSON-LD**: ${report.metadataValidation.jsonLd ? "✅" : "❌"}
 `;
   }
 
   private printSummary(report: ComprehensiveReport): void {
-    console.log('\n📊 COMPREHENSIVE TEST SUMMARY');
-    console.log('==============================');
+    console.log("\n📊 COMPREHENSIVE TEST SUMMARY");
+    console.log("==============================");
     console.log(`Total Tests: ${report.summary.totalTests}`);
     console.log(`Passed: ${report.summary.totalPassed} ✅`);
     console.log(`Failed: ${report.summary.totalFailed} ❌`);
@@ -354,28 +439,39 @@ ${results.map(result => `
     console.log(`Success Rate: ${report.summary.successRate.toFixed(1)}%`);
     console.log(`Total Duration: ${report.summary.totalDuration}ms\n`);
 
-    console.log('🌐 BROWSER RESULTS');
-    console.log('==================');
+    console.log("🌐 BROWSER RESULTS");
+    console.log("==================");
     Object.entries(report.browserResults).forEach(([browser, results]) => {
-      const totalTests = results.reduce((sum, r) => sum + r.passed + r.failed + r.skipped, 0);
+      const totalTests = results.reduce(
+        (sum, r) => sum + r.passed + r.failed + r.skipped,
+        0,
+      );
       const totalPassed = results.reduce((sum, r) => sum + r.passed, 0);
       const successRate = totalTests > 0 ? (totalPassed / totalTests) * 100 : 0;
-      console.log(`${browser}: ${totalPassed}/${totalTests} passed (${successRate.toFixed(1)}%)`);
+      console.log(
+        `${browser}: ${totalPassed}/${totalTests} passed (${successRate.toFixed(
+          1,
+        )}%)`,
+      );
     });
 
-    console.log('\n🔍 METADATA VALIDATION');
-    console.log('======================');
-    console.log(`SEO: ${report.metadataValidation.seo ? '✅' : '❌'}`);
-    console.log(`OpenGraph: ${report.metadataValidation.openGraph ? '✅' : '❌'}`);
-    console.log(`Twitter: ${report.metadataValidation.twitter ? '✅' : '❌'}`);
-    console.log(`JSON-LD: ${report.metadataValidation.jsonLd ? '✅' : '❌'}`);
+    console.log("\n🔍 METADATA VALIDATION");
+    console.log("======================");
+    console.log(`SEO: ${report.metadataValidation.seo ? "✅" : "❌"}`);
+    console.log(
+      `OpenGraph: ${report.metadataValidation.openGraph ? "✅" : "❌"}`,
+    );
+    console.log(`Twitter: ${report.metadataValidation.twitter ? "✅" : "❌"}`);
+    console.log(`JSON-LD: ${report.metadataValidation.jsonLd ? "✅" : "❌"}`);
 
-    console.log('\n📁 Reports saved to:');
+    console.log("\n📁 Reports saved to:");
     console.log(`  - ${this.reportDir}/comprehensive-metadata-report.html`);
     console.log(`  - ${this.reportDir}/comprehensive-metadata-report.json`);
     console.log(`  - ${this.reportDir}/comprehensive-metadata-report.md`);
 
-    console.log('\n✅ Comprehensive report generated! Check the reports directory for details.');
+    console.log(
+      "\n✅ Comprehensive report generated! Check the reports directory for details.",
+    );
   }
 }
 

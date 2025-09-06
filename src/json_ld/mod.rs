@@ -1,5 +1,5 @@
 //! JSON-LD structured data for leptos-next-metadata
-//! 
+//!
 //! This module provides type-safe JSON-LD generation for Schema.org types,
 //! enabling rich snippets and better search engine understanding.
 
@@ -19,28 +19,28 @@ pub type JsonLd = serde_json::Value;
 pub enum SchemaOrg {
     /// Web page
     WebPage(WebPage),
-    
+
     /// Article
     Article(Article),
-    
+
     /// Blog post
     BlogPosting(BlogPosting),
-    
+
     /// Product
     Product(Product),
-    
+
     /// Organization
     Organization(Organization),
-    
+
     /// Person
     Person(Person),
-    
+
     /// FAQ page
     FAQPage(FAQPage),
-    
+
     /// Breadcrumb list
     BreadcrumbList(BreadcrumbList),
-    
+
     /// Custom/raw value
     Custom(serde_json::Value),
 }
@@ -51,14 +51,14 @@ pub enum SchemaOrg {
 pub struct WebPage {
     #[serde(rename = "@context")]
     pub context: Option<String>,
-    
+
     #[serde(rename = "@type")]
     pub type_: Option<String>,
-    
+
     pub name: Option<String>,
     pub description: Option<String>,
     pub url: Option<String>,
-    
+
     #[serde(flatten)]
     pub additional: HashMap<String, serde_json::Value>,
 }
@@ -69,10 +69,10 @@ pub struct WebPage {
 pub struct Article {
     #[serde(rename = "@context")]
     pub context: Option<String>,
-    
+
     #[serde(rename = "@type")]
     pub type_: Option<String>,
-    
+
     pub headline: Option<String>,
     pub description: Option<String>,
     pub author: Option<serde_json::Value>,
@@ -82,7 +82,7 @@ pub struct Article {
     pub date_modified: Option<String>,
     pub image: Option<serde_json::Value>,
     pub url: Option<String>,
-    
+
     #[serde(flatten)]
     pub additional: HashMap<String, serde_json::Value>,
 }
@@ -93,10 +93,10 @@ pub struct Article {
 pub struct BlogPosting {
     #[serde(rename = "@context")]
     pub context: Option<String>,
-    
+
     #[serde(rename = "@type")]
     pub type_: Option<String>,
-    
+
     pub headline: Option<String>,
     pub description: Option<String>,
     pub author: Option<serde_json::Value>,
@@ -108,7 +108,7 @@ pub struct BlogPosting {
     pub url: Option<String>,
     #[serde(rename = "wordCount")]
     pub word_count: Option<i32>,
-    
+
     #[serde(flatten)]
     pub additional: HashMap<String, serde_json::Value>,
 }
@@ -119,10 +119,10 @@ pub struct BlogPosting {
 pub struct Product {
     #[serde(rename = "@context")]
     pub context: Option<String>,
-    
+
     #[serde(rename = "@type")]
     pub type_: Option<String>,
-    
+
     pub name: Option<String>,
     pub description: Option<String>,
     pub image: Option<serde_json::Value>,
@@ -130,7 +130,7 @@ pub struct Product {
     pub offers: Option<serde_json::Value>,
     #[serde(rename = "aggregateRating")]
     pub aggregate_rating: Option<serde_json::Value>,
-    
+
     #[serde(flatten)]
     pub additional: HashMap<String, serde_json::Value>,
 }
@@ -141,10 +141,10 @@ pub struct Product {
 pub struct Organization {
     #[serde(rename = "@context")]
     pub context: Option<String>,
-    
+
     #[serde(rename = "@type")]
     pub type_: Option<String>,
-    
+
     pub name: Option<String>,
     pub url: Option<String>,
     pub logo: Option<serde_json::Value>,
@@ -152,7 +152,7 @@ pub struct Organization {
     pub same_as: Option<Vec<String>>,
     #[serde(rename = "contactPoint")]
     pub contact_point: Option<serde_json::Value>,
-    
+
     #[serde(flatten)]
     pub additional: HashMap<String, serde_json::Value>,
 }
@@ -163,10 +163,10 @@ pub struct Organization {
 pub struct Person {
     #[serde(rename = "@context")]
     pub context: Option<String>,
-    
+
     #[serde(rename = "@type")]
     pub type_: Option<String>,
-    
+
     pub name: Option<String>,
     pub url: Option<String>,
     pub image: Option<serde_json::Value>,
@@ -176,7 +176,7 @@ pub struct Person {
     pub job_title: Option<String>,
     #[serde(rename = "worksFor")]
     pub works_for: Option<serde_json::Value>,
-    
+
     #[serde(flatten)]
     pub additional: HashMap<String, serde_json::Value>,
 }
@@ -187,13 +187,13 @@ pub struct Person {
 pub struct FAQPage {
     #[serde(rename = "@context")]
     pub context: Option<String>,
-    
+
     #[serde(rename = "@type")]
     pub type_: Option<String>,
-    
+
     #[serde(rename = "mainEntity")]
     pub main_entity: Option<Vec<Question>>,
-    
+
     #[serde(flatten)]
     pub additional: HashMap<String, serde_json::Value>,
 }
@@ -204,11 +204,11 @@ pub struct FAQPage {
 pub struct Question {
     #[serde(rename = "@type")]
     pub type_: Option<String>,
-    
+
     pub name: Option<String>,
     #[serde(rename = "acceptedAnswer")]
     pub accepted_answer: Option<Answer>,
-    
+
     #[serde(flatten)]
     pub additional: HashMap<String, serde_json::Value>,
 }
@@ -219,9 +219,9 @@ pub struct Question {
 pub struct Answer {
     #[serde(rename = "@type")]
     pub type_: Option<String>,
-    
+
     pub text: Option<String>,
-    
+
     #[serde(flatten)]
     pub additional: HashMap<String, serde_json::Value>,
 }
@@ -232,13 +232,13 @@ pub struct Answer {
 pub struct BreadcrumbList {
     #[serde(rename = "@context")]
     pub context: Option<String>,
-    
+
     #[serde(rename = "@type")]
     pub type_: Option<String>,
-    
+
     #[serde(rename = "itemListElement")]
     pub item_list_element: Option<Vec<ListItem>>,
-    
+
     #[serde(flatten)]
     pub additional: HashMap<String, serde_json::Value>,
 }
@@ -249,11 +249,11 @@ pub struct BreadcrumbList {
 pub struct ListItem {
     #[serde(rename = "@type")]
     pub type_: Option<String>,
-    
+
     pub position: Option<i32>,
     pub name: Option<String>,
     pub item: Option<String>,
-    
+
     #[serde(flatten)]
     pub additional: HashMap<String, serde_json::Value>,
 }
@@ -265,7 +265,7 @@ impl SchemaOrg {
         serde_json::to_value(self)
             .map_err(|e| crate::Error::SerializationError(e.to_string()))
     }
-    
+
     /// Create a web page schema
     pub fn web_page(name: &str, description: Option<&str>, url: Option<&str>) -> Self {
         SchemaOrg::WebPage(WebPage {
@@ -277,7 +277,7 @@ impl SchemaOrg {
             additional: HashMap::new(),
         })
     }
-    
+
     /// Create an article schema
     pub fn article(
         headline: &str,
@@ -289,7 +289,7 @@ impl SchemaOrg {
             "@type": "Person",
             "name": author
         });
-        
+
         SchemaOrg::Article(Article {
             context: Some("https://schema.org".to_string()),
             type_: Some("Article".to_string()),
@@ -300,7 +300,7 @@ impl SchemaOrg {
             ..Default::default()
         })
     }
-    
+
     /// Create an organization schema
     pub fn organization(name: &str, url: Option<&str>, logo: Option<&str>) -> Self {
         SchemaOrg::Organization(Organization {
@@ -314,7 +314,7 @@ impl SchemaOrg {
             additional: HashMap::new(),
         })
     }
-    
+
     /// Create a person schema
     pub fn person(name: &str, job_title: Option<&str>, url: Option<&str>) -> Self {
         SchemaOrg::Person(Person {
@@ -329,7 +329,7 @@ impl SchemaOrg {
             additional: HashMap::new(),
         })
     }
-    
+
     /// Create an FAQ page schema
     pub fn faq_page(questions: &[(&str, &str)]) -> Self {
         let main_entity: Vec<Question> = questions
@@ -345,7 +345,7 @@ impl SchemaOrg {
                 ..Default::default()
             })
             .collect();
-        
+
         SchemaOrg::FAQPage(FAQPage {
             context: Some("https://schema.org".to_string()),
             type_: Some("FAQPage".to_string()),
@@ -353,7 +353,7 @@ impl SchemaOrg {
             additional: HashMap::new(),
         })
     }
-    
+
     /// Create breadcrumb navigation
     pub fn breadcrumbs(items: &[(&str, &str)]) -> Self {
         let item_list: Vec<ListItem> = items
@@ -367,7 +367,7 @@ impl SchemaOrg {
                 ..Default::default()
             })
             .collect();
-        
+
         SchemaOrg::BreadcrumbList(BreadcrumbList {
             context: Some("https://schema.org".to_string()),
             type_: Some("BreadcrumbList".to_string()),
@@ -380,70 +380,70 @@ impl SchemaOrg {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn test_web_page_schema() {
         let schema = SchemaOrg::web_page("Test Page", Some("Test Description"), Some("https://example.com"));
         let json_ld = schema.to_json_ld().unwrap();
-        
+
         assert_eq!(json_ld.get("@context").and_then(|v| v.as_str()), Some("https://schema.org"));
         assert_eq!(json_ld.get("@type").and_then(|v| v.as_str()), Some("WebPage"));
         assert_eq!(json_ld.get("name").and_then(|v| v.as_str()), Some("Test Page"));
         assert_eq!(json_ld.get("description").and_then(|v| v.as_str()), Some("Test Description"));
         assert_eq!(json_ld.get("url").and_then(|v| v.as_str()), Some("https://example.com"));
     }
-    
+
     #[test]
     fn test_article_schema() {
         let schema = SchemaOrg::article("Test Article", "Test Author", "2023-01-01", Some("Test Description"));
         let json_ld = schema.to_json_ld().unwrap();
-        
+
         assert_eq!(json_ld.get("@context").and_then(|v| v.as_str()), Some("https://schema.org"));
         assert_eq!(json_ld.get("@type").and_then(|v| v.as_str()), Some("Article"));
         assert_eq!(json_ld.get("headline").and_then(|v| v.as_str()), Some("Test Article"));
         assert_eq!(json_ld.get("datePublished").and_then(|v| v.as_str()), Some("2023-01-01"));
         assert_eq!(json_ld.get("description").and_then(|v| v.as_str()), Some("Test Description"));
     }
-    
+
     #[test]
     fn test_organization_schema() {
         let schema = SchemaOrg::organization("Test Corp", Some("https://example.com"), Some("https://example.com/logo.png"));
         let json_ld = schema.to_json_ld().unwrap();
-        
+
         assert_eq!(json_ld.get("@context").and_then(|v| v.as_str()), Some("https://schema.org"));
         assert_eq!(json_ld.get("@type").and_then(|v| v.as_str()), Some("Organization"));
         assert_eq!(json_ld.get("name").and_then(|v| v.as_str()), Some("Test Corp"));
         assert_eq!(json_ld.get("url").and_then(|v| v.as_str()), Some("https://example.com"));
         assert_eq!(json_ld.get("logo").and_then(|v| v.as_str()), Some("https://example.com/logo.png"));
     }
-    
+
     #[test]
     fn test_person_schema() {
         let schema = SchemaOrg::person("Jane Smith", Some("Software Engineer"), Some("https://example.com/jane"));
         let json_ld = schema.to_json_ld().unwrap();
-        
+
         assert_eq!(json_ld.get("@context").and_then(|v| v.as_str()), Some("https://schema.org"));
         assert_eq!(json_ld.get("@type").and_then(|v| v.as_str()), Some("Person"));
         assert_eq!(json_ld.get("name").and_then(|v| v.as_str()), Some("Jane Smith"));
         assert_eq!(json_ld.get("jobTitle").and_then(|v| v.as_str()), Some("Software Engineer"));
         assert_eq!(json_ld.get("url").and_then(|v| v.as_str()), Some("https://example.com/jane"));
     }
-    
+
     #[test]
     fn test_faq_page_schema() {
         let questions = [
             ("What is this?", "This is a test question"),
             ("How does it work?", "It works by testing"),
         ];
-        
+
         let schema = SchemaOrg::faq_page(&questions);
         let json_ld = schema.to_json_ld().unwrap();
-        
+
         assert_eq!(json_ld.get("@context").and_then(|v| v.as_str()), Some("https://schema.org"));
         assert_eq!(json_ld.get("@type").and_then(|v| v.as_str()), Some("FAQPage"));
         assert!(json_ld.get("mainEntity").is_some());
     }
-    
+
     #[test]
     fn test_breadcrumbs_schema() {
         let items = [
@@ -451,15 +451,15 @@ mod tests {
             ("About", "/about"),
             ("Contact", "/contact"),
         ];
-        
+
         let schema = SchemaOrg::breadcrumbs(&items);
         let json_ld = schema.to_json_ld().unwrap();
-        
+
         assert_eq!(json_ld.get("@context").and_then(|v| v.as_str()), Some("https://schema.org"));
         assert_eq!(json_ld.get("@type").and_then(|v| v.as_str()), Some("BreadcrumbList"));
         assert!(json_ld.get("itemListElement").is_some());
     }
-    
+
     #[test]
     fn test_all_schema_variants() {
         let web_page = SchemaOrg::web_page("Test", None, None);
@@ -468,7 +468,7 @@ mod tests {
         let person = SchemaOrg::person("Test Person", None, None);
         let faq = SchemaOrg::faq_page(&[("Q", "A")]);
         let breadcrumbs = SchemaOrg::breadcrumbs(&[("Home", "/")]);
-        
+
         // Test that all variants can be created and converted to JSON-LD
         assert!(web_page.to_json_ld().is_ok());
         assert!(article.to_json_ld().is_ok());

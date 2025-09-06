@@ -18,23 +18,27 @@ This guide will help you set up the development environment for `leptos-next-met
 ## 🐧 Prerequisites
 
 ### Required
+
 - **Nix** (with flakes support)
 - **Git**
 - **Rust 1.75+** (for async traits and modern language features)
 
 ### Optional
+
 - **VS Code** with Rust and TypeScript extensions
 - **Just** command runner (included in Nix shell)
 
 ## 🚀 Quick Start
 
 ### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/cloud-shuttle/leptos-next-metadata.git
 cd leptos-next-metadata
 ```
 
 ### 2. Enter the Development Environment
+
 ```bash
 # Using Nix flakes (recommended)
 nix develop
@@ -44,6 +48,7 @@ nix-shell
 ```
 
 ### 3. Install Dependencies
+
 ```bash
 # Install Node.js dependencies
 pnpm install
@@ -53,6 +58,7 @@ pnpm run install:playwright
 ```
 
 ### 4. Verify Setup
+
 ```bash
 # Check Rust
 cargo --version
@@ -72,17 +78,21 @@ cargo tree -p leptos
 ## 🔧 Available Shells
 
 ### Default Shell (`nix develop`)
+
 Full development environment with all tools and dependencies.
 
 ### Minimal Shell (`nix develop .#minimal`)
+
 Basic environment with just Rust, Node.js, and PNPM.
 
 ### CI Shell (`nix develop .#ci`)
+
 Environment optimized for continuous integration.
 
 ## 📦 Package Management
 
 ### Rust Dependencies
+
 ```bash
 # Add a dependency
 cargo add <package-name>
@@ -98,6 +108,7 @@ cargo outdated
 ```
 
 ### Node.js Dependencies
+
 ```bash
 # Add a dependency
 pnpm add <package-name>
@@ -115,6 +126,7 @@ pnpm outdated
 ## 🧪 Testing
 
 ### Rust Tests
+
 ```bash
 # Run all tests
 cargo test
@@ -134,6 +146,7 @@ cargo run --example dynamic_metadata
 ```
 
 ### Playwright E2E Tests
+
 ```bash
 # Run all E2E tests
 pnpm test:e2e
@@ -149,6 +162,7 @@ pnpm test:e2e --grep "test name"
 ```
 
 ### Development Server
+
 ```bash
 # Start basic example
 cargo run --example basic
@@ -166,6 +180,7 @@ pnpm run dev:watch
 ## 🎭 Playwright Setup
 
 ### Browser Installation
+
 ```bash
 # Install all browsers
 pnpm run install:playwright
@@ -177,6 +192,7 @@ npx playwright install webkit
 ```
 
 ### Test Configuration
+
 - **Base URL**: `http://localhost:3000`
 - **Test Server**: Automatically starts `cargo run --example dynamic_metadata`
 - **Browsers**: Chrome, Firefox, Safari (desktop + mobile)
@@ -187,6 +203,7 @@ npx playwright install webkit
 ### Common Issues
 
 #### 1. Nix Flakes Not Enabled
+
 ```bash
 # Enable flakes in your Nix configuration
 echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
@@ -196,6 +213,7 @@ nix-shell
 ```
 
 #### 2. Port 3000 Already in Use
+
 ```bash
 # Check what's using the port
 lsof -i :3000
@@ -208,6 +226,7 @@ PORT=3001 cargo run --example dynamic_metadata
 ```
 
 #### 3. Playwright Browsers Not Found
+
 ```bash
 # Reinstall browsers
 pnpm run test:e2e:install-deps
@@ -220,6 +239,7 @@ npx playwright install
 ```
 
 #### 4. Image Processing Dependencies Missing
+
 ```bash
 # Ensure you're in the Nix shell
 nix develop
@@ -233,6 +253,7 @@ pkg-config --exists libjpeg && echo "libjpeg found"
 ```
 
 #### 5. Leptos Version Compatibility Issues
+
 ```bash
 # Check current Leptos version
 cargo tree -p leptos
@@ -247,6 +268,7 @@ cargo check
 ### Performance Issues
 
 #### Slow Test Execution
+
 ```bash
 # Run tests in parallel
 pnpm test:e2e --workers=4
@@ -259,6 +281,7 @@ pnpm test:e2e --project="!Mobile*"
 ```
 
 #### High Memory Usage
+
 ```bash
 # Reduce browser instances
 pnpm test:e2e --workers=2
@@ -270,18 +293,21 @@ pnpm test:e2e --headed=false
 ## 🚀 Development Workflow
 
 ### 1. Start Development
+
 ```bash
 nix develop
 pnpm install
 ```
 
 ### 2. Make Changes
+
 - Edit Rust code in `src/`
 - Edit macros in `macros/src/`
 - Edit examples in `examples/`
 - Edit tests in `tests/`
 
 ### 3. Test Changes
+
 ```bash
 # Quick Rust check
 cargo check
@@ -300,6 +326,7 @@ pnpm test:e2e
 ```
 
 ### 4. Commit and Push
+
 ```bash
 git add .
 git commit -m "feat: add new feature"
@@ -309,40 +336,48 @@ git push
 ## 📚 Additional Resources
 
 ### Nix
+
 - [Nix Flakes Guide](https://nixos.wiki/wiki/Flakes)
 - [Nix Shell Tutorial](https://nixos.org/guides/nix-pills/developing-with-nix-shell.html)
 
 ### Rust
+
 - [Rust Book](https://doc.rust-lang.org/book/)
 - [Cargo Guide](https://doc.rust-lang.org/cargo/)
 - [Async Rust](https://rust-lang.github.io/async-book/)
 
 ### Leptos
+
 - [Leptos Documentation](https://leptos.dev/)
 - [Leptos Book](https://leptos.dev/book/)
 - [Migration Guide](https://leptos.dev/book/0.8/migrating.html)
 
 ### Playwright
+
 - [Playwright Documentation](https://playwright.dev/)
 - [Testing Best Practices](https://playwright.dev/docs/best-practices)
 
 ### PNPM
+
 - [PNPM Documentation](https://pnpm.io/)
 - [Workspace Guide](https://pnpm.io/workspaces)
 
 ## 🤝 Getting Help
 
 ### Issues
+
 - Check the [troubleshooting section](#-troubleshooting)
 - Search existing [GitHub issues](https://github.com/cloud-shuttle/leptos-next-metadata/issues)
 - Create a new issue with detailed information
 
 ### Community
+
 - Join our [Discord server](https://discord.gg/your-server)
 - Check the [documentation](https://docs.rs/leptos-next-metadata)
 - Review the [examples](examples/)
 
 ### Development
+
 - Read the [contributing guide](CONTRIBUTING.md)
 - Check the [code of conduct](CODE_OF_CONDUCT.md)
 - Review the [RFCs](docs/rfcs/) for design decisions
@@ -354,6 +389,7 @@ git push
 **Current Version**: 0.1.0-alpha
 
 ### ✅ Completed Features
+
 - Core metadata structures and types
 - `metadata!` macro for static metadata
 - `generate_metadata!` macro for dynamic metadata
@@ -363,6 +399,7 @@ git push
 - Integration with Leptos 0.8+ signal system
 
 ### 🔄 In Progress
+
 - OG image generation pipeline
 - File convention scanner
 - Advanced caching strategies
@@ -370,6 +407,7 @@ git push
 - Integration with Leptos ecosystem
 
 ### 📋 Planned Features
+
 - Comprehensive testing suite with Playwright
 - Performance benchmarking
 - Migration tools from Next.js

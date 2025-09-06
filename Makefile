@@ -7,7 +7,7 @@ RUST_VERSION ?= stable
 TEST_FEATURES ?= --all-features
 TEST_TIMEOUT ?= 300
 
-# Build configuration  
+# Build configuration
 BUILD_FEATURES ?= --all-features
 BUILD_MODE ?= debug
 

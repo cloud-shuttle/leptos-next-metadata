@@ -1,27 +1,27 @@
 //! # leptos-next-metadata
-//! 
+//!
 //! Next.js-style metadata management for Leptos applications with type-safe APIs,
 //! blazing-fast OG image generation, and comprehensive SEO optimization.
-//! 
+//!
 //! ## Quick Example
-//! 
+//!
 //! ```rust
 //! use leptos::*;
 //! use leptos_next_metadata::prelude::*;
-//! 
+//!
 //! #[component]
 //! fn MyPage() -> impl IntoView {
 //!     metadata! {
 //!         title: "My Page",
 //!         description: "Page description",
 //!     }
-//!     
+//!
 //!     view! { <h1>"My Page"</h1> }
 //! }
 //! ```
-//! 
+//!
 //! ## Features
-//! 
+//!
 //! - 🚀 **2-7x faster** OG image generation than browser-based solutions
 //! - 🦀 **Type-safe** metadata with compile-time validation
 //! - 🎯 **Next.js compatible** API for easy migration
@@ -32,11 +32,11 @@
 //! - 📁 **File conventions** - automatic favicon, robots.txt, sitemap detection
 //! - 🎨 **Template system** - Liquid templates for OG images
 //! - 💾 **Smart caching** - multi-level caching for optimal performance
-//! 
+//!
 //! ## Feature Flags
-//! 
+//!
 //! - `ssr` - Server-side rendering support (default)
-//! - `csr` - Client-side rendering support  
+//! - `csr` - Client-side rendering support
 //! - `hydrate` - Hydration support
 //! - `og-images` - Open Graph image generation (default)
 //! - `file-conventions` - File-based metadata conventions (default)
@@ -44,9 +44,9 @@
 //! - `caching` - Advanced caching with LRU and TTL
 //! - `http` - HTTP client for external metadata fetching
 //! - `debug` - Debug logging and validation
-//! 
+//!
 //! ## Modules
-//! 
+//!
 //! - [`metadata`] - Core metadata types and traits
 //! - [`og_image`] - Open Graph image generation
 //! - [`json_ld`] - JSON-LD structured data
@@ -69,14 +69,14 @@ pub mod prelude {
         AlternateLink, CanonicalUrl, Viewport, ThemeColor,
         ColorScheme, ReferrerPolicy, FormatDetection,
     };
-    
+
     pub use crate::og_image::{GeneratedOgImage, OgImageGenerator, OgImageParams};
     pub use crate::json_ld::{JsonLd, SchemaOrg};
     pub use crate::conventions::{ConventionScanner, FileConventions};
-    
+
     #[cfg(feature = "macros")]
     pub use crate::macros::{metadata, generate_metadata};
-    
+
     pub use crate::metadata::context::{MetadataContext, MetadataProvider, provide_metadata_context};
 }
 
@@ -97,31 +97,31 @@ pub type Result<T> = std::result::Result<T, Error>;
 pub enum Error {
     #[error("Metadata context not provided")]
     ContextNotProvided,
-    
+
     #[error("Invalid metadata: {0}")]
     InvalidMetadata(String),
-    
+
     #[error("Template error: {0}")]
     TemplateError(String),
-    
+
     #[error("Image generation error: {0}")]
     ImageError(String),
-    
+
     #[error("IO error: {0}")]
     IoError(#[from] std::io::Error),
-    
+
     #[error("Serialization error: {0}")]
     SerializationError(String),
-    
+
     #[error("URL error: {0}")]
     UrlError(#[from] url::ParseError),
-    
+
     #[error("Configuration error: {0}")]
     ConfigError(String),
-    
+
     #[error("Cache error: {0}")]
     CacheError(String),
-    
+
     #[error("Validation error: {0}")]
     ValidationError(String),
 }
@@ -131,16 +131,16 @@ pub enum Error {
 pub struct MetadataConfig {
     /// Cache configuration
     pub cache: CacheConfig,
-    
+
     /// OG image generation configuration
     pub og_image: OgImageConfig,
-    
+
     /// File conventions configuration
     pub conventions: ConventionConfig,
-    
+
     /// Debug configuration
     pub debug: DebugConfig,
-    
+
     /// Resource limits
     pub limits: LimitConfig,
 }
@@ -150,19 +150,19 @@ pub struct MetadataConfig {
 pub struct CacheConfig {
     /// Enable memory caching
     pub memory_cache_enabled: bool,
-    
+
     /// Memory cache size (number of items)
     pub memory_cache_size: usize,
-    
+
     /// Memory cache TTL in seconds
     pub memory_cache_ttl: u64,
-    
+
     /// Enable disk caching
     pub disk_cache_enabled: bool,
-    
+
     /// Disk cache path
     pub disk_cache_path: String,
-    
+
     /// OG image cache size in MB
     pub og_image_cache_size: usize,
 }
@@ -172,16 +172,16 @@ pub struct CacheConfig {
 pub struct OgImageConfig {
     /// Default image dimensions
     pub default_size: (u32, u32),
-    
+
     /// Font configuration
     pub fonts: Vec<FontConfig>,
-    
+
     /// Template directory
     pub template_dir: String,
-    
+
     /// Output format
     pub format: ImageFormat,
-    
+
     /// Quality (for JPEG)
     pub quality: u8,
 }
@@ -191,10 +191,10 @@ pub struct OgImageConfig {
 pub struct FontConfig {
     /// Font family name
     pub family: String,
-    
+
     /// Font weight
     pub weight: FontWeight,
-    
+
     /// Font data
     pub data: Vec<u8>,
 }
@@ -226,10 +226,10 @@ pub enum ImageFormat {
 pub struct ConventionConfig {
     /// Root directory for file conventions
     pub root_dir: String,
-    
+
     /// Enable automatic detection
     pub auto_detect: bool,
-    
+
     /// Custom convention patterns
     pub patterns: Vec<String>,
 }
@@ -239,13 +239,13 @@ pub struct ConventionConfig {
 pub struct DebugConfig {
     /// Log metadata resolution
     pub log_metadata_resolution: bool,
-    
+
     /// Log cache hits/misses
     pub log_cache_hits: bool,
-    
+
     /// Log generation time
     pub log_generation_time: bool,
-    
+
     /// Validate output
     pub validate_output: bool,
 }
@@ -255,13 +255,13 @@ pub struct DebugConfig {
 pub struct LimitConfig {
     /// Maximum OG image size in bytes
     pub max_og_image_size: usize,
-    
+
     /// Maximum template size in bytes
     pub max_template_size: usize,
-    
+
     /// Maximum cache memory in bytes
     pub max_cache_memory: usize,
-    
+
     /// Maximum generation time in milliseconds
     pub max_generation_time: u64,
 }

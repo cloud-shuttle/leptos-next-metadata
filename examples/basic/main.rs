@@ -1,5 +1,5 @@
 //! Basic example demonstrating leptos-next-metadata usage
-//! 
+//!
 //! This example shows how to:
 //! - Set up metadata context
 //! - Use static metadata
@@ -8,7 +8,8 @@
 //! - Use JSON-LD structured data
 
 use leptos::*;
-use leptos_next_metadata::prelude::*;
+use leptos::prelude::ElementChild;
+// use leptos_next_metadata::prelude::*;
 use leptos_next_metadata_macros::metadata;
 
 fn main() {
@@ -38,11 +39,10 @@ fn App() -> impl IntoView {
                     image: "https://example.com/twitter-image.jpg"
                 }
             }}
-            
+
             <h1>"Welcome to My Site"</h1>
             <p>"This is a basic example of leptos-next-metadata usage with macros!"</p>
             <p>"Check the page source to see the generated metadata tags."</p>
         </div>
     }
 }
-

@@ -7,14 +7,14 @@ use syn::{
 };
 
 /// Generate metadata tags for Leptos applications
-/// 
+///
 /// This macro generates the appropriate leptos_meta components based on the provided metadata.
-/// 
+///
 /// # Examples
-/// 
+///
 /// ```rust
 /// use leptos_next_metadata_macros::metadata;
-/// 
+///
 /// metadata! {
 ///     title: "My Page",
 ///     description: "This is my page description",
@@ -33,7 +33,7 @@ use syn::{
 #[proc_macro]
 pub fn metadata(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as MetadataInput);
-    
+
     match generate_metadata_code(input) {
         Ok(tokens) => tokens.into(),
         Err(e) => e.to_compile_error().into(),
@@ -41,20 +41,20 @@ pub fn metadata(input: TokenStream) -> TokenStream {
 }
 
 /// Generate dynamic metadata at runtime
-/// 
+///
 /// This macro accepts an async closure that returns a Metadata struct and generates
 /// the appropriate leptos_meta components reactively.
-/// 
+///
 /// # Examples
-/// 
+///
 /// ```rust
 /// use leptos_next_metadata_macros::generate_metadata;
-/// 
+///
 /// generate_metadata! {
 ///     async || {
 ///         // Fetch data from API
 ///         let data = fetch_page_data().await;
-///         
+///
 ///         Metadata {
 ///             title: Title::Template {
 ///                 template: "%s | My Blog".into(),
@@ -72,7 +72,7 @@ pub fn generate_metadata(input: TokenStream) -> TokenStream {
     let input = GenerateMetadataInput {
         closure: parsed.closure,
     };
-    
+
     generate_dynamic_metadata_code(input).into()
 }
 
@@ -91,7 +91,7 @@ impl Parse for GenerateMetadataInputParser {
     fn parse(input: ParseStream) -> Result<Self> {
         // Parse the async closure: async || { ... }
         let closure: Expr = input.parse()?;
-        
+
         Ok(GenerateMetadataInputParser { closure })
     }
 }
@@ -99,27 +99,27 @@ impl Parse for GenerateMetadataInputParser {
 /// Generate the dynamic metadata code
 fn generate_dynamic_metadata_code(input: GenerateMetadataInput) -> proc_macro2::TokenStream {
     let closure = &input.closure;
-    
+
     quote! {
         {
             use leptos::*;
             use leptos::prelude::*;
             use leptos_meta::*;
             use leptos_next_metadata::metadata::Metadata;
-            
+
             // Create a signal to hold the metadata
             let (metadata, set_metadata) = signal(Metadata::default());
-            
+
             // Execute the async closure and update the metadata
             leptos::task::spawn_local(async move {
                 let result = (#closure)().await;
                 set_metadata.set(result);
             });
-            
+
             // Generate metadata components reactively
             move || {
                 let meta = metadata.get();
-                
+
                 // Basic metadata
                 let title_view = meta.title.as_ref().map(|title| {
                     match title {
@@ -131,11 +131,11 @@ fn generate_dynamic_metadata_code(input: GenerateMetadataInput) -> proc_macro2::
                         }
                     }
                 });
-                
+
                 let description_view = meta.description.as_ref().map(|desc| {
                     view! { <Meta name="description" content=desc.to_string()/> }
                 });
-                
+
                 let keywords_view = meta.keywords.as_ref().map(|keywords| {
                     match keywords {
                         leptos_next_metadata::metadata::Keywords::Single(k) => {
@@ -147,11 +147,11 @@ fn generate_dynamic_metadata_code(input: GenerateMetadataInput) -> proc_macro2::
                         }
                     }
                 });
-                
+
                 let canonical_view = meta.canonical.as_ref().map(|url| {
                     view! { <Link rel="canonical" href=url.to_string()/> }
                 });
-                
+
                 // OpenGraph metadata
                 let og_view = meta.open_graph.as_ref().map(|og| {
                     view! {
@@ -159,28 +159,28 @@ fn generate_dynamic_metadata_code(input: GenerateMetadataInput) -> proc_macro2::
                             {og.title.as_ref().map(|title| {
                                 view! { <Meta property="og:title" content=title.to_string()/> }
                             })}
-                            
+
                             {og.description.as_ref().map(|desc| {
                                 view! { <Meta property="og:description" content=desc.to_string()/> }
                             })}
-                            
+
                             {og.r#type.as_ref().map(|og_type| {
                                 view! { <Meta property="og:type" content=og_type.to_string()/> }
                             })}
-                            
+
                             {og.url.as_ref().map(|url| {
                                 view! { <Meta property="og:url" content=url.to_string()/> }
                             })}
-                            
+
                             {og.site_name.as_ref().map(|name| {
                                 view! { <Meta property="og:site_name" content=name.to_string()/> }
                             })}
-                            
+
                             // OG images iteration removed for now - will add back later
                         </>
                     }
                 });
-                
+
                 // Twitter metadata
                 let twitter_view = meta.twitter.as_ref().map(|twitter| {
                     view! {
@@ -194,20 +194,20 @@ fn generate_dynamic_metadata_code(input: GenerateMetadataInput) -> proc_macro2::
                                 };
                                 view! { <Meta name="twitter:card" content=card_str.to_string()/> }
                             })}
-                            
+
                             {twitter.title.as_ref().map(|title| {
                                 view! { <Meta name="twitter:title" content=title.to_string()/> }
                             })}
-                            
+
                             {twitter.description.as_ref().map(|desc| {
                                 view! { <Meta name="twitter:description" content=desc.to_string()/> }
                             })}
                         </>
                     }
                 });
-                
+
                 // Additional metadata iteration removed for now - will add back later
-                
+
                 // Return all views
                 view! {
                     <>
@@ -246,20 +246,20 @@ enum MetadataValue {
 impl Parse for MetadataInput {
     fn parse(input: ParseStream) -> Result<Self> {
         let mut fields = Vec::new();
-        
+
         while !input.is_empty() {
             let name: Ident = input.parse()?;
             input.parse::<Token![:]>()?;
             let value = MetadataValue::parse(input)?;
-            
+
             fields.push(MetadataField { name, value });
-            
+
             // Handle optional comma
             if input.peek(Token![,]) {
                 input.parse::<Token![,]>()?;
             }
         }
-        
+
         Ok(MetadataInput { fields })
     }
 }
@@ -270,36 +270,36 @@ impl Parse for MetadataValue {
             // Parse nested object: { field: value, ... }
             let content;
             syn::braced!(content in input);
-            
+
             let mut fields = Vec::new();
             while !content.is_empty() {
                 let name: Ident = content.parse()?;
                 content.parse::<Token![:]>()?;
                 let value = MetadataValue::parse(&content)?;
-                
+
                 fields.push(MetadataField { name, value });
-                
+
                 if content.peek(Token![,]) {
                     content.parse::<Token![,]>()?;
                 }
             }
-            
+
             Ok(MetadataValue::Nested(fields))
         } else if input.peek(syn::token::Bracket) {
             // Parse array: [value1, value2, ...]
             let content;
             syn::bracketed!(content in input);
-            
+
             let mut values = Vec::new();
             while !content.is_empty() {
                 let value = MetadataValue::parse(&content)?;
                 values.push(value);
-                
+
                 if content.peek(Token![,]) {
                     content.parse::<Token![,]>()?;
                 }
             }
-            
+
             Ok(MetadataValue::Array(values))
         } else {
             // Parse simple expression
@@ -311,17 +311,17 @@ impl Parse for MetadataValue {
 
 fn generate_metadata_code(input: MetadataInput) -> Result<proc_macro2::TokenStream> {
     let mut meta_tags = Vec::new();
-    
+
     for field in input.fields {
         let field_name = field.name.to_string();
         let tags = generate_field_meta_tags(&field_name, &field.value)?;
         meta_tags.extend(tags);
     }
-    
+
     Ok(quote! {
         {
             use leptos_meta::*;
-            
+
             view! {
                 <>
                     #(#meta_tags)*
@@ -332,11 +332,11 @@ fn generate_metadata_code(input: MetadataInput) -> Result<proc_macro2::TokenStre
 }
 
 fn generate_field_meta_tags(
-    field_name: &str, 
+    field_name: &str,
     value: &MetadataValue
 ) -> Result<Vec<proc_macro2::TokenStream>> {
     let mut tags = Vec::new();
-    
+
     match value {
         MetadataValue::Simple(expr) => {
             let tag = match field_name {
@@ -413,16 +413,16 @@ fn generate_field_meta_tags(
             tags.extend(array_tags);
         }
     }
-    
+
     Ok(tags)
 }
 
 fn generate_og_meta_tags(
-    field_name: &str, 
+    field_name: &str,
     value: &MetadataValue
 ) -> Result<Vec<proc_macro2::TokenStream>> {
     let mut tags = Vec::new();
-    
+
     match value {
         MetadataValue::Simple(expr) => {
             let tag = match field_name {
@@ -479,16 +479,16 @@ fn generate_og_meta_tags(
             // TODO: Handle other nested structures - need to implement proper nested handling
         }
     }
-    
+
     Ok(tags)
 }
 
 fn generate_twitter_meta_tags(
-    field_name: &str, 
+    field_name: &str,
     value: &MetadataValue
 ) -> Result<Vec<proc_macro2::TokenStream>> {
     let mut tags = Vec::new();
-    
+
     match value {
         MetadataValue::Simple(expr) => {
             let tag = match field_name {
@@ -536,16 +536,16 @@ fn generate_twitter_meta_tags(
             // TODO: Handle other nested structures for twitter
         }
     }
-    
+
     Ok(tags)
 }
 
 fn generate_array_meta_tags(
-    field_name: &str, 
+    field_name: &str,
     values: &[MetadataValue]
 ) -> Result<Vec<proc_macro2::TokenStream>> {
     let mut tags = Vec::new();
-    
+
     match field_name {
         "keywords" => {
             // Convert array to comma-separated string
@@ -555,7 +555,7 @@ fn generate_array_meta_tags(
                     keyword_exprs.push(expr);
                 }
             }
-            
+
             if !keyword_exprs.is_empty() {
                 tags.push(quote! {
                     <Meta name="keywords" content={[#(#keyword_exprs),*].join(", ")}/>
@@ -593,6 +593,6 @@ fn generate_array_meta_tags(
             }
         }
     }
-    
+
     Ok(tags)
 }

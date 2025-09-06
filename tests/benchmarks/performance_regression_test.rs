@@ -14,7 +14,7 @@ const JSON_LD_SERIALIZE_TARGET_US: u128 = 5; // Target: <5μs for JSON-LD serial
 fn metadata_merge_performance(bencher: Bencher) {
     let parent = create_complex_metadata();
     let child = create_simple_metadata();
-    
+
     bencher
         .with_inputs(|| (parent.clone(), child.clone()))
         .bench_values(|(p, c)| {
@@ -25,7 +25,7 @@ fn metadata_merge_performance(bencher: Bencher) {
 #[divan::bench]
 fn metadata_validation_performance(bencher: Bencher) {
     let metadata = create_complex_metadata();
-    
+
     bencher
         .with_inputs(|| metadata.clone())
         .bench_values(|m| {
@@ -39,7 +39,7 @@ fn title_resolution_performance(bencher: Bencher) {
         template: "%s | My Amazing Website With Long Name".into(),
         default: "My Amazing Website With Long Name".into(),
     };
-    
+
     bencher.bench(|| {
         black_box(title.resolve(Some("Very Long Page Title That Might Be Common")))
     });
@@ -81,7 +81,7 @@ fn json_ld_creation_performance(bencher: Bencher) {
                 black_box("leptos-framework".to_string()),
             ])
             .build();
-        
+
         black_box(article)
     });
 }
@@ -89,7 +89,7 @@ fn json_ld_creation_performance(bencher: Bencher) {
 #[divan::bench]
 fn json_ld_serialization_performance(bencher: Bencher) {
     let article = create_complex_article();
-    
+
     bencher
         .with_inputs(|| article.clone())
         .bench_values(|article| {
@@ -100,19 +100,19 @@ fn json_ld_serialization_performance(bencher: Bencher) {
 #[tokio::main]
 async fn og_image_generation_performance() {
     let generator = OgImageGenerator::new().await.expect("Failed to create generator");
-    
+
     // Test simple image generation
     let simple_params = OgImageParams::simple("Performance Test", "Testing OG image generation speed");
-    
+
     let iterations = 10;
     let mut total_duration = Duration::ZERO;
-    
+
     for _ in 0..iterations {
         let start = Instant::now();
         let _image = generator.generate(simple_params.clone()).await.unwrap();
         total_duration += start.elapsed();
     }
-    
+
     let avg_duration = total_duration / iterations;
     assert!(
         avg_duration.as_millis() < OG_GENERATION_TARGET_MS,
@@ -120,7 +120,7 @@ async fn og_image_generation_performance() {
         avg_duration.as_millis(),
         OG_GENERATION_TARGET_MS
     );
-    
+
     println!("✓ OG image generation: {}ms (target: <{}ms)", avg_duration.as_millis(), OG_GENERATION_TARGET_MS);
 }
 
@@ -128,28 +128,28 @@ async fn og_image_generation_performance() {
 async fn og_image_cache_performance() {
     let generator = OgImageGenerator::with_cache_size(100).await.expect("Failed to create generator");
     let params = OgImageParams::simple("Cached Image", "Testing cache performance");
-    
+
     // Prime the cache
     let _priming = generator.generate(params.clone()).await.unwrap();
-    
+
     // Measure cached performance
     let iterations = 100;
     let start = Instant::now();
-    
+
     for _ in 0..iterations {
         let _image = generator.generate(params.clone()).await.unwrap();
     }
-    
+
     let total_duration = start.elapsed();
     let avg_duration = total_duration / iterations;
-    
+
     // Cached generation should be extremely fast (<1ms)
     assert!(
         avg_duration.as_millis() < 1,
         "Cached OG image generation too slow: {}ms",
         avg_duration.as_millis()
     );
-    
+
     println!("✓ Cached OG image generation: {}μs", avg_duration.as_micros());
 }
 
@@ -157,31 +157,31 @@ async fn og_image_cache_performance() {
 fn metadata_merge_target_performance() {
     let parent = create_complex_metadata();
     let child = create_simple_metadata();
-    
+
     let iterations = 1000;
     let start = Instant::now();
-    
+
     for _ in 0..iterations {
         let _ = black_box(child.clone()).merge(black_box(parent.clone()));
     }
-    
+
     let total_duration = start.elapsed();
     let avg_duration = total_duration / iterations;
-    
+
     assert!(
         avg_duration.as_micros() < METADATA_MERGE_TARGET_US,
         "Metadata merge too slow: {}μs (target: <{}μs)",
         avg_duration.as_micros(),
         METADATA_MERGE_TARGET_US
     );
-    
+
     println!("✓ Metadata merge: {}μs (target: <{}μs)", avg_duration.as_micros(), METADATA_MERGE_TARGET_US);
 }
 
 #[test]
 fn template_rendering_target_performance() {
     let mut engine = TemplateEngine::new();
-    
+
     let template = r#"
         <svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
             <rect fill="{{ background | default: '#667eea' }}" width="1200" height="630"/>
@@ -192,57 +192,57 @@ fn template_rendering_target_performance() {
             {% endif %}
         </svg>
     "#;
-    
+
     engine.register_template("performance_test", template).unwrap();
-    
+
     let data = liquid::object!({
         "title": "Performance Test Template",
         "description": "Testing template rendering performance with complex data",
         "author": "Performance Tester",
         "background": "#1e3c72",
     });
-    
+
     let iterations = 1000;
     let start = Instant::now();
-    
+
     for _ in 0..iterations {
         let _ = engine.render("performance_test", black_box(data.clone())).unwrap();
     }
-    
+
     let total_duration = start.elapsed();
     let avg_duration = total_duration / iterations;
-    
+
     assert!(
         avg_duration.as_micros() < TEMPLATE_RENDER_TARGET_US,
         "Template rendering too slow: {}μs (target: <{}μs)",
         avg_duration.as_micros(),
         TEMPLATE_RENDER_TARGET_US
     );
-    
+
     println!("✓ Template rendering: {}μs (target: <{}μs)", avg_duration.as_micros(), TEMPLATE_RENDER_TARGET_US);
 }
 
 #[test]
 fn json_ld_serialization_target_performance() {
     let article = create_complex_article();
-    
+
     let iterations = 1000;
     let start = Instant::now();
-    
+
     for _ in 0..iterations {
         let _ = serde_json::to_string(black_box(&article)).unwrap();
     }
-    
+
     let total_duration = start.elapsed();
     let avg_duration = total_duration / iterations;
-    
+
     assert!(
         avg_duration.as_micros() < JSON_LD_SERIALIZE_TARGET_US,
         "JSON-LD serialization too slow: {}μs (target: <{}μs)",
         avg_duration.as_micros(),
         JSON_LD_SERIALIZE_TARGET_US
     );
-    
+
     println!("✓ JSON-LD serialization: {}μs (target: <{}μs)", avg_duration.as_micros(), JSON_LD_SERIALIZE_TARGET_US);
 }
 
@@ -251,12 +251,12 @@ fn memory_usage_test() {
     use std::alloc::{GlobalAlloc, Layout, System};
     use std::sync::atomic::{AtomicUsize, Ordering};
     use std::sync::Arc;
-    
+
     // Simple memory tracking (not 100% accurate but good enough for regression testing)
     static ALLOCATED: AtomicUsize = AtomicUsize::new(0);
-    
+
     struct TrackingAllocator;
-    
+
     unsafe impl GlobalAlloc for TrackingAllocator {
         unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
             let ptr = System.alloc(layout);
@@ -265,28 +265,28 @@ fn memory_usage_test() {
             }
             ptr
         }
-        
+
         unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {
             System.dealloc(ptr, layout);
             ALLOCATED.fetch_sub(layout.size(), Ordering::SeqCst);
         }
     }
-    
+
     // Test memory usage of complex operations
     let initial_memory = ALLOCATED.load(Ordering::SeqCst);
-    
+
     {
         let metadata = create_complex_metadata();
         let child = create_simple_metadata();
         let _merged = child.merge(metadata);
-        
+
         let article = create_complex_article();
         let _serialized = serde_json::to_string(&article).unwrap();
     }
-    
+
     let final_memory = ALLOCATED.load(Ordering::SeqCst);
     let memory_used = final_memory.saturating_sub(initial_memory);
-    
+
     // Should use reasonable amount of memory (less than 1MB for these operations)
     const MAX_MEMORY_USAGE: usize = 1024 * 1024; // 1MB
     assert!(
@@ -295,7 +295,7 @@ fn memory_usage_test() {
         memory_used,
         MAX_MEMORY_USAGE
     );
-    
+
     println!("✓ Memory usage: {} KB", memory_used / 1024);
 }
 
@@ -304,10 +304,10 @@ async fn concurrent_performance_test() {
     let generator = std::sync::Arc::new(
         OgImageGenerator::new().await.expect("Failed to create generator")
     );
-    
+
     let num_concurrent = 10;
     let start = Instant::now();
-    
+
     let tasks: Vec<_> = (0..num_concurrent).map(|i| {
         let gen = generator.clone();
         tokio::spawn(async move {
@@ -318,10 +318,10 @@ async fn concurrent_performance_test() {
             gen.generate(params).await.unwrap()
         })
     }).collect();
-    
+
     let _results = futures::future::join_all(tasks).await;
     let total_duration = start.elapsed();
-    
+
     // Concurrent operations should scale well (not much slower than sequential)
     let expected_max_duration = Duration::from_millis(OG_GENERATION_TARGET_MS * 2); // Allow 2x for concurrency overhead
     assert!(
@@ -330,7 +330,7 @@ async fn concurrent_performance_test() {
         total_duration.as_millis(),
         expected_max_duration.as_millis()
     );
-    
+
     println!("✓ Concurrent OG generation ({} tasks): {}ms", num_concurrent, total_duration.as_millis());
 }
 
@@ -344,27 +344,27 @@ fn large_dataset_performance() {
         other: (0..1000).map(|i| (format!("key{}", i), format!("value{}", i))).collect(),
         ..Default::default()
     };
-    
+
     let start = Instant::now();
-    
+
     // Test serialization of large dataset
     let _serialized = serde_json::to_string(&large_metadata).unwrap();
-    
+
     // Test validation of large dataset
     let _validation = large_metadata.validate();
-    
+
     // Test cloning of large dataset
     let _cloned = large_metadata.clone();
-    
+
     let duration = start.elapsed();
-    
+
     // Operations on large datasets should still be reasonable (< 10ms)
     assert!(
         duration.as_millis() < 10,
         "Large dataset operations too slow: {}ms",
         duration.as_millis()
     );
-    
+
     println!("✓ Large dataset operations: {}ms", duration.as_millis());
 }
 

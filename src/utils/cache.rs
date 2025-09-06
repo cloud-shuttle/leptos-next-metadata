@@ -19,17 +19,17 @@ pub fn metadata_cache_key(
     user_agent: Option<&str>,
 ) -> String {
     let mut components = vec![path];
-    
+
     let params_str;
     if let Some(params) = params {
         params_str = serde_json::to_string(params).unwrap_or_default();
         components.push(&params_str);
     }
-    
+
     if let Some(ua) = user_agent {
         components.push(ua);
     }
-    
+
     generate_key(&components)
 }
 
@@ -55,11 +55,11 @@ impl<T> CacheEntry<T> {
             ttl,
         }
     }
-    
+
     pub fn is_expired(&self) -> bool {
         self.created_at.elapsed() > self.ttl
     }
-    
+
     pub fn remaining_ttl(&self) -> std::time::Duration {
         let elapsed = self.created_at.elapsed();
         if elapsed > self.ttl {

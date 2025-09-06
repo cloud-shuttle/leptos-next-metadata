@@ -2,52 +2,52 @@ name: E2E Tests with Playwright
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
   workflow_dispatch:
 
 jobs:
   e2e-tests:
     name: Playwright E2E Tests
     runs-on: ubuntu-latest
-    
+
     strategy:
       fail-fast: false
       matrix:
         browser: [chromium, firefox, webkit]
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Nix
         uses: DeterminateSystems/nix-installer-action@main
-        
+
       - name: Setup Nix cache
         uses: DeterminateSystems/magic-nix-cache-action@main
-        
+
       - name: Enter Nix shell
         run: nix develop .#ci --command bash -c 'echo "Nix shell ready"'
-        
+
       - name: Install Node.js dependencies
         run: |
           nix develop .#ci --command pnpm install
-          
+
       - name: Install Playwright browsers
         run: |
           nix develop .#ci --command pnpm run test:e2e:install-deps
-          
+
       - name: Build Rust examples
         run: |
           nix develop .#ci --command cargo build --examples
-          
+
       - name: Run Playwright tests
         run: |
           nix develop .#ci --command pnpm test:e2e --project=${{ matrix.browser }}
         env:
           CI: true
-          
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -56,26 +56,26 @@ jobs:
           path: |
             test-results/
             playwright-report/
-            
+
       - name: Upload screenshots
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: screenshots-${{ matrix.browser }}
           path: test-results/**/*.png
-          
+
       - name: Upload videos
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: videos-${{ matrix.browser }}
           path: test-results/**/*.webm
-          
+
       - name: Generate test report
         if: always()
         run: |
           nix develop .#ci --command pnpm test:e2e:show-report || true
-          
+
       - name: Comment PR with test results
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
@@ -83,31 +83,31 @@ jobs:
           script: |
             const fs = require('fs');
             const path = require('path');
-            
+
             try {
               const resultsPath = path.join(process.env.GITHUB_WORKSPACE, 'test-results', 'results.json');
               if (fs.existsSync(resultsPath)) {
                 const results = JSON.parse(fs.readFileSync(resultsPath, 'utf8'));
                 const passed = results.suites.filter(s => s.specs.every(spec => spec.ok)).length;
                 const total = results.suites.length;
-                
+
                 github.rest.issues.createComment({
                   issue_number: context.issue.number,
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   body: `## 🎭 E2E Test Results for ${{ matrix.browser }}
-                  
+
                   **Status**: ${passed === total ? '✅ All tests passed' : '❌ Some tests failed'}
                   **Passed**: ${passed}/${total} test suites
-                  
+
                   <details>
                   <summary>📊 Detailed Results</summary>
-                  
+
                   \`\`\`json
                   ${JSON.stringify(results, null, 2)}
                   \`\`\`
                   </details>
-                  
+
                   View full report: [Playwright Report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
                   `
                 });
@@ -120,39 +120,39 @@ jobs:
     name: Mobile E2E Tests
     runs-on: ubuntu-latest
     needs: e2e-tests
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Nix
         uses: DeterminateSystems/nix-installer-action@main
-        
+
       - name: Setup Nix cache
         uses: DeterminateSystems/magic-nix-cache-action@main
-        
+
       - name: Enter Nix shell
         run: nix develop .#ci --command bash -c 'echo "Nix shell ready"'
-        
+
       - name: Install Node.js dependencies
         run: |
           nix develop .#ci --command pnpm install
-          
+
       - name: Install Playwright browsers
         run: |
           nix develop .#ci --command pnpm run test:e2e:install-deps
-          
+
       - name: Build Rust examples
         run: |
           nix develop .#ci --command cargo build --examples
-          
+
       - name: Run mobile tests
         run: |
           nix develop .#ci --command pnpm test:e2e --project="Mobile Chrome"
           nix develop .#ci --command pnpm test:e2e --project="Mobile Safari"
         env:
           CI: true
-          
+
       - name: Upload mobile test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -166,43 +166,43 @@ jobs:
     name: Performance Tests
     runs-on: ubuntu-latest
     needs: e2e-tests
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Nix
         uses: DeterminateSystems/nix-installer-action@main
-        
+
       - name: Setup Nix cache
         uses: DeterminateSystems/magic-nix-cache-action@main
-        
+
       - name: Enter Nix shell
         run: nix develop .#ci --command bash -c 'echo "Nix shell ready"'
-        
+
       - name: Install Node.js dependencies
         run: |
           nix develop .#ci --command pnpm install
-          
+
       - name: Install Playwright browsers
         run: |
           nix develop .#ci --command pnpm run test:e2e:install-deps
-          
+
       - name: Build Rust examples
         run: |
           nix develop .#ci --command cargo build --examples
-          
+
       - name: Run performance tests
         run: |
           nix develop .#ci --command pnpm test:e2e --grep "Performance and Accessibility"
         env:
           CI: true
-          
+
       - name: Generate performance report
         if: always()
         run: |
           nix develop .#ci --command pnpm test:e2e:show-report || true
-          
+
       - name: Upload performance results
         if: always()
         uses: actions/upload-artifact@v4

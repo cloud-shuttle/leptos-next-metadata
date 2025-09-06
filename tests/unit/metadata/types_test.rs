@@ -6,17 +6,17 @@ use insta::assert_yaml_snapshot;
 #[rstest]
 #[case::static_title(Title::Static("Test".into()), Some("Page"), "Test")]
 #[case::template_with_value(
-    Title::Template { 
-        template: "%s | Site".into(), 
-        default: "Site".into() 
+    Title::Template {
+        template: "%s | Site".into(),
+        default: "Site".into()
     },
     Some("Home"),
     "Home | Site"
 )]
 #[case::template_without_value(
-    Title::Template { 
-        template: "%s | Site".into(), 
-        default: "Site".into() 
+    Title::Template {
+        template: "%s | Site".into(),
+        default: "Site".into()
     },
     None,
     "Site"
@@ -71,7 +71,7 @@ fn test_open_graph_types() {
         "music.song", "music.album", "music.playlist", "music.radio_station",
         "video.movie", "video.episode", "video.tv_show", "video.other",
     ];
-    
+
     for og_type in og_types {
         let og = OpenGraph {
             og_type: Some(og_type.into()),
@@ -86,7 +86,7 @@ fn test_twitter_card_types() {
     let card_types = vec![
         "summary", "summary_large_image", "app", "player"
     ];
-    
+
     for card_type in card_types {
         let twitter = Twitter {
             card: Some(card_type.into()),
@@ -107,7 +107,7 @@ fn test_robots_directives() {
         nocache: Some(false),
         ..Default::default()
     };
-    
+
     let directives = robots.to_directives();
     assert!(directives.contains("index"));
     assert!(directives.contains("nofollow"));
@@ -135,15 +135,15 @@ fn test_icon_rel_attribute() {
         rel: Some("icon".into()),
         ..Default::default()
     };
-    
+
     assert_eq!(icon.get_rel(), "icon");
-    
+
     let apple_icon = Icon {
         url: "/apple-touch-icon.png".into(),
         rel: Some("apple-touch-icon".into()),
         ..Default::default()
     };
-    
+
     assert_eq!(apple_icon.get_rel(), "apple-touch-icon");
 }
 
@@ -153,7 +153,7 @@ fn test_alternate_languages() {
     alternates.languages.insert("en".into(), "/en".into());
     alternates.languages.insert("es".into(), "/es".into());
     alternates.languages.insert("fr".into(), "/fr".into());
-    
+
     assert_eq!(alternates.languages.len(), 3);
     assert_eq!(alternates.languages.get("en"), Some(&"/en".to_string()));
 }
@@ -168,19 +168,19 @@ fn test_metadata_builder_pattern() {
         .og_description("OG description")
         .twitter_card("summary_large_image")
         .build();
-    
+
     match &meta.title {
         Some(Title::Static(title)) => assert_eq!(title, "Test Page"),
         _ => panic!("Expected static title"),
     }
-    
+
     assert_eq!(meta.description.as_deref(), Some("A test page description"));
     assert_eq!(meta.keywords.len(), 3);
-    
+
     let og = meta.open_graph.as_ref().unwrap();
     assert_eq!(og.title.as_deref(), Some("OG Test Page"));
     assert_eq!(og.description.as_deref(), Some("OG description"));
-    
+
     let twitter = meta.twitter.as_ref().unwrap();
     assert_eq!(twitter.card.as_deref(), Some("summary_large_image"));
 }
@@ -193,25 +193,25 @@ fn test_metadata_validation() {
         keywords: vec!["valid".into(), "".into()], // Mixed validity
         ..Default::default()
     };
-    
+
     let validation_result = meta.validate();
     assert!(!validation_result.is_valid);
     assert!(validation_result.errors.len() >= 2);
-    
+
     assert!(validation_result.errors.iter().any(|e| e.contains("title")));
     assert!(validation_result.errors.iter().any(|e| e.contains("description")));
 }
 
-#[test] 
+#[test]
 fn test_og_image_url_resolution() {
     let base_url = "https://example.com";
-    
+
     let relative = OgImage::new("/image.jpg");
     assert_eq!(relative.resolve_url(base_url), "https://example.com/image.jpg");
-    
+
     let absolute = OgImage::new("https://cdn.example.com/image.jpg");
     assert_eq!(absolute.resolve_url(base_url), "https://cdn.example.com/image.jpg");
-    
+
     let protocol_relative = OgImage::new("//cdn.example.com/image.jpg");
     assert_eq!(protocol_relative.resolve_url(base_url), "https://cdn.example.com/image.jpg");
 }

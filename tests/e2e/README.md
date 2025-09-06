@@ -8,48 +8,52 @@ This directory contains comprehensive end-to-end tests for the `leptos-next-meta
 
 ### **Core Test Suites**
 
-| Test File | Purpose | Tests | Status |
-|-----------|---------|-------|---------|
-| `tdd_basic_infrastructure.spec.ts` | Validates core setup and connectivity | 4 | ✅ |
-| `tdd_report_generator.spec.ts` | Tests metadata structure and validation | 5 | ✅ |
-| `tdd_edge_cases.spec.ts` | Handles edge cases and special scenarios | 10 | ✅ |
-| `tdd_error_conditions.spec.ts` | Validates error handling and failure scenarios | 9 | ✅ |
-| `tdd_performance_stress.spec.ts` | Performance and stress testing | 8 | ✅ |
+| Test File                          | Purpose                                        | Tests | Status |
+| ---------------------------------- | ---------------------------------------------- | ----- | ------ |
+| `tdd_basic_infrastructure.spec.ts` | Validates core setup and connectivity          | 4     | ✅     |
+| `tdd_report_generator.spec.ts`     | Tests metadata structure and validation        | 5     | ✅     |
+| `tdd_edge_cases.spec.ts`           | Handles edge cases and special scenarios       | 10    | ✅     |
+| `tdd_error_conditions.spec.ts`     | Validates error handling and failure scenarios | 9     | ✅     |
+| `tdd_performance_stress.spec.ts`   | Performance and stress testing                 | 8     | ✅     |
 
 ### **Integration Tests**
 
-| Test File | Purpose | Tests | Status |
-|-----------|---------|-------|---------|
-| `real_metadata_validation.spec.ts` | Real-world metadata validation | 23 | ✅ |
-| `cross_browser_metadata.spec.ts` | Cross-browser compatibility | 15 | ✅ |
+| Test File                          | Purpose                        | Tests | Status |
+| ---------------------------------- | ------------------------------ | ----- | ------ |
+| `real_metadata_validation.spec.ts` | Real-world metadata validation | 23    | ✅     |
+| `cross_browser_metadata.spec.ts`   | Cross-browser compatibility    | 15    | ✅     |
 
 ### **Utility Files**
 
-| File | Purpose |
-|------|---------|
+| File                               | Purpose                      |
+| ---------------------------------- | ---------------------------- |
 | `generate_comprehensive_report.ts` | Comprehensive test reporting |
-| `run_tests_with_server.sh` | Test orchestration script |
-| `global-setup.ts` | Playwright global setup |
-| `global-teardown.ts` | Playwright global teardown |
+| `run_tests_with_server.sh`         | Test orchestration script    |
+| `global-setup.ts`                  | Playwright global setup      |
+| `global-teardown.ts`               | Playwright global teardown   |
 
 ## 🚀 **Running Tests**
 
 ### **Quick Test (Single Browser)**
+
 ```bash
 pnpm run test:metadata:quick
 ```
 
 ### **Full TDD Suite**
+
 ```bash
 npx playwright test tests/e2e/tdd_*.spec.ts --project=chromium --reporter=line
 ```
 
 ### **Cross-Browser Testing**
+
 ```bash
 pnpm run test:metadata:cross-browser
 ```
 
 ### **Comprehensive Report Generation**
+
 ```bash
 npx ts-node tests/e2e/generate_comprehensive_report.ts
 ```
@@ -63,12 +67,14 @@ npx ts-node tests/e2e/generate_comprehensive_report.ts
 ### **Test Categories**
 
 1. **Basic Infrastructure** - 4/4 ✅
+
    - Server connectivity
    - HTML structure validation
    - Basic metadata presence
    - Title validation
 
 2. **Report Generator** - 5/5 ✅
+
    - Basic metadata validation
    - OpenGraph structure
    - Twitter Card structure
@@ -76,6 +82,7 @@ npx ts-node tests/e2e/generate_comprehensive_report.ts
    - SEO requirements
 
 3. **Edge Cases** - 10/10 ✅
+
    - Long metadata handling
    - Special characters
    - Missing optional metadata
@@ -88,6 +95,7 @@ npx ts-node tests/e2e/generate_comprehensive_report.ts
    - Empty metadata handling
 
 4. **Error Conditions** - 9/9 ✅
+
    - HTML malformation
    - Required metadata presence
    - Duplicate detection
@@ -111,25 +119,27 @@ npx ts-node tests/e2e/generate_comprehensive_report.ts
 ## 🔧 **Test Configuration**
 
 ### **Playwright Configuration**
+
 - **Base URL**: `http://localhost:3000`
 - **Timeout**: 30 seconds
 - **Workers**: 5
 - **Browsers**: Chromium, Firefox, WebKit
 
 ### **Test Server**
+
 - **Port**: 3000
 - **Timeout**: 300 seconds
 - **Content**: Static HTML with comprehensive metadata
 
 ## 📈 **Performance Benchmarks**
 
-| Operation | Threshold | Actual | Status |
-|-----------|-----------|--------|---------|
-| DOM Queries | < 2s | 90ms | ✅ |
-| Concurrent Access | < 8s | 1.2s | ✅ |
-| Memory Pressure | < 25s | 3s | ✅ |
-| Rapid Navigation | < 30s | 0.7s | ✅ |
-| Viewport Changes | < 5s | 0.7s | ✅ |
+| Operation         | Threshold | Actual | Status |
+| ----------------- | --------- | ------ | ------ |
+| DOM Queries       | < 2s      | 90ms   | ✅     |
+| Concurrent Access | < 8s      | 1.2s   | ✅     |
+| Memory Pressure   | < 25s     | 3s     | ✅     |
+| Rapid Navigation  | < 30s     | 0.7s   | ✅     |
+| Viewport Changes  | < 5s      | 0.7s   | ✅     |
 
 ## 🎯 **TDD Approach**
 
@@ -140,6 +150,7 @@ Our testing follows the **Red → Green → Refactor** cycle:
 3. **Refactor**: Clean up and optimize code
 
 ### **Benefits**
+
 - ✅ **Early bug detection**
 - ✅ **Confidence in refactoring**
 - ✅ **Living documentation**
@@ -148,6 +159,7 @@ Our testing follows the **Red → Green → Refactor** cycle:
 ## 🚀 **Production Readiness**
 
 This library has passed **36 comprehensive TDD tests** covering:
+
 - ✅ **Functionality**: All core features working
 - ✅ **Edge Cases**: Robust error handling
 - ✅ **Performance**: Meets production thresholds

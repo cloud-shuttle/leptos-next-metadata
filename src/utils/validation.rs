@@ -66,13 +66,13 @@ pub fn validate_image_dimensions(width: u32, height: u32) -> Result<()> {
             "Image dimensions must be greater than 0".to_string(),
         ));
     }
-    
+
     if width > 4096 || height > 4096 {
         return Err(crate::Error::ValidationError(
             "Image dimensions too large (maximum 4096x4096)".to_string(),
         ));
     }
-    
+
     Ok(())
 }
 
@@ -81,11 +81,11 @@ pub fn validate_keywords(keywords: &[String]) -> Result<()> {
     if keywords.is_empty() {
         return Ok(());
     }
-    
+
     for keyword in keywords {
         validate_not_empty(keyword, "keyword")?;
         validate_length(keyword, 1, 50, "keyword")?;
     }
-    
+
     Ok(())
 }

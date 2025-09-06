@@ -23,7 +23,7 @@ pub fn to_title_case(text: &str) -> String {
 pub fn strip_html(html: &str) -> String {
     // Simple HTML stripping - in production would use a proper HTML parser
     let mut result = html.to_string();
-    
+
     // Remove script and style tags completely
     while let Some(start) = result.find("<script") {
         if let Some(end) = result[start..].find("</script>") {
@@ -32,7 +32,7 @@ pub fn strip_html(html: &str) -> String {
             break;
         }
     }
-    
+
     while let Some(start) = result.find("<style") {
         if let Some(end) = result[start..].find("</style>") {
             result.drain(start..start + end + 8);
@@ -40,11 +40,11 @@ pub fn strip_html(html: &str) -> String {
             break;
         }
     }
-    
+
     // Remove all HTML tags
     let mut in_tag = false;
     let mut clean_text = String::new();
-    
+
     for ch in result.chars() {
         match ch {
             '<' => in_tag = true,
@@ -53,7 +53,7 @@ pub fn strip_html(html: &str) -> String {
             _ => {}
         }
     }
-    
+
     normalize_whitespace(&clean_text)
 }
 

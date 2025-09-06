@@ -1,5 +1,5 @@
 //! Macro error handling and edge case tests
-//! 
+//!
 //! These tests verify that the macros handle errors gracefully and
 //! provide helpful error messages for invalid usage.
 
@@ -16,7 +16,7 @@ fn test_macro_invalid_field_names() {
         invalid_field: "This field doesn't exist",
         another_invalid: 123
     };
-    
+
     // If we get here, the macro handled invalid fields gracefully
     assert!(true);
 }
@@ -30,7 +30,7 @@ fn test_macro_empty_values() {
         keywords: [],
         authors: []
     };
-    
+
     assert!(true);
 }
 
@@ -42,7 +42,7 @@ fn test_macro_whitespace_values() {
         description: "   ",
         keywords: ["   ", "  "]
     };
-    
+
     assert!(true);
 }
 
@@ -51,13 +51,13 @@ fn test_macro_whitespace_values() {
 fn test_macro_very_long_values() {
     let long_title = "A".repeat(1000);
     let long_description = "B".repeat(2000);
-    
+
     let _result = metadata! {
         title: long_title,
         description: long_description,
         keywords: ["very", "long", "keywords", "that", "might", "cause", "issues"]
     };
-    
+
     assert!(true);
 }
 
@@ -69,7 +69,7 @@ fn test_macro_special_characters() {
         description: "Testing special characters: & < > \" ' \n \t \r and more!",
         keywords: ["special", "chars", "&", "<", ">", "\"", "'"]
     };
-    
+
     assert!(true);
 }
 
@@ -81,7 +81,7 @@ fn test_macro_unicode_characters() {
         description: "Testing unicode characters: 🚀 🌟 💻 🎯 and more!",
         keywords: ["unicode", "🚀", "🌟", "💻", "🎯"]
     };
-    
+
     assert!(true);
 }
 
@@ -95,7 +95,7 @@ fn test_macro_numeric_values() {
         keywords: [123, 456, 789],
         authors: [42, 84]
     };
-    
+
     assert!(true);
 }
 
@@ -109,7 +109,7 @@ fn test_macro_boolean_values() {
         keywords: [true, false],
         authors: [true]
     };
-    
+
     assert!(true);
 }
 
@@ -123,7 +123,7 @@ fn test_macro_null_values() {
         keywords: [None, Some("valid"), None],
         authors: [None]
     };
-    
+
     assert!(true);
 }
 
@@ -155,7 +155,7 @@ fn test_macro_deep_nesting() {
             }
         }
     };
-    
+
     assert!(true);
 }
 
@@ -181,7 +181,7 @@ fn test_macro_circular_references() {
             description: "Twitter Description"
         }
     };
-    
+
     assert!(true);
 }
 
@@ -199,7 +199,7 @@ fn test_macro_mixed_data_types() {
             images: ["image1.jpg", 123, "image3.jpg"]
         }
     };
-    
+
     assert!(true);
 }
 
@@ -215,7 +215,7 @@ fn test_macro_malformed_urls() {
             images: ["https://valid.com/image.jpg", "invalid-url", "https://another-valid.com/image.jpg"]
         }
     };
-    
+
     assert!(true);
 }
 
@@ -230,7 +230,7 @@ fn test_macro_empty_nested_objects() {
         robots: {},
         viewport: {}
     };
-    
+
     assert!(true);
 }
 
@@ -241,7 +241,7 @@ fn test_macro_missing_required_fields() {
     let _result = metadata! {
         // No title or description - should use defaults or be optional
     };
-    
+
     assert!(true);
 }
 
@@ -254,7 +254,7 @@ fn test_macro_duplicate_fields() {
         description: "First Description",
         description: "Second Description" // Duplicate - should use last one
     };
-    
+
     assert!(true);
 }
 
@@ -269,7 +269,7 @@ fn test_macro_case_sensitivity() {
             TYPE: "website"
         }
     };
-    
+
     assert!(true);
 }
 
@@ -285,7 +285,7 @@ fn test_macro_reserved_keywords() {
         r#let: "let",
         r#mut: "mutable"
     };
-    
+
     assert!(true);
 }
 
@@ -294,14 +294,14 @@ fn test_macro_reserved_keywords() {
 fn test_macro_large_arrays() {
     let large_keywords: Vec<String> = (0..1000).map(|i| format!("keyword_{}", i)).collect();
     let large_authors: Vec<String> = (0..500).map(|i| format!("author_{}", i)).collect();
-    
+
     let _result = metadata! {
         title: "Large Arrays Test",
         description: "Testing very large arrays",
         keywords: large_keywords,
         authors: large_authors
     };
-    
+
     assert!(true);
 }
 
@@ -313,7 +313,7 @@ fn test_macro_escaped_strings() {
         description: "Testing escaped strings: \"quoted\", \'single\', \\backslash, \nnewline, \ttab",
         keywords: ["escaped", "\"quoted\"", "\'single\'", "\\backslash"]
     };
-    
+
     assert!(true);
 }
 
@@ -325,7 +325,7 @@ fn test_macro_raw_strings() {
         description: r#"Testing raw strings with "quotes" and 'apostrophes'"#,
         keywords: [r#"raw"keyword"#, r#"another"raw"#]
     };
-    
+
     assert!(true);
 }
 
@@ -337,7 +337,7 @@ fn test_macro_byte_strings() {
         description: "Testing byte strings",
         keywords: [b"byte_keyword", b"another_byte"]
     };
-    
+
     assert!(true);
 }
 
@@ -350,7 +350,7 @@ fn test_macro_lifetime_parameters() {
         title: "Lifetime Test",
         description: "Testing lifetime parameters"
     };
-    
+
     assert!(true);
 }
 
@@ -363,7 +363,7 @@ fn test_macro_generic_types() {
         title: "Generic Types Test",
         description: "Testing generic types"
     };
-    
+
     assert!(true);
 }
 
@@ -372,12 +372,12 @@ fn test_macro_generic_types() {
 fn test_macro_const_values() {
     const TITLE: &str = "Const Title";
     const DESCRIPTION: &str = "Const Description";
-    
+
     let _result = metadata! {
         title: TITLE,
         description: DESCRIPTION
     };
-    
+
     assert!(true);
 }
 
@@ -386,12 +386,12 @@ fn test_macro_const_values() {
 fn test_macro_static_values() {
     static TITLE: &str = "Static Title";
     static DESCRIPTION: &str = "Static Description";
-    
+
     let _result = metadata! {
         title: TITLE,
         description: DESCRIPTION
     };
-    
+
     assert!(true);
 }
 
@@ -401,12 +401,12 @@ fn test_macro_computed_values() {
     let base_title = "Base Title";
     let computed_title = format!("{} - Computed", base_title);
     let computed_description = format!("Description for {}", base_title);
-    
+
     let _result = metadata! {
         title: computed_title,
         description: computed_description
     };
-    
+
     assert!(true);
 }
 
@@ -421,6 +421,6 @@ fn test_macro_conditional_compilation() {
         #[cfg(not(feature = "debug"))]
         keywords: ["debug", "disabled"]
     };
-    
+
     assert!(true);
 }

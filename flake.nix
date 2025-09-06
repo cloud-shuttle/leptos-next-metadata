@@ -35,20 +35,20 @@
           buildInputs = with pkgs; [
             # Rust toolchain
             rustToolchain
-            
+
             # Node.js ecosystem
             nodejs
             pnpm
-            
+
             # Playwright and browsers
             playwright
-            
+
             # Additional development tools
             cargo-watch
             cargo-edit
             cargo-audit
             cargo-deny
-            
+
             # System dependencies for image processing
             pkg-config
             openssl
@@ -57,14 +57,14 @@
             webp
             freetype
             fontconfig
-            
+
             # For SVG processing
             librsvg
-            
+
             # For testing
             wasm-pack
             wasm-bindgen-cli
-            
+
             # For development
             git
             just
@@ -87,7 +87,7 @@
 
           # Environment variables for Playwright
           PLAYWRIGHT_BROWSERS_PATH = "${playwright}/share/playwright";
-          
+
           # For image processing libraries
           PKG_CONFIG_PATH = "${pkgs.lib.makeSearchPath "lib/pkgconfig" [
             pkgs.libpng

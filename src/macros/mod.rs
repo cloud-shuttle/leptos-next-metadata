@@ -1,5 +1,5 @@
 //! Procedural macros for leptos-next-metadata
-//! 
+//!
 //! This module provides convenient macros for setting metadata in Leptos applications.
 
 // Re-export macros from the proc-macro crate when the feature is enabled

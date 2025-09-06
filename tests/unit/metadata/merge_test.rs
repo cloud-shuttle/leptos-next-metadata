@@ -15,7 +15,7 @@ fn test_shallow_merge() {
         }),
         ..Default::default()
     };
-    
+
     let child = Metadata {
         title: Some(Title::Static("Child".into())),
         keywords: vec!["child".into()],
@@ -25,21 +25,21 @@ fn test_shallow_merge() {
         }),
         ..Default::default()
     };
-    
+
     let merged = child.merge(parent);
-    
+
     // Child's values should take precedence
     match &merged.title {
         Some(Title::Static(title)) => assert_eq!(title, "Child"),
         _ => panic!("Expected static title"),
     }
-    
+
     // Child's description should be none, so parent's should be used
     assert_eq!(merged.description.as_deref(), Some("Parent description"));
-    
+
     // Child's keywords should replace parent's (not extend)
     assert_eq!(merged.keywords, vec!["child"]);
-    
+
     // Child's OpenGraph should completely replace parent's (shallow merge)
     let og = merged.open_graph.as_ref().unwrap();
     assert_eq!(og.title, None); // Child didn't have title, so it's None
@@ -59,7 +59,7 @@ fn test_deep_merge_prevention() {
         }),
         ..Default::default()
     };
-    
+
     let child = Metadata {
         open_graph: Some(OpenGraph {
             title: Some("Child".into()),
@@ -67,9 +67,9 @@ fn test_deep_merge_prevention() {
         }),
         ..Default::default()
     };
-    
+
     let merged = child.merge(parent);
-    
+
     // Child's OpenGraph should completely replace parent's
     let og = merged.open_graph.unwrap();
     assert_eq!(og.title.as_deref(), Some("Child"));
@@ -85,22 +85,22 @@ fn test_merge_with_none_values() {
         keywords: vec!["parent1".into(), "parent2".into()],
         ..Default::default()
     };
-    
+
     let child = Metadata {
         title: None,
         description: None,
         keywords: vec![],
         ..Default::default()
     };
-    
+
     let merged = child.merge(parent);
-    
+
     // None/empty child values should allow parent values through
     match &merged.title {
         Some(Title::Static(title)) => assert_eq!(title, "Parent Title"),
         _ => panic!("Expected parent title"),
     }
-    
+
     assert_eq!(merged.description.as_deref(), Some("Parent Description"));
     assert_eq!(merged.keywords, vec!["parent1", "parent2"]);
 }
@@ -113,25 +113,25 @@ fn test_merge_chain() {
         keywords: vec!["gp".into()],
         ..Default::default()
     };
-    
+
     let parent = Metadata {
         title: Some(Title::Static("Parent".into())),
         keywords: vec!["parent".into()],
         ..Default::default()
     };
-    
+
     let child = Metadata {
         description: Some("Child Description".into()),
         ..Default::default()
     };
-    
+
     let merged = child.merge(parent.merge(grandparent));
-    
+
     match &merged.title {
         Some(Title::Static(title)) => assert_eq!(title, "Parent"),
         _ => panic!("Expected parent title"),
     }
-    
+
     assert_eq!(merged.description.as_deref(), Some("Child Description"));
     assert_eq!(merged.keywords, vec!["parent"]);
 }
@@ -158,7 +158,7 @@ fn test_merge_complex_nested_structures() {
         }),
         ..Default::default()
     };
-    
+
     let child = Metadata {
         open_graph: Some(OpenGraph {
             title: Some("Child OG".into()),
@@ -171,9 +171,9 @@ fn test_merge_complex_nested_structures() {
         }),
         ..Default::default()
     };
-    
+
     let merged = child.merge(parent);
-    
+
     // OpenGraph should be completely replaced
     let og = merged.open_graph.as_ref().unwrap();
     assert_eq!(og.title.as_deref(), Some("Child OG"));
@@ -182,7 +182,7 @@ fn test_merge_complex_nested_structures() {
     assert_eq!(og.images[0].url, "/child.jpg");
     assert_eq!(og.locale, None); // Not inherited from parent
     assert_eq!(og.site_name, None); // Not inherited from parent
-    
+
     // Twitter should be completely replaced
     let twitter = merged.twitter.as_ref().unwrap();
     assert_eq!(twitter.card.as_deref(), Some("summary_large_image"));
@@ -209,7 +209,7 @@ fn test_merge_icons() {
         }),
         ..Default::default()
     };
-    
+
     let child = Metadata {
         icons: Some(Icons {
             icon: vec![Icon::new("/favicon-64.png", "64x64")],
@@ -218,9 +218,9 @@ fn test_merge_icons() {
         }),
         ..Default::default()
     };
-    
+
     let merged = child.merge(parent);
-    
+
     let icons = merged.icons.as_ref().unwrap();
     assert_eq!(icons.icon.len(), 1);
     assert_eq!(icons.icon[0].url, "/favicon-64.png");
@@ -234,7 +234,7 @@ fn test_merge_alternates() {
     let mut parent_languages = std::collections::HashMap::new();
     parent_languages.insert("en".into(), "/en".into());
     parent_languages.insert("es".into(), "/es".into());
-    
+
     let parent = Metadata {
         alternates: Some(Alternates {
             canonical: Some("https://example.com/page".into()),
@@ -255,10 +255,10 @@ fn test_merge_alternates() {
         }),
         ..Default::default()
     };
-    
+
     let mut child_languages = std::collections::HashMap::new();
     child_languages.insert("fr".into(), "/fr".into());
-    
+
     let child = Metadata {
         alternates: Some(Alternates {
             languages: child_languages,
@@ -266,9 +266,9 @@ fn test_merge_alternates() {
         }),
         ..Default::default()
     };
-    
+
     let merged = child.merge(parent);
-    
+
     let alts = merged.alternates.as_ref().unwrap();
     assert_eq!(alts.canonical, None); // Should not inherit from parent
     assert_eq!(alts.languages.len(), 1);
@@ -294,7 +294,7 @@ fn test_merge_snapshot() {
         }),
         ..Default::default()
     };
-    
+
     let child = Metadata {
         title: Some(Title::Static("Child Page".into())),
         keywords: vec!["child".into()],
@@ -304,9 +304,9 @@ fn test_merge_snapshot() {
         }),
         ..Default::default()
     };
-    
+
     let merged = child.merge(parent);
-    
+
     assert_yaml_snapshot!(merged, @r###"
     title:
       Static: "Child Page"

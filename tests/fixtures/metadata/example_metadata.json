@@ -5,7 +5,7 @@
   "description": "This is an example blog post that demonstrates the leptos-next-metadata library capabilities with comprehensive metadata configuration.",
   "keywords": [
     "rust",
-    "leptos", 
+    "leptos",
     "metadata",
     "seo",
     "web-development",
@@ -60,7 +60,7 @@
         "type": "image/x-icon"
       },
       {
-        "url": "/favicon-32x32.png", 
+        "url": "/favicon-32x32.png",
         "sizes": "32x32",
         "type": "image/png"
       }

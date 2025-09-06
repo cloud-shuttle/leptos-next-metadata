@@ -10,10 +10,10 @@ pub type UtilResult<T> = std::result::Result<T, UtilError>;
 pub enum UtilError {
     #[error("Validation failed: {0}")]
     ValidationFailed(String),
-    
+
     #[error("Parse error: {0}")]
     ParseError(String),
-    
+
     #[error("URL error: {0}")]
     UrlError(String),
 }

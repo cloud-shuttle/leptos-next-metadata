@@ -1,5 +1,5 @@
 //! Macro compilation and expansion tests
-//! 
+//!
 //! These tests verify that the metadata! and generate_metadata! macros
 //! compile correctly and expand to the expected code.
 
@@ -13,7 +13,7 @@ fn test_metadata_macro_basic_compilation() {
         title: "Test Page",
         description: "A test page for metadata testing"
     };
-    
+
     // If we get here, compilation succeeded
     assert!(true);
 }
@@ -28,7 +28,7 @@ fn test_metadata_macro_all_basic_fields() {
         authors: ["Test Author"],
         canonical: "https://example.com/test"
     };
-    
+
     assert!(true);
 }
 
@@ -47,7 +47,7 @@ fn test_metadata_macro_open_graph() {
             images: ["https://example.com/og-image.jpg"]
         }
     };
-    
+
     assert!(true);
 }
 
@@ -65,7 +65,7 @@ fn test_metadata_macro_twitter() {
             creator: "@testcreator"
         }
     };
-    
+
     assert!(true);
 }
 
@@ -98,7 +98,7 @@ fn test_metadata_macro_complex_nested() {
             noarchive: false
         }
     };
-    
+
     assert!(true);
 }
 
@@ -117,7 +117,7 @@ fn test_metadata_macro_viewport_theme() {
         theme_color: "#000000",
         color_scheme: "dark"
     };
-    
+
     assert!(true);
 }
 
@@ -135,7 +135,7 @@ fn test_metadata_macro_json_ld() {
             "url": "https://example.com/json-ld-test"
         }
     };
-    
+
     assert!(true);
 }
 
@@ -151,7 +151,7 @@ fn test_generate_metadata_macro_basic() {
             }
         }
     };
-    
+
     assert!(true);
 }
 
@@ -163,7 +163,7 @@ fn test_generate_metadata_macro_async_fetch() {
             // Simulate async data fetching
             let title = "Async Test Page".to_string();
             let description = "A test page with async metadata generation".to_string();
-            
+
             Metadata {
                 title: Some(Title::Static(title)),
                 description: Some(description),
@@ -177,7 +177,7 @@ fn test_generate_metadata_macro_async_fetch() {
             }
         }
     };
-    
+
     assert!(true);
 }
 
@@ -190,7 +190,7 @@ fn test_generate_metadata_macro_complex() {
             let post_title = "Complex Dynamic Post".to_string();
             let post_excerpt = "A complex post with dynamic metadata".to_string();
             let post_url = "https://example.com/complex-post".to_string();
-            
+
             Metadata {
                 title: Some(Title::Static(post_title.clone())),
                 description: Some(post_excerpt.clone()),
@@ -214,7 +214,7 @@ fn test_generate_metadata_macro_complex() {
             }
         }
     };
-    
+
     assert!(true);
 }
 
@@ -229,7 +229,7 @@ fn test_generate_metadata_macro_error_handling() {
                 description: Some("Testing error handling in metadata generation".to_string()),
                 ..Default::default()
             });
-            
+
             result.unwrap_or_else(|_| Metadata {
                 title: Some(Title::Static("Fallback Title".to_string())),
                 description: Some("Fallback description".to_string()),
@@ -237,7 +237,7 @@ fn test_generate_metadata_macro_error_handling() {
             })
         }
     };
-    
+
     assert!(true);
 }
 
@@ -249,7 +249,7 @@ fn test_generate_metadata_macro_conditional() {
             // Simulate conditional metadata generation
             let is_blog_post = true;
             let is_published = true;
-            
+
             if is_blog_post && is_published {
                 Metadata {
                     title: Some(Title::Static("Published Blog Post".to_string())),
@@ -269,7 +269,7 @@ fn test_generate_metadata_macro_conditional() {
             }
         }
     };
-    
+
     assert!(true);
 }
 
@@ -280,7 +280,7 @@ fn test_generate_metadata_macro_template_titles() {
         async || {
             let post_title = "Template Test Post".to_string();
             let site_name = "Test Site".to_string();
-            
+
             Metadata {
                 title: Some(Title::Template {
                     template: format!("{} | {}", "%s", site_name),
@@ -296,7 +296,7 @@ fn test_generate_metadata_macro_template_titles() {
             }
         }
     };
-    
+
     assert!(true);
 }
 
@@ -309,7 +309,7 @@ fn test_macros_in_component_context() {
             title: "Component Test",
             description: "Testing macros in component context"
         };
-        
+
         // The macro should generate metadata components
         view! {
             <div>
@@ -318,7 +318,7 @@ fn test_macros_in_component_context() {
             </div>
         }
     }
-    
+
     // If we get here, the macro compiled successfully in component context
     assert!(true);
 }
@@ -331,25 +331,25 @@ fn test_macros_with_different_metadata_types() {
         title: "Static Title",
         description: "Testing static title"
     };
-    
+
     // Test with different description types
     let _long_description = metadata! {
         title: "Long Description Test",
         description: "This is a very long description that tests the ability of the macro to handle long text content without breaking or causing compilation issues"
     };
-    
+
     // Test with empty strings
     let _empty_strings = metadata! {
         title: "",
         description: ""
     };
-    
+
     // Test with special characters
     let _special_chars = metadata! {
         title: "Special & Characters < > \" ' Test",
         description: "Testing special characters: & < > \" ' and more!"
     };
-    
+
     assert!(true);
 }
 
@@ -360,15 +360,15 @@ fn test_macros_minimal_metadata() {
     let _title_only = metadata! {
         title: "Title Only"
     };
-    
+
     // Test with just description
     let _description_only = metadata! {
         description: "Description Only"
     };
-    
+
     // Test with empty struct
     let _empty = metadata! {};
-    
+
     assert!(true);
 }
 
@@ -382,7 +382,7 @@ fn test_macros_all_field_combinations() {
         keywords: ["rust", "leptos", "testing", "metadata", "macros"],
         authors: ["Author 1", "Author 2"],
         canonical: "https://example.com/all-fields",
-        
+
         // OpenGraph fields
         openGraph: {
             title: "OG All Fields",
@@ -399,7 +399,7 @@ fn test_macros_all_field_combinations() {
                 tags: ["rust", "leptos", "testing"]
             }
         },
-        
+
         // Twitter fields
         twitter: {
             card: "summary_large_image",
@@ -409,7 +409,7 @@ fn test_macros_all_field_combinations() {
             creator: "@testcreator",
             image: "https://example.com/twitter-image.jpg"
         },
-        
+
         // SEO fields
         robots: {
             index: true,
@@ -420,7 +420,7 @@ fn test_macros_all_field_combinations() {
             noimageindex: false,
             notranslate: false
         },
-        
+
         // Viewport and theme
         viewport: {
             width: "device-width",
@@ -432,7 +432,7 @@ fn test_macros_all_field_combinations() {
         },
         theme_color: "#000000",
         color_scheme: "dark",
-        
+
         // JSON-LD
         json_ld: {
             "@context": "https://schema.org",
@@ -446,6 +446,6 @@ fn test_macros_all_field_combinations() {
             }
         }
     };
-    
+
     assert!(true);
 }

@@ -18,7 +18,7 @@ fn MyPage() -> impl IntoView {
         description: "This is my awesome page",
         keywords: ["rust", "leptos", "metadata"]
     }
-    
+
     view! { <h1>"My Page"</h1> }
 }
 ```
@@ -65,11 +65,11 @@ The `generate_metadata!` macro enables dynamic metadata generation based on rout
 #[component]
 fn BlogPost() -> impl IntoView {
     let params = use_params::<BlogParams>();
-    
+
     generate_metadata! {
         async |params, parent| {
             let post = fetch_post(&params.slug).await?;
-            
+
             Metadata {
                 title: Some(post.title),
                 description: Some(post.excerpt),
@@ -77,7 +77,7 @@ fn BlogPost() -> impl IntoView {
             }
         }
     }
-    
+
     view! { <h1>"Blog Post"</h1> }
 }
 ```
@@ -90,9 +90,9 @@ generate_metadata! {
         let post = fetch_post(&params.slug).await?;
         let author = fetch_author(&post.author_id).await?;
         let og_image = generate_og_image(&post).await?;
-        
+
         let parent_meta = parent.await;
-        
+
         Metadata {
             title: Title::Template {
                 template: "%s | My Blog".into(),
@@ -162,14 +162,14 @@ let og_image_url = og_image! {
 
 The macros automatically map field names to their corresponding struct types:
 
-| Macro Field | Rust Struct |
-|-------------|-------------|
-| `openGraph` | `OpenGraph` |
-| `twitter` | `Twitter` |
-| `article` | `Article` |
-| `robots` | `Robots` |
-| `viewport` | `Viewport` |
-| `themeColor` | `ThemeColor` |
+| Macro Field   | Rust Struct   |
+| ------------- | ------------- |
+| `openGraph`   | `OpenGraph`   |
+| `twitter`     | `Twitter`     |
+| `article`     | `Article`     |
+| `robots`      | `Robots`      |
+| `viewport`    | `Viewport`    |
+| `themeColor`  | `ThemeColor`  |
 | `colorScheme` | `ColorScheme` |
 
 ## Error Handling

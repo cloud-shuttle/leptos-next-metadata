@@ -5,7 +5,7 @@ use pretty_assertions::assert_eq;
 #[test]
 fn test_title_validation() {
     let validator = TitleValidator::new(10, 60);
-    
+
     assert!(validator.is_valid("Good Title"));
     assert!(!validator.is_valid("")); // Too short
     assert!(!validator.is_valid("x".repeat(70).as_str())); // Too long
@@ -15,7 +15,7 @@ fn test_title_validation() {
 #[test]
 fn test_description_validation() {
     let validator = DescriptionValidator::new(50, 160);
-    
+
     assert!(validator.is_valid("This is a good description that meets the length requirements and provides value."));
     assert!(!validator.is_valid("Too short")); // Too short
     assert!(!validator.is_valid(&"x".repeat(200))); // Too long
@@ -26,7 +26,7 @@ fn test_description_validation() {
 #[test]
 fn test_keywords_validation() {
     let validator = KeywordsValidator::new(10, 3);
-    
+
     assert!(validator.is_valid(&["rust", "leptos", "web"]));
     assert!(!validator.is_valid(&["rust", "leptos", "web", "framework"])); // Too many
     assert!(!validator.is_valid(&["rust", "", "web"])); // Empty keyword
@@ -36,13 +36,13 @@ fn test_keywords_validation() {
 #[test]
 fn test_url_validation() {
     let validator = UrlValidator::new();
-    
+
     // Valid URLs
     assert!(validator.is_valid("https://example.com"));
     assert!(validator.is_valid("http://localhost:3000"));
     assert!(validator.is_valid("https://sub.example.com/path?query=1"));
     assert!(validator.is_valid("/relative/path")); // Relative paths are valid
-    
+
     // Invalid URLs
     assert!(!validator.is_valid("not-a-url"));
     assert!(!validator.is_valid("ftp://example.com")); // Unsupported protocol
@@ -59,10 +59,10 @@ fn test_og_image_validation() {
         alt: Some("Test image".into()),
         ..Default::default()
     };
-    
+
     let validator = OgImageValidator::new();
     let result = validator.validate(&image);
-    
+
     assert!(result.is_valid);
     assert!(result.errors.is_empty());
 }
@@ -76,10 +76,10 @@ fn test_og_image_validation_failures() {
         alt: Some("".into()), // Empty alt text
         ..Default::default()
     };
-    
+
     let validator = OgImageValidator::new();
     let result = validator.validate(&image);
-    
+
     assert!(!result.is_valid);
     assert!(result.errors.len() >= 3);
     assert!(result.errors.iter().any(|e| e.contains("URL")));
@@ -107,12 +107,12 @@ fn test_metadata_full_validation() {
         }),
         ..Default::default()
     };
-    
+
     let result = metadata.validate();
-    
+
     assert!(!result.is_valid);
     assert!(result.errors.len() >= 5);
-    
+
     // Check for specific error types
     let error_string = result.errors.join(" ");
     assert!(error_string.contains("title"));
@@ -125,21 +125,21 @@ fn test_metadata_full_validation() {
 #[test]
 fn test_validation_result_helper_methods() {
     let mut result = ValidationResult::new();
-    
+
     assert!(result.is_valid);
     assert!(result.errors.is_empty());
     assert!(result.warnings.is_empty());
-    
+
     result.add_error("Test error");
     assert!(!result.is_valid);
     assert_eq!(result.errors.len(), 1);
-    
+
     result.add_warning("Test warning");
     assert_eq!(result.warnings.len(), 1);
-    
+
     result.add_error_if(true, "Conditional error");
     assert_eq!(result.errors.len(), 2);
-    
+
     result.add_error_if(false, "Should not be added");
     assert_eq!(result.errors.len(), 2);
 }
@@ -168,10 +168,10 @@ fn test_robots_validation() {
         max_video_preview: Some(300),
         ..Default::default()
     };
-    
+
     let validator = RobotsValidator::new();
     let result = validator.validate(&robots);
-    
+
     assert!(result.is_valid);
     assert!(result.errors.is_empty());
 }
@@ -184,10 +184,10 @@ fn test_robots_validation_failures() {
         max_video_preview: Some(10000), // Invalid: too large
         ..Default::default()
     };
-    
+
     let validator = RobotsValidator::new();
     let result = validator.validate(&robots);
-    
+
     assert!(!result.is_valid);
     assert_eq!(result.errors.len(), 3);
 }
@@ -201,10 +201,10 @@ fn test_icon_validation() {
         rel: Some("icon".into()),
         ..Default::default()
     };
-    
+
     let validator = IconValidator::new();
     let result = validator.validate(&icon);
-    
+
     assert!(result.is_valid);
     assert!(result.errors.is_empty());
 }
@@ -217,10 +217,10 @@ fn test_icon_validation_failures() {
         icon_type: Some("text/plain".into()), // Invalid: not an image type
         ..Default::default()
     };
-    
+
     let validator = IconValidator::new();
     let result = validator.validate(&icon);
-    
+
     assert!(!result.is_valid);
     assert!(result.errors.len() >= 3);
 }
@@ -235,10 +235,10 @@ fn test_viewport_validation() {
         user_scalable: Some(true),
         ..Default::default()
     };
-    
+
     let validator = ViewportValidator::new();
     let result = validator.validate(&viewport);
-    
+
     assert!(result.is_valid);
     assert!(result.errors.is_empty());
 }
@@ -251,10 +251,10 @@ fn test_viewport_validation_warnings() {
         user_scalable: Some(false), // Warning: accessibility concern
         ..Default::default()
     };
-    
+
     let validator = ViewportValidator::new();
     let result = validator.validate(&viewport);
-    
+
     assert!(result.is_valid); // Should be valid but have warnings
     assert!(result.warnings.len() >= 2);
 }
@@ -268,9 +268,9 @@ fn test_seo_recommendations() {
         open_graph: None, // Missing
         ..Default::default()
     };
-    
+
     let recommendations = metadata.get_seo_recommendations();
-    
+
     assert!(recommendations.len() >= 4);
     assert!(recommendations.iter().any(|r| r.contains("title") && r.contains("longer")));
     assert!(recommendations.iter().any(|r| r.contains("description")));
@@ -292,9 +292,9 @@ fn test_performance_validation() {
         }),
         ..Default::default()
     };
-    
+
     let performance_result = metadata.validate_performance();
-    
+
     assert!(!performance_result.is_valid);
     assert!(performance_result.warnings.iter().any(|w| w.contains("keywords")));
     assert!(performance_result.warnings.iter().any(|w| w.contains("images")));

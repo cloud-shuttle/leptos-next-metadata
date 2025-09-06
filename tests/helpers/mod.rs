@@ -32,7 +32,7 @@ pub fn create_complex_test_metadata() -> Metadata {
                     ..Default::default()
                 },
                 OgImage {
-                    url: "https://example.com/og-image-600x314.jpg".into(), 
+                    url: "https://example.com/og-image-600x314.jpg".into(),
                     width: Some(600),
                     height: Some(314),
                     alt: Some("Secondary OG image".into()),
@@ -149,7 +149,7 @@ impl<'a> MetadataAssert<'a> {
     pub fn new(metadata: &'a Metadata) -> Self {
         Self { metadata }
     }
-    
+
     /// Assert title matches expected value (resolving templates if needed)
     pub fn has_title(self, expected: &str) -> Self {
         match &self.metadata.title {
@@ -161,7 +161,7 @@ impl<'a> MetadataAssert<'a> {
         }
         self
     }
-    
+
     /// Assert title matches with specific segment for template resolution
     pub fn has_title_with_segment(self, expected: &str, segment: &str) -> Self {
         match &self.metadata.title {
@@ -173,7 +173,7 @@ impl<'a> MetadataAssert<'a> {
         }
         self
     }
-    
+
     /// Assert description matches expected value
     pub fn has_description(self, expected: &str) -> Self {
         assert_eq!(
@@ -183,7 +183,7 @@ impl<'a> MetadataAssert<'a> {
         );
         self
     }
-    
+
     /// Assert keywords contain all expected values
     pub fn has_keywords(self, expected: &[&str]) -> Self {
         let keywords: Vec<&str> = self.metadata.keywords.iter().map(|k| k.as_str()).collect();
@@ -196,7 +196,7 @@ impl<'a> MetadataAssert<'a> {
         }
         self
     }
-    
+
     /// Assert OpenGraph title matches expected value
     pub fn has_og_title(self, expected: &str) -> Self {
         match &self.metadata.open_graph {
@@ -211,7 +211,7 @@ impl<'a> MetadataAssert<'a> {
         }
         self
     }
-    
+
     /// Assert OpenGraph description matches expected value
     pub fn has_og_description(self, expected: &str) -> Self {
         match &self.metadata.open_graph {
@@ -226,20 +226,20 @@ impl<'a> MetadataAssert<'a> {
         }
         self
     }
-    
+
     /// Assert OpenGraph has an image with the specified URL
     pub fn has_og_image(self, url: &str) -> Self {
         match &self.metadata.open_graph {
             Some(og) => {
                 let found = og.images.iter().any(|img| img.url == url);
-                assert!(found, "OpenGraph image '{}' not found. Images: {:?}", 
+                assert!(found, "OpenGraph image '{}' not found. Images: {:?}",
                         url, og.images.iter().map(|img| &img.url).collect::<Vec<_>>());
             }
             None => panic!("Expected OG image '{}', but no OpenGraph data", url),
         }
         self
     }
-    
+
     /// Assert Twitter card type matches expected value
     pub fn has_twitter_card(self, expected: &str) -> Self {
         match &self.metadata.twitter {
@@ -254,7 +254,7 @@ impl<'a> MetadataAssert<'a> {
         }
         self
     }
-    
+
     /// Assert robots directive is set correctly
     pub fn has_robots_directive(self, directive: &str, expected: bool) -> Self {
         match &self.metadata.robots {
@@ -274,7 +274,7 @@ impl<'a> MetadataAssert<'a> {
         }
         self
     }
-    
+
     /// Assert canonical URL matches expected value
     pub fn has_canonical(self, expected: &str) -> Self {
         match &self.metadata.alternates {
@@ -289,7 +289,7 @@ impl<'a> MetadataAssert<'a> {
         }
         self
     }
-    
+
     /// Assert alternate language exists
     pub fn has_alternate_language(self, lang: &str, url: &str) -> Self {
         match &self.metadata.alternates {
@@ -304,26 +304,26 @@ impl<'a> MetadataAssert<'a> {
         }
         self
     }
-    
+
     /// Assert metadata is valid (no validation errors)
     pub fn is_valid(self) -> Self {
         let validation = self.metadata.validate();
         assert!(validation.is_valid, "Metadata validation failed: {:?}", validation.errors);
         self
     }
-    
+
     /// Assert metadata has validation errors
     pub fn has_validation_errors(self) -> Self {
         let validation = self.metadata.validate();
         assert!(!validation.is_valid, "Expected validation errors, but metadata is valid");
         self
     }
-    
+
     /// Assert validation contains specific error message
     pub fn has_validation_error_containing(self, text: &str) -> Self {
         let validation = self.metadata.validate();
         let found = validation.errors.iter().any(|error| error.contains(text));
-        assert!(found, "Expected validation error containing '{}', but found: {:?}", 
+        assert!(found, "Expected validation error containing '{}', but found: {:?}",
                 text, validation.errors);
         self
     }
@@ -377,12 +377,12 @@ pub fn metadata_equals_ignore_order(a: &Metadata, b: &Metadata) -> bool {
     if a.title != b.title {
         return false;
     }
-    
+
     // Compare descriptions
     if a.description != b.description {
         return false;
     }
-    
+
     // Compare keywords (order-insensitive)
     let mut a_keywords = a.keywords.clone();
     let mut b_keywords = b.keywords.clone();
@@ -391,12 +391,12 @@ pub fn metadata_equals_ignore_order(a: &Metadata, b: &Metadata) -> bool {
     if a_keywords != b_keywords {
         return false;
     }
-    
+
     // Compare OpenGraph (complex structure, but order matters for images)
     if a.open_graph != b.open_graph {
         return false;
     }
-    
+
     // Compare other fields
     a.twitter == b.twitter &&
     a.robots == b.robots &&
@@ -420,11 +420,11 @@ impl MockHttpClient {
             responses: std::collections::HashMap::new(),
         }
     }
-    
+
     pub fn mock_response(&mut self, url: &str, status: u16, body: &str) {
         self.responses.insert(url.to_string(), (status, body.to_string()));
     }
-    
+
     pub async fn get(&self, url: &str) -> Result<(u16, String), Box<dyn std::error::Error>> {
         match self.responses.get(url) {
             Some((status, body)) => Ok((*status, body.clone())),
@@ -441,7 +441,7 @@ pub fn assert_metadata_snapshot(metadata: &Metadata, snapshot_name: &str) {
 
 /// Performance testing helper
 pub fn measure_operation<F, R>(operation: F) -> (R, std::time::Duration)
-where 
+where
     F: FnOnce() -> R,
 {
     let start = std::time::Instant::now();
@@ -450,7 +450,7 @@ where
     (result, duration)
 }
 
-/// Async performance testing helper  
+/// Async performance testing helper
 pub async fn measure_async_operation<F, Fut, R>(operation: F) -> (R, std::time::Duration)
 where
     F: FnOnce() -> Fut,
@@ -467,7 +467,7 @@ where
 pub mod generators {
     use super::*;
     use proptest::prelude::*;
-    
+
     pub fn arb_title() -> impl Strategy<Value = Title> {
         prop_oneof![
             any::<String>().prop_map(Title::Static),
@@ -477,7 +477,7 @@ pub mod generators {
             any::<String>().prop_map(Title::Absolute),
         ]
     }
-    
+
     pub fn arb_metadata() -> impl Strategy<Value = Metadata> {
         (
             prop::option::of(arb_title()),
@@ -492,7 +492,7 @@ pub mod generators {
             }
         })
     }
-    
+
     pub fn arb_og_image_params() -> impl Strategy<Value = OgImageParams> {
         (
             any::<String>(),

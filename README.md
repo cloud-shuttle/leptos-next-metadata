@@ -53,16 +53,16 @@ fn MyPage() -> impl IntoView {
         <Html lang="en" dir="ltr" />
         <Body class="my-app" lang="en" />
         <MetaTags />
-        <EnhancedTitle 
-            text="My Awesome Page" 
+        <EnhancedTitle
+            text="My Awesome Page"
             template="{} | My Site"
         />
-        <HashedStylesheet 
+        <HashedStylesheet
             options=leptos::prelude::LeptosOptions::builder()
                 .output_name("my-app")
                 .build()
         />
-        
+
         <div>
             <h1>"Welcome to My Page"</h1>
             <p>"This page uses our new metadata components!"</p>
@@ -86,8 +86,8 @@ fn MyPage() -> impl IntoView {
         og_type: "website",
         og_image: "/og-image.jpg",
     }
-    
-    view! { 
+
+    view! {
         <div>
             <h1>"Welcome to My Page"</h1>
             <p>"This page has automatic metadata generation!"</p>
@@ -117,24 +117,28 @@ fn get_metadata() -> Metadata {
 ## 🎯 **Key Features**
 
 ### **📊 Metadata Management**
+
 - **Static & Dynamic**: Support for both static and dynamic metadata
 - **Inheritance**: Base metadata with page-specific overrides
 - **Validation**: Built-in SEO validation and best practices
 - **Merging**: Intelligent metadata merging and conflict resolution
 
 ### **🖼️ Open Graph Images**
+
 - **High Performance**: Rust-native image generation (2-7x faster)
 - **Template System**: Liquid-based template engine
 - **Caching**: Multi-level caching with TTL support
 - **Customization**: Full control over colors, fonts, and layout
 
 ### **🏷️ Structured Data**
+
 - **JSON-LD**: W3C-compliant structured data
 - **Schema.org**: Industry-standard markup types
 - **Type Safety**: Compile-time validation of structured data
 - **Extensible**: Easy to add new schema types
 
 ### **📁 File Conventions**
+
 - **Automatic Detection**: Favicon, manifest, and asset scanning
 - **Next.js Compatible**: Familiar file-based conventions
 - **Performance**: Efficient scanning with depth limits
@@ -164,12 +168,12 @@ fn get_metadata() -> Metadata {
 
 ## ⚡ **Performance**
 
-| Metric | Target | Current | Status |
-|--------|--------|---------|---------|
-| Metadata Merge | <10μs | ✅ | Met |
-| OG Image Generation | <100ms | ✅ | Met |
-| JSON-LD Serialization | <5μs | ✅ | Met |
-| Template Rendering | <50μs | ✅ | Met |
+| Metric                | Target | Current | Status |
+| --------------------- | ------ | ------- | ------ |
+| Metadata Merge        | <10μs  | ✅      | Met    |
+| OG Image Generation   | <100ms | ✅      | Met    |
+| JSON-LD Serialization | <5μs   | ✅      | Met    |
+| Template Rendering    | <50μs  | ✅      | Met    |
 
 ---
 
@@ -181,6 +185,7 @@ leptos-next-metadata = { version = "0.1.0-beta.1", features = ["og-images", "jso
 ```
 
 **Available Features:**
+
 - `og-images` - Open Graph image generation
 - `json-ld` - Structured data support
 - `file-conventions` - File-based metadata scanning
@@ -193,18 +198,21 @@ leptos-next-metadata = { version = "0.1.0-beta.1", features = ["og-images", "jso
 ## 🗺️ **Roadmap to v1.0.0**
 
 ### **Phase 1: Foundation ✅ COMPLETED**
+
 - [x] Documentation organization
 - [x] Test infrastructure
 - [x] Production roadmap
 - [x] Quick start guide
 
 ### **Phase 2: Production Readiness (Weeks 3-4)**
+
 - [ ] API stability review
 - [ ] Performance optimization
 - [ ] Security audit
 - [ ] CI/CD pipeline
 
 ### **Phase 3: Release Preparation (Week 5)**
+
 - [ ] Final testing and validation
 - [ ] Documentation finalization
 - [ ] Release management
@@ -219,12 +227,14 @@ leptos-next-metadata = { version = "0.1.0-beta.1", features = ["og-images", "jso
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
 ### **Areas for Contribution**
+
 - **Documentation**: Improve guides and examples
 - **Testing**: Add more test coverage
 - **Performance**: Optimize critical paths
 - **Features**: Implement new metadata types
 
 ### **Getting Started**
+
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
@@ -237,8 +247,8 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 This project is licensed under either of
 
-- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
-- MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+- Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or <http://www.apache.org/licenses/LICENSE-2.0>)
+- MIT license ([LICENSE-MIT](LICENSE-MIT) or <http://opensource.org/licenses/MIT>)
 
 at your option.
 
@@ -280,18 +290,21 @@ at your option.
 This project was developed using **Large Language Models (LLMs)** following modern software engineering practices:
 
 ### **🧪 Test-Driven Development (TDD)**
+
 - **Red-Green-Refactor cycle** for all new features
 - **191 total tests** covering unit, integration, and E2E scenarios
 - **Cross-browser testing** with Playwright
 - **Performance benchmarking** and validation
 
 ### **🔧 AI-Assisted Development**
+
 - **Code generation** using LLMs for rapid prototyping
 - **Automated testing** with comprehensive coverage
 - **Documentation generation** with detailed guides
 - **Quality assurance** through iterative refinement
 
 ### **📊 Development Metrics**
+
 - **100% feature parity** with `leptos_meta`
 - **2-7x performance improvement** over browser-based solutions
 - **Full type safety** with Rust compile-time validation
@@ -304,11 +317,13 @@ This project was developed using **Large Language Models (LLMs)** following mode
 **Cloud Shuttle** is building the future of web development with Rust and modern frameworks. This project is part of our ecosystem of high-performance, type-safe web development tools.
 
 ### **🌐 Cloud Shuttle Ecosystem**
+
 - **leptos-next-metadata** - Advanced metadata management
 - **Future projects** - More Rust-based web development tools
 - **Community focus** - Open source and developer-friendly
 
 ### **🎯 Our Mission**
+
 To provide developers with the best tools for building fast, secure, and maintainable web applications using Rust and modern web technologies.
 
 ---

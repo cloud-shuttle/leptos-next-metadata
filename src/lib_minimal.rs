@@ -1,5 +1,5 @@
 //! Minimal leptos-next-metadata implementation
-//! 
+//!
 //! This provides basic metadata types without complex features
 
 use leptos::*;
@@ -17,19 +17,19 @@ impl Metadata {
     pub fn new() -> Self {
         Self::default()
     }
-    
+
     pub fn with_title<T: Into<String>>(title: T) -> Self {
         Self {
             title: Some(title.into()),
             ..Default::default()
         }
     }
-    
+
     pub fn title<T: Into<String>>(mut self, title: T) -> Self {
         self.title = Some(title.into());
         self
     }
-    
+
     pub fn description<T: Into<String>>(mut self, desc: T) -> Self {
         self.description = Some(desc.into());
         self

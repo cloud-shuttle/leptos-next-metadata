@@ -17,13 +17,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": [
-    "tests/e2e/**/*.ts",
-    "playwright.config.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "target"
-  ]
+  "include": ["tests/e2e/**/*.ts", "playwright.config.ts"],
+  "exclude": ["node_modules", "dist", "target"]
 }

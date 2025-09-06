@@ -1,22 +1,22 @@
-use leptos::prelude::*;
+// use leptos::prelude::*;
 
 /// A component that injects a hashed stylesheet link into the document head.
-/// 
+///
 /// This component is designed to work with cargo-leptos file hashing feature.
 /// It reads the hash file and constructs the correct URL for the hashed CSS file.
-/// 
+///
 /// # Example
-/// 
+///
 /// ```rust
 /// use leptos_next_metadata::prelude::*;
 /// use leptos::prelude::LeptosOptions;
-/// 
+///
 /// #[component]
 /// fn App() -> impl IntoView {
 ///     let options = LeptosOptions::builder()
 ///         .output_name("my-app")
 ///         .build();
-///     
+///
 ///     view! {
 ///         <main>
 ///             <HashedStylesheet options=options />
@@ -24,37 +24,40 @@ use leptos::prelude::*;
 ///     }
 /// }
 /// ```
-
 // Re-export the HashedStylesheet component from leptos_meta
 pub use leptos_meta::HashedStylesheet;
 
 mod tests {
-    use super::*;
-    use leptos::prelude::LeptosOptions;
+    // use super::*;
+    // use leptos::prelude::LeptosOptions;
 
     #[test]
     fn test_hashed_stylesheet_component_exists() {
         // Test that we can create a HashedStylesheet component
+        use leptos::prelude::LeptosOptions;
+
         let options = LeptosOptions::builder()
             .output_name("test-app")
             .build();
-        let _stylesheet = view! { 
+        let _stylesheet = view! {
             <HashedStylesheet options=options />
         };
-        
+
         // Test passes if component compiles
     }
 
     #[test]
     fn test_hashed_stylesheet_with_id() {
         // Test HashedStylesheet component with id
+        use leptos::prelude::LeptosOptions;
+
         let options = LeptosOptions::builder()
             .output_name("test-app")
             .build();
-        let _stylesheet = view! { 
+        let _stylesheet = view! {
             <HashedStylesheet options=options id="main-stylesheet" />
         };
-        
+
         // Test passes if component compiles with id
     }
 
@@ -64,10 +67,10 @@ mod tests {
         let options = LeptosOptions::builder()
             .output_name("test-app")
             .build();
-        let _stylesheet = view! { 
+        let _stylesheet = view! {
             <HashedStylesheet options=options root="/assets" />
         };
-        
+
         // Test passes if component compiles with root
     }
 
@@ -77,14 +80,14 @@ mod tests {
         let options = LeptosOptions::builder()
             .output_name("test-app")
             .build();
-        let _stylesheet = view! { 
-            <HashedStylesheet 
-                options=options 
-                id="main-stylesheet" 
-                root="/assets" 
+        let _stylesheet = view! {
+            <HashedStylesheet
+                options=options
+                id="main-stylesheet"
+                root="/assets"
             />
         };
-        
+
         // Test passes if component compiles with all props
     }
 
@@ -95,11 +98,11 @@ mod tests {
             .output_name("my-app")
             .hash_files(true)
             .build();
-        
-        let _stylesheet = view! { 
+
+        let _stylesheet = view! {
             <HashedStylesheet options=options />
         };
-        
+
         // Test passes if component compiles with custom options
     }
 
@@ -110,11 +113,11 @@ mod tests {
             .output_name("test-app")
             .hash_files(false)
             .build();
-        
-        let _stylesheet = view! { 
+
+        let _stylesheet = view! {
             <HashedStylesheet options=options />
         };
-        
+
         // Test passes if component compiles without hashing
     }
 }

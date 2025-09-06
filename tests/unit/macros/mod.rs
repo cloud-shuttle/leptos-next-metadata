@@ -1,5 +1,5 @@
 //! Macro testing module
-//! 
+//!
 //! This module contains comprehensive tests for the metadata! and generate_metadata! macros,
 //! covering compilation, error handling, integration, and real-world usage scenarios.
 

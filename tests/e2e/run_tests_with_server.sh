@@ -12,17 +12,17 @@ echo -e "${BLUE}🚀 Starting Metadata Testing with Test Server${NC}"
 # Function to cleanup on exit
 cleanup() {
     echo -e "\n${YELLOW}🧹 Cleaning up...${NC}"
-    
+
     # Kill any running test server
     if [ ! -z "$SERVER_PID" ]; then
         echo -e "${YELLOW}🛑 Stopping test server (PID: $SERVER_PID)${NC}"
         kill $SERVER_PID 2>/dev/null
         wait $SERVER_PID 2>/dev/null
     fi
-    
+
     # Kill any remaining cargo processes
     pkill -f "cargo run --example test_server" 2>/dev/null
-    
+
     echo -e "${GREEN}✅ Cleanup complete${NC}"
     exit 0
 }
@@ -42,12 +42,12 @@ for i in {1..30}; do
         echo -e "${GREEN}✅ Server ready on http://localhost:3000${NC}"
         break
     fi
-    
+
     if [ $i -eq 30 ]; then
         echo -e "${RED}❌ Server failed to start within 30 seconds${NC}"
         exit 1
     fi
-    
+
     echo -n "."
     sleep 1
 done

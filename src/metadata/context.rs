@@ -1,5 +1,5 @@
 //! Leptos context integration for metadata management
-//! 
+//!
 //! This module provides context management for sharing metadata across the component tree.
 
 use crate::{Metadata, MetadataConfig};
@@ -11,10 +11,10 @@ use parking_lot::RwLock;
 pub struct MetadataContext {
     /// Current metadata configuration
     pub config: Arc<MetadataConfig>,
-    
+
     /// Current metadata stack for inheritance
     pub metadata_stack: Arc<RwLock<Vec<Metadata>>>,
-    
+
     /// Parent metadata context (for nested contexts)
     pub parent: Option<Arc<MetadataContext>>,
 }
@@ -28,7 +28,7 @@ impl MetadataContext {
             parent: None,
         }
     }
-    
+
     /// Create a new metadata context with custom configuration
     pub fn with_config(config: MetadataConfig) -> Self {
         Self {
@@ -37,7 +37,7 @@ impl MetadataContext {
             parent: None,
         }
     }
-    
+
     /// Create a child context that inherits from a parent
     pub fn with_parent(parent: Arc<MetadataContext>) -> Self {
         Self {
@@ -46,37 +46,37 @@ impl MetadataContext {
             parent: Some(parent),
         }
     }
-    
+
     /// Add metadata to the current context
     pub fn push_metadata(&self, metadata: Metadata) {
         let mut stack = self.metadata_stack.write();
         stack.push(metadata);
     }
-    
+
     /// Remove the most recent metadata from the current context
     pub fn pop_metadata(&self) -> Option<Metadata> {
         let mut stack = self.metadata_stack.write();
         stack.pop()
     }
-    
+
     /// Get the merged metadata from this context and all parent contexts
     pub fn get_merged_metadata(&self) -> Metadata {
         let mut result = Metadata::default();
-        
+
         // Start with parent metadata if it exists
         if let Some(ref parent) = self.parent {
             result = crate::metadata::merge::merge_metadata(result, parent.get_merged_metadata());
         }
-        
+
         // Apply metadata from this context's stack
         let stack = self.metadata_stack.read();
         for metadata in stack.iter() {
             result = crate::metadata::merge::merge_metadata(result, metadata.clone());
         }
-        
+
         result
     }
-    
+
     /// Update the configuration for this context
     pub fn update_config(&mut self, config: MetadataConfig) {
         self.config = Arc::new(config);
@@ -105,13 +105,21 @@ impl MetadataProvider {
             context: MetadataContext::new(),
         }
     }
-    
+}
+
+impl Default for MetadataProvider {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl MetadataProvider {
     pub fn with_config(config: MetadataConfig) -> Self {
         Self {
             context: MetadataContext::with_config(config),
         }
     }
-    
+
     pub fn get_context(&self) -> &MetadataContext {
         &self.context
     }

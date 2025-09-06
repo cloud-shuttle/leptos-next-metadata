@@ -5,7 +5,7 @@ use std::collections::HashMap;
 #[test]
 fn test_default_template_registration() {
     let mut engine = TemplateEngine::new();
-    
+
     // Test that default templates are registered
     let templates = engine.list_templates();
     assert!(templates.contains(&"default".to_string()));
@@ -17,17 +17,17 @@ fn test_default_template_registration() {
 #[test]
 fn test_template_registration() {
     let mut engine = TemplateEngine::new();
-    
+
     let custom_template = r#"
         <svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
             <rect fill="{{ color }}" width="1200" height="630"/>
             <text x="60" y="200" font-size="48" fill="white">{{ title }}</text>
         </svg>
     "#;
-    
+
     let result = engine.register_template("custom", custom_template);
     assert!(result.is_ok());
-    
+
     let templates = engine.list_templates();
     assert!(templates.contains(&"custom".to_string()));
 }
@@ -35,13 +35,13 @@ fn test_template_registration() {
 #[test]
 fn test_template_override() {
     let mut engine = TemplateEngine::new();
-    
+
     let template_v1 = r#"<svg><text>Version 1</text></svg>"#;
     let template_v2 = r#"<svg><text>Version 2</text></svg>"#;
-    
+
     engine.register_template("test", template_v1).unwrap();
     engine.register_template("test", template_v2).unwrap(); // Override
-    
+
     let result = engine.render("test", liquid::object!({})).unwrap();
     assert!(result.contains("Version 2"));
     assert!(!result.contains("Version 1"));
@@ -50,7 +50,7 @@ fn test_template_override() {
 #[test]
 fn test_template_rendering_with_filters() {
     let mut engine = TemplateEngine::new();
-    
+
     let template = r#"
         <svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
             <text font-size="48">{{ title | upcase }}</text>
@@ -59,16 +59,16 @@ fn test_template_rendering_with_filters() {
             <text font-size="20">{{ price | currency }}</text>
         </svg>
     "#;
-    
+
     engine.register_template("filters", template).unwrap();
-    
+
     let result = engine.render("filters", liquid::object!({
         "title": "hello world",
         "description": "This is a very long description that should be truncated to fit within the specified length limit",
         "date": "2024-01-15T10:30:00Z",
         "price": 29.99,
     })).unwrap();
-    
+
     assert!(result.contains("HELLO WORLD"));
     assert!(result.contains("This is a very long description that should be"));
     assert!(!result.contains("truncated to fit")); // Should be truncated
@@ -79,7 +79,7 @@ fn test_template_rendering_with_filters() {
 #[test]
 fn test_conditional_rendering() {
     let mut engine = TemplateEngine::new();
-    
+
     let template = r#"
         <svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
             <text x="60" y="100">{{ title }}</text>
@@ -96,9 +96,9 @@ fn test_conditional_rendering() {
             {% endunless %}
         </svg>
     "#;
-    
+
     engine.register_template("conditional", template).unwrap();
-    
+
     // Test with all fields
     let result1 = engine.render("conditional", liquid::object!({
         "title": "Test Title",
@@ -107,19 +107,19 @@ fn test_conditional_rendering() {
         "date": "2024-01-15",
         "hide_date": false,
     })).unwrap();
-    
+
     assert!(result1.contains("Test Title"));
     assert!(result1.contains("Test Subtitle"));
     assert!(result1.contains("By John Doe"));
     assert!(result1.contains("2024-01-15"));
-    
+
     // Test with missing fields
     let result2 = engine.render("conditional", liquid::object!({
         "title": "Test Title",
         "date": "2024-01-15",
         "hide_date": true,
     })).unwrap();
-    
+
     assert!(result2.contains("Test Title"));
     assert!(!result2.contains("Test Subtitle"));
     assert!(result2.contains("Anonymous"));
@@ -129,7 +129,7 @@ fn test_conditional_rendering() {
 #[test]
 fn test_loop_rendering() {
     let mut engine = TemplateEngine::new();
-    
+
     let template = r#"
         <svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
             <text x="60" y="100">{{ title }}</text>
@@ -145,9 +145,9 @@ fn test_loop_rendering() {
             {% endfor %}
         </svg>
     "#;
-    
+
     engine.register_template("loops", template).unwrap();
-    
+
     let result = engine.render("loops", liquid::object!({
         "title": "Tags and Items",
         "tags": ["rust", "leptos", "web"],
@@ -159,7 +159,7 @@ fn test_loop_rendering() {
             {"name": "Fourth Item"}, // Should be limited
         ],
     })).unwrap();
-    
+
     assert!(result.contains("RUST"));
     assert!(result.contains("LEPTOS"));
     assert!(result.contains("WEB"));
@@ -175,7 +175,7 @@ fn test_loop_rendering() {
 #[test]
 fn test_nested_objects() {
     let mut engine = TemplateEngine::new();
-    
+
     let template = r#"
         <svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
             <text x="60" y="100">{{ post.title }}</text>
@@ -184,9 +184,9 @@ fn test_nested_objects() {
             <text x="60" y="250">{{ post.stats.views }} views</text>
         </svg>
     "#;
-    
+
     engine.register_template("nested", template).unwrap();
-    
+
     let result = engine.render("nested", liquid::object!({
         "post": {
             "title": "Advanced Rust Techniques",
@@ -204,7 +204,7 @@ fn test_nested_objects() {
             }
         }
     })).unwrap();
-    
+
     assert!(result.contains("Advanced Rust Techniques"));
     assert!(result.contains("Jane Smith"));
     assert!(result.contains("Programming"));
@@ -214,7 +214,7 @@ fn test_nested_objects() {
 #[test]
 fn test_template_with_custom_fonts() {
     let mut engine = TemplateEngine::new();
-    
+
     let template = r#"
         <svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -227,16 +227,16 @@ fn test_template_with_custom_fonts() {
             <text x="60" y="200" class="body">{{ description }}</text>
         </svg>
     "#;
-    
+
     engine.register_template("fonts", template).unwrap();
-    
+
     let result = engine.render("fonts", liquid::object!({
         "title": "Custom Fonts",
         "description": "Using custom font families",
         "title_font": "Helvetica",
         "body_font": "Georgia",
     })).unwrap();
-    
+
     assert!(result.contains("Helvetica"));
     assert!(result.contains("Georgia"));
     assert!(result.contains("Custom Fonts"));
@@ -245,7 +245,7 @@ fn test_template_with_custom_fonts() {
 #[test]
 fn test_gradient_backgrounds() {
     let mut engine = TemplateEngine::new();
-    
+
     let template = r#"
         <svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -257,14 +257,14 @@ fn test_gradient_backgrounds() {
                     </linearGradient>
                 {% endif %}
             </defs>
-            <rect fill="{% if gradient %}url(#bg){% else %}{{ background | default: '#667eea' }}{% endif %}" 
+            <rect fill="{% if gradient %}url(#bg){% else %}{{ background | default: '#667eea' }}{% endif %}"
                   width="1200" height="630"/>
             <text x="60" y="200" font-size="48" fill="white">{{ title }}</text>
         </svg>
     "#;
-    
+
     engine.register_template("gradient", template).unwrap();
-    
+
     let result = engine.render("gradient", liquid::object!({
         "title": "Gradient Background",
         "gradient": {
@@ -274,7 +274,7 @@ fn test_gradient_backgrounds() {
             ]
         }
     })).unwrap();
-    
+
     assert!(result.contains("<linearGradient"));
     assert!(result.contains("#667eea"));
     assert!(result.contains("#764ba2"));
@@ -284,22 +284,22 @@ fn test_gradient_backgrounds() {
 #[test]
 fn test_template_with_images() {
     let mut engine = TemplateEngine::new();
-    
+
     let template = r#"
         <svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg"
              xmlns:xlink="http://www.w3.org/1999/xlink">
             <rect fill="{{ background | default: '#f0f0f0' }}" width="1200" height="630"/>
             {% if logo %}
-                <image x="{{ logo.x | default: 60 }}" y="{{ logo.y | default: 60 }}" 
+                <image x="{{ logo.x | default: 60 }}" y="{{ logo.y | default: 60 }}"
                        width="{{ logo.width | default: 100 }}" height="{{ logo.height | default: 100 }}"
                        xlink:href="{{ logo.url }}"/>
             {% endif %}
             <text x="60" y="300" font-size="48">{{ title }}</text>
         </svg>
     "#;
-    
+
     engine.register_template("with_image", template).unwrap();
-    
+
     let result = engine.render("with_image", liquid::object!({
         "title": "With Logo",
         "background": "#ffffff",
@@ -311,7 +311,7 @@ fn test_template_with_images() {
             "height": 120
         }
     })).unwrap();
-    
+
     assert!(result.contains("<image"));
     assert!(result.contains("/logo.png"));
     assert!(result.contains("x=\"50\""));
@@ -321,18 +321,18 @@ fn test_template_with_images() {
 #[test]
 fn test_template_validation() {
     let mut engine = TemplateEngine::new();
-    
+
     // Test invalid Liquid syntax
     let invalid_liquid = "{{ unclosed tag";
     let result = engine.register_template("invalid", invalid_liquid);
     assert!(result.is_err());
-    
+
     // Test invalid SVG structure
     let invalid_svg = "<svg><invalid-element></svg>";
     let result = engine.register_template("invalid_svg", invalid_svg);
     // Should succeed at registration time, fail at render time
     assert!(result.is_ok());
-    
+
     let render_result = engine.render("invalid_svg", liquid::object!({}));
     // Depending on implementation, might succeed or fail
     match render_result {
@@ -344,7 +344,7 @@ fn test_template_validation() {
 #[test]
 fn test_template_performance_with_large_data() {
     let mut engine = TemplateEngine::new();
-    
+
     let template = r#"
         <svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
             <rect fill="#f0f0f0" width="1200" height="630"/>
@@ -353,25 +353,25 @@ fn test_template_performance_with_large_data() {
             {% endfor %}
         </svg>
     "#;
-    
+
     engine.register_template("performance", template).unwrap();
-    
+
     // Create large dataset
     let items: Vec<_> = (0..1000).map(|i| liquid::object!({
         "name": format!("Item {}", i),
         "value": i * 10,
     })).collect();
-    
+
     let start = std::time::Instant::now();
     let result = engine.render("performance", liquid::object!({
         "items": items,
     })).unwrap();
     let duration = start.elapsed();
-    
+
     assert!(result.contains("Item 1"));
     assert!(result.contains("Item 10"));
     assert!(!result.contains("Item 11")); // Should be limited to 10
-    
+
     // Should render quickly even with large data
     assert!(duration.as_millis() < 100, "Template rendering took {}ms", duration.as_millis());
 }
@@ -379,15 +379,15 @@ fn test_template_performance_with_large_data() {
 #[test]
 fn test_template_security() {
     let mut engine = TemplateEngine::new();
-    
+
     let template = r#"
         <svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
             <text x="60" y="200">{{ user_input }}</text>
         </svg>
     "#;
-    
+
     engine.register_template("security", template).unwrap();
-    
+
     // Test with potentially dangerous input
     let dangerous_inputs = vec![
         "<script>alert('xss')</script>",
@@ -395,12 +395,12 @@ fn test_template_security() {
         "<img src=x onerror=alert(1)>",
         "{{ system.password }}", // Template injection attempt
     ];
-    
+
     for input in dangerous_inputs {
         let result = engine.render("security", liquid::object!({
             "user_input": input,
         })).unwrap();
-        
+
         // Should be escaped or sanitized
         assert!(result.contains("&lt;") || !result.contains("<script>"));
         assert!(!result.contains("javascript:"));
@@ -411,20 +411,20 @@ fn test_template_security() {
 #[test]
 fn test_template_caching() {
     let mut engine = TemplateEngine::with_cache();
-    
+
     let template = r#"<svg><text>{{ title }}</text></svg>"#;
     engine.register_template("cached", template).unwrap();
-    
+
     // First render
     let start = std::time::Instant::now();
     let _result1 = engine.render("cached", liquid::object!({"title": "Test"})).unwrap();
     let first_duration = start.elapsed();
-    
+
     // Second render (should be cached)
     let start = std::time::Instant::now();
     let _result2 = engine.render("cached", liquid::object!({"title": "Test"})).unwrap();
     let second_duration = start.elapsed();
-    
+
     // Second render should be faster (or at least not significantly slower)
     assert!(second_duration <= first_duration * 2);
 }
