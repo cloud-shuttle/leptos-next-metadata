@@ -52,54 +52,63 @@
 //! - [`macros`] - Procedural macros for metadata
 //! - [`utils`] - Utility functions and helpers
 
+#[cfg(feature = "api-contracts")]
+pub mod api;
+pub mod body;
+pub mod conventions;
+pub mod enhanced_title;
+pub mod hashed_stylesheet;
+pub mod html;
+pub mod json_ld;
+pub mod macros;
+pub mod meta_tags;
 pub mod metadata;
 pub mod og_image;
-pub mod json_ld;
-pub mod conventions;
-pub mod macros;
 pub mod utils;
-pub mod meta_tags;
-pub mod body;
-pub mod html;
-pub mod hashed_stylesheet;
-pub mod enhanced_title;
 
 /// Re-exports for common use cases
 pub mod prelude {
     pub use crate::metadata::{
-        Metadata, Title, Description, Keywords, Authors, Robots,
-        OpenGraph, Twitter, TwitterCard, Article, Profile,
-        AlternateLink, CanonicalUrl, Viewport, ThemeColor,
-        ColorScheme, ReferrerPolicy, FormatDetection,
+        AlternateLink, Article, Authors, CanonicalUrl, ColorScheme, Description, FormatDetection,
+        Keywords, Metadata, OpenGraph, Profile, ReferrerPolicy, Robots, ThemeColor, Title, Twitter,
+        TwitterCard, Viewport,
     };
 
-    pub use crate::og_image::{GeneratedOgImage, OgImageGenerator, OgImageParams};
+    pub use crate::conventions::{ConventionScanner, FileConventions};
     #[cfg(feature = "json-ld")]
     pub use crate::json_ld::{JsonLd, SchemaOrg};
-    pub use crate::conventions::{ConventionScanner, FileConventions};
+    pub use crate::og_image::{GeneratedOgImage, OgImageGenerator, OgImageParams};
 
     #[cfg(feature = "macros")]
-    pub use crate::macros::{metadata, generate_metadata};
+    pub use crate::macros::{generate_metadata, metadata};
 
-    pub use crate::metadata::context::{MetadataContext, MetadataProvider, provide_metadata_context};
-    pub use crate::meta_tags::MetaTags;
     pub use crate::body::Body;
-    pub use crate::html::Html;
-    pub use crate::hashed_stylesheet::HashedStylesheet;
     pub use crate::enhanced_title::EnhancedTitle;
+    pub use crate::hashed_stylesheet::HashedStylesheet;
+    pub use crate::html::Html;
+    pub use crate::meta_tags::MetaTags;
+    pub use crate::metadata::context::{
+        provide_metadata_context, MetadataContext, MetadataProvider,
+    };
 }
 
-/// Re-export commonly used types
-pub use metadata::{Metadata, Title, Description, Keywords, Authors, Robots, OpenGraph, Twitter, TwitterCard, CanonicalUrl, Viewport, ThemeColor, ColorScheme, ReferrerPolicy, FormatDetection};
-pub use og_image::{GeneratedOgImage, OgImageGenerator, OgImageParams};
-#[cfg(feature = "json-ld")]
-pub use json_ld::{JsonLd, SchemaOrg, Article, Organization, Person, WebPage, BlogPosting, Product, FAQPage, Question, Answer, BreadcrumbList, ListItem};
-pub use conventions::{ConventionScanner, FileConventions};
-pub use meta_tags::MetaTags;
 pub use body::Body;
-pub use html::Html;
-pub use hashed_stylesheet::HashedStylesheet;
+pub use conventions::{ConventionScanner, FileConventions};
 pub use enhanced_title::EnhancedTitle;
+pub use hashed_stylesheet::HashedStylesheet;
+pub use html::Html;
+#[cfg(feature = "json-ld")]
+pub use json_ld::{
+    Answer, Article, BlogPosting, BreadcrumbList, FAQPage, JsonLd, ListItem, Organization, Person,
+    Product, Question, SchemaOrg, WebPage,
+};
+pub use meta_tags::MetaTags;
+/// Re-export commonly used types
+pub use metadata::{
+    Authors, CanonicalUrl, ColorScheme, Description, FormatDetection, Keywords, Metadata,
+    OpenGraph, ReferrerPolicy, Robots, ThemeColor, Title, Twitter, TwitterCard, Viewport,
+};
+pub use og_image::{GeneratedOgImage, OgImageGenerator, OgImageParams};
 
 #[cfg(feature = "macros")]
 pub use macros::*;
@@ -281,7 +290,6 @@ pub struct LimitConfig {
     pub max_generation_time: u64,
 }
 
-
 impl Default for CacheConfig {
     fn default() -> Self {
         Self {
@@ -317,14 +325,13 @@ impl Default for ConventionConfig {
     }
 }
 
-
 impl Default for LimitConfig {
     fn default() -> Self {
         Self {
             max_og_image_size: 10_000_000, // 10MB
-            max_template_size: 1_000_000,   // 1MB
-            max_cache_memory: 100_000_000,  // 100MB
-            max_generation_time: 5000,      // 5s
+            max_template_size: 1_000_000,  // 1MB
+            max_cache_memory: 100_000_000, // 100MB
+            max_generation_time: 5000,     // 5s
         }
     }
 }

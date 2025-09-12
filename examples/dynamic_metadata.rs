@@ -1,9 +1,9 @@
-use leptos::*;
 use leptos::prelude::ElementChild;
+use leptos::*;
 use leptos_next_metadata::prelude::*;
 
 fn main() {
-    mount_to_body(App);
+    leptos::mount::mount_to_body(App);
 }
 
 #[component]

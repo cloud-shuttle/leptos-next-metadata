@@ -262,8 +262,7 @@ pub struct ListItem {
 impl SchemaOrg {
     /// Convert to JSON-LD value
     pub fn to_json_ld(&self) -> crate::Result<JsonLd> {
-        serde_json::to_value(self)
-            .map_err(|e| crate::Error::SerializationError(e.to_string()))
+        serde_json::to_value(self).map_err(|e| crate::Error::SerializationError(e.to_string()))
     }
 
     /// Create a web page schema
@@ -383,50 +382,127 @@ mod tests {
 
     #[test]
     fn test_web_page_schema() {
-        let schema = SchemaOrg::web_page("Test Page", Some("Test Description"), Some("https://example.com"));
+        let schema = SchemaOrg::web_page(
+            "Test Page",
+            Some("Test Description"),
+            Some("https://example.com"),
+        );
         let json_ld = schema.to_json_ld().unwrap();
 
-        assert_eq!(json_ld.get("@context").and_then(|v| v.as_str()), Some("https://schema.org"));
-        assert_eq!(json_ld.get("@type").and_then(|v| v.as_str()), Some("WebPage"));
-        assert_eq!(json_ld.get("name").and_then(|v| v.as_str()), Some("Test Page"));
-        assert_eq!(json_ld.get("description").and_then(|v| v.as_str()), Some("Test Description"));
-        assert_eq!(json_ld.get("url").and_then(|v| v.as_str()), Some("https://example.com"));
+        assert_eq!(
+            json_ld.get("@context").and_then(|v| v.as_str()),
+            Some("https://schema.org")
+        );
+        assert_eq!(
+            json_ld.get("@type").and_then(|v| v.as_str()),
+            Some("WebPage")
+        );
+        assert_eq!(
+            json_ld.get("name").and_then(|v| v.as_str()),
+            Some("Test Page")
+        );
+        assert_eq!(
+            json_ld.get("description").and_then(|v| v.as_str()),
+            Some("Test Description")
+        );
+        assert_eq!(
+            json_ld.get("url").and_then(|v| v.as_str()),
+            Some("https://example.com")
+        );
     }
 
     #[test]
     fn test_article_schema() {
-        let schema = SchemaOrg::article("Test Article", "Test Author", "2023-01-01", Some("Test Description"));
+        let schema = SchemaOrg::article(
+            "Test Article",
+            "Test Author",
+            "2023-01-01",
+            Some("Test Description"),
+        );
         let json_ld = schema.to_json_ld().unwrap();
 
-        assert_eq!(json_ld.get("@context").and_then(|v| v.as_str()), Some("https://schema.org"));
-        assert_eq!(json_ld.get("@type").and_then(|v| v.as_str()), Some("Article"));
-        assert_eq!(json_ld.get("headline").and_then(|v| v.as_str()), Some("Test Article"));
-        assert_eq!(json_ld.get("datePublished").and_then(|v| v.as_str()), Some("2023-01-01"));
-        assert_eq!(json_ld.get("description").and_then(|v| v.as_str()), Some("Test Description"));
+        assert_eq!(
+            json_ld.get("@context").and_then(|v| v.as_str()),
+            Some("https://schema.org")
+        );
+        assert_eq!(
+            json_ld.get("@type").and_then(|v| v.as_str()),
+            Some("Article")
+        );
+        assert_eq!(
+            json_ld.get("headline").and_then(|v| v.as_str()),
+            Some("Test Article")
+        );
+        assert_eq!(
+            json_ld.get("datePublished").and_then(|v| v.as_str()),
+            Some("2023-01-01")
+        );
+        assert_eq!(
+            json_ld.get("description").and_then(|v| v.as_str()),
+            Some("Test Description")
+        );
     }
 
     #[test]
     fn test_organization_schema() {
-        let schema = SchemaOrg::organization("Test Corp", Some("https://example.com"), Some("https://example.com/logo.png"));
+        let schema = SchemaOrg::organization(
+            "Test Corp",
+            Some("https://example.com"),
+            Some("https://example.com/logo.png"),
+        );
         let json_ld = schema.to_json_ld().unwrap();
 
-        assert_eq!(json_ld.get("@context").and_then(|v| v.as_str()), Some("https://schema.org"));
-        assert_eq!(json_ld.get("@type").and_then(|v| v.as_str()), Some("Organization"));
-        assert_eq!(json_ld.get("name").and_then(|v| v.as_str()), Some("Test Corp"));
-        assert_eq!(json_ld.get("url").and_then(|v| v.as_str()), Some("https://example.com"));
-        assert_eq!(json_ld.get("logo").and_then(|v| v.as_str()), Some("https://example.com/logo.png"));
+        assert_eq!(
+            json_ld.get("@context").and_then(|v| v.as_str()),
+            Some("https://schema.org")
+        );
+        assert_eq!(
+            json_ld.get("@type").and_then(|v| v.as_str()),
+            Some("Organization")
+        );
+        assert_eq!(
+            json_ld.get("name").and_then(|v| v.as_str()),
+            Some("Test Corp")
+        );
+        assert_eq!(
+            json_ld.get("url").and_then(|v| v.as_str()),
+            Some("https://example.com")
+        );
+        assert_eq!(
+            json_ld.get("logo").and_then(|v| v.as_str()),
+            Some("https://example.com/logo.png")
+        );
     }
 
     #[test]
     fn test_person_schema() {
-        let schema = SchemaOrg::person("Jane Smith", Some("Software Engineer"), Some("https://example.com/jane"));
+        let schema = SchemaOrg::person(
+            "Jane Smith",
+            Some("Software Engineer"),
+            Some("https://example.com/jane"),
+        );
         let json_ld = schema.to_json_ld().unwrap();
 
-        assert_eq!(json_ld.get("@context").and_then(|v| v.as_str()), Some("https://schema.org"));
-        assert_eq!(json_ld.get("@type").and_then(|v| v.as_str()), Some("Person"));
-        assert_eq!(json_ld.get("name").and_then(|v| v.as_str()), Some("Jane Smith"));
-        assert_eq!(json_ld.get("jobTitle").and_then(|v| v.as_str()), Some("Software Engineer"));
-        assert_eq!(json_ld.get("url").and_then(|v| v.as_str()), Some("https://example.com/jane"));
+        assert_eq!(
+            json_ld.get("@context").and_then(|v| v.as_str()),
+            Some("https://schema.org")
+        );
+        assert_eq!(
+            json_ld.get("@type").and_then(|v| v.as_str()),
+            Some("Person")
+        );
+        assert_eq!(
+            json_ld.get("name").and_then(|v| v.as_str()),
+            Some("Jane Smith")
+        );
+        assert_eq!(
+            json_ld.get("jobTitle").and_then(|v| v.as_str()),
+            Some("Software Engineer")
+        );
+        assert_eq!(
+            json_ld.get("url").and_then(|v| v.as_str()),
+            Some("https://example.com/jane")
+        );
     }
 
     #[test]
@@ -439,24 +515,32 @@ mod tests {
         let schema = SchemaOrg::faq_page(&questions);
         let json_ld = schema.to_json_ld().unwrap();
 
-        assert_eq!(json_ld.get("@context").and_then(|v| v.as_str()), Some("https://schema.org"));
-        assert_eq!(json_ld.get("@type").and_then(|v| v.as_str()), Some("FAQPage"));
+        assert_eq!(
+            json_ld.get("@context").and_then(|v| v.as_str()),
+            Some("https://schema.org")
+        );
+        assert_eq!(
+            json_ld.get("@type").and_then(|v| v.as_str()),
+            Some("FAQPage")
+        );
         assert!(json_ld.get("mainEntity").is_some());
     }
 
     #[test]
     fn test_breadcrumbs_schema() {
-        let items = [
-            ("Home", "/"),
-            ("About", "/about"),
-            ("Contact", "/contact"),
-        ];
+        let items = [("Home", "/"), ("About", "/about"), ("Contact", "/contact")];
 
         let schema = SchemaOrg::breadcrumbs(&items);
         let json_ld = schema.to_json_ld().unwrap();
 
-        assert_eq!(json_ld.get("@context").and_then(|v| v.as_str()), Some("https://schema.org"));
-        assert_eq!(json_ld.get("@type").and_then(|v| v.as_str()), Some("BreadcrumbList"));
+        assert_eq!(
+            json_ld.get("@context").and_then(|v| v.as_str()),
+            Some("https://schema.org")
+        );
+        assert_eq!(
+            json_ld.get("@type").and_then(|v| v.as_str()),
+            Some("BreadcrumbList")
+        );
         assert!(json_ld.get("itemListElement").is_some());
     }
 

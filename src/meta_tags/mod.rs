@@ -33,53 +33,12 @@ pub fn MetaTags() -> impl IntoView {
 }
 
 mod tests {
-    // use super::*;
-
     #[test]
     fn test_meta_tags_component_exists() {
         // Test that we can create a MetaTags component
         // This test verifies the component compiles and can be instantiated
-        let _meta_tags = view! { <MetaTags /> };
+        let _meta_tags = crate::MetaTags();
 
         // Test passes if component compiles
-    }
-
-    #[test]
-    fn test_meta_tags_renders_in_ssr() {
-        // Test that MetaTags component can be rendered in SSR context
-        let _meta_tags = view! { <MetaTags /> };
-
-        // In SSR, MetaTags should inject meta tags into the head
-        // This test verifies the component can be created
-    }
-
-    #[test]
-    fn test_meta_tags_injects_metadata() {
-        // Test that MetaTags component can be used with metadata context
-        // This test verifies the component integrates with leptos_meta
-
-        // Note: In a real test environment, we would need to set up a proper
-        // Leptos runtime to test the actual metadata injection
-        let _meta_tags = view! { <MetaTags /> };
-
-        // Test passes if component compiles and integrates properly
-    }
-
-    #[test]
-    fn test_meta_tags_handles_empty_context() {
-        // Test that MetaTags handles empty metadata context gracefully
-        let _meta_tags = view! { <MetaTags /> };
-
-        // Should not panic or error
-    }
-
-    #[test]
-    fn test_meta_tags_ssr_output() {
-        // Test SSR output generation
-        // This test verifies the component can be used in SSR scenarios
-
-        let _meta_tags = view! { <MetaTags /> };
-
-        // Test passes if component compiles and renders
     }
 }

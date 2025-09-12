@@ -2,9 +2,7 @@
 
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{
-    parse_macro_input, parse::Parse, parse::ParseStream, Token, Ident, Expr, Result
-};
+use syn::{parse::Parse, parse::ParseStream, parse_macro_input, Expr, Ident, Result, Token};
 
 /// Generate metadata tags for Leptos applications
 ///
@@ -333,7 +331,7 @@ fn generate_metadata_code(input: MetadataInput) -> Result<proc_macro2::TokenStre
 
 fn generate_field_meta_tags(
     field_name: &str,
-    value: &MetadataValue
+    value: &MetadataValue,
 ) -> Result<Vec<proc_macro2::TokenStream>> {
     let mut tags = Vec::new();
 
@@ -378,7 +376,7 @@ fn generate_field_meta_tags(
                 },
             };
             tags.push(tag);
-        },
+        }
         MetadataValue::Nested(fields) => {
             match field_name {
                 "openGraph" | "open_graph" => {
@@ -387,14 +385,14 @@ fn generate_field_meta_tags(
                         let nested_tags = generate_og_meta_tags(&field_name, &field.value)?;
                         tags.extend(nested_tags);
                     }
-                },
+                }
                 "twitter" => {
                     for field in fields {
                         let field_name = field.name.to_string();
                         let nested_tags = generate_twitter_meta_tags(&field_name, &field.value)?;
                         tags.extend(nested_tags);
                     }
-                },
+                }
                 _ => {
                     // Handle other nested structures generically
                     for field in fields {
@@ -407,7 +405,7 @@ fn generate_field_meta_tags(
                     }
                 }
             }
-        },
+        }
         MetadataValue::Array(values) => {
             let array_tags = generate_array_meta_tags(field_name, values)?;
             tags.extend(array_tags);
@@ -419,7 +417,7 @@ fn generate_field_meta_tags(
 
 fn generate_og_meta_tags(
     field_name: &str,
-    value: &MetadataValue
+    value: &MetadataValue,
 ) -> Result<Vec<proc_macro2::TokenStream>> {
     let mut tags = Vec::new();
 
@@ -449,7 +447,7 @@ fn generate_og_meta_tags(
                 },
             };
             tags.push(tag);
-        },
+        }
         MetadataValue::Array(array_values) => {
             match field_name {
                 "images" => {
@@ -460,7 +458,7 @@ fn generate_og_meta_tags(
                             });
                         }
                     }
-                },
+                }
                 "videos" => {
                     for video_value in array_values {
                         if let MetadataValue::Simple(url) = video_value {
@@ -469,12 +467,12 @@ fn generate_og_meta_tags(
                             });
                         }
                     }
-                },
+                }
                 _ => {
                     // TODO: Handle generic array field for og:{} - need to implement proper array handling
                 }
             }
-        },
+        }
         _ => {
             // TODO: Handle other nested structures - need to implement proper nested handling
         }
@@ -485,7 +483,7 @@ fn generate_og_meta_tags(
 
 fn generate_twitter_meta_tags(
     field_name: &str,
-    value: &MetadataValue
+    value: &MetadataValue,
 ) -> Result<Vec<proc_macro2::TokenStream>> {
     let mut tags = Vec::new();
 
@@ -515,7 +513,7 @@ fn generate_twitter_meta_tags(
                 },
             };
             tags.push(tag);
-        },
+        }
         MetadataValue::Array(array_values) => {
             match field_name {
                 "images" => {
@@ -526,12 +524,12 @@ fn generate_twitter_meta_tags(
                             });
                         }
                     }
-                },
+                }
                 _ => {
                     // TODO: Handle generic twitter array fields
                 }
             }
-        },
+        }
         _ => {
             // TODO: Handle other nested structures for twitter
         }
@@ -542,7 +540,7 @@ fn generate_twitter_meta_tags(
 
 fn generate_array_meta_tags(
     field_name: &str,
-    values: &[MetadataValue]
+    values: &[MetadataValue],
 ) -> Result<Vec<proc_macro2::TokenStream>> {
     let mut tags = Vec::new();
 
@@ -561,7 +559,7 @@ fn generate_array_meta_tags(
                     <Meta name="keywords" content={[#(#keyword_exprs),*].join(", ")}/>
                 });
             }
-        },
+        }
         "images" => {
             // Generate image meta tags
             for value in values {
@@ -571,7 +569,7 @@ fn generate_array_meta_tags(
                     });
                 }
             }
-        },
+        }
         "authors" => {
             // Generate author meta tags
             for value in values {
@@ -581,7 +579,7 @@ fn generate_array_meta_tags(
                     });
                 }
             }
-        },
+        }
         _ => {
             // Handle other arrays generically
             for value in values {

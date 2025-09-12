@@ -138,7 +138,6 @@ impl Default for MergeConfig {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;

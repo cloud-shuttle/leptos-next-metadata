@@ -27,7 +27,10 @@ fn main() {
 
     let url_valid = leptos_next_metadata::utils::common::is_valid_url("https://example.com");
     let url_invalid = leptos_next_metadata::utils::common::is_valid_url("not-a-url");
-    println!("- URL validation: https://example.com = {}, not-a-url = {}", url_valid, url_invalid);
+    println!(
+        "- URL validation: https://example.com = {}, not-a-url = {}",
+        url_valid, url_invalid
+    );
 
     println!("\nBasic functionality working! ✅");
 }

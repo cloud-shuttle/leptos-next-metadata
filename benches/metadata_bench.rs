@@ -1,4 +1,4 @@
-use criterion::{black_box, criterion_group, criterion_main, Criterion, BenchmarkId, Throughput};
+use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion, Throughput};
 use leptos_next_metadata::metadata::*;
 use std::collections::HashMap;
 
@@ -10,15 +10,9 @@ fn benchmark_metadata_operations(c: &mut Criterion) {
         let parent = create_metadata_with_fields(*size);
         let child = create_metadata_with_fields(*size / 2);
 
-        group.bench_with_input(
-            BenchmarkId::new("merge", size),
-            size,
-            |b, _| {
-                b.iter(|| {
-                    black_box(child.clone()).merge(black_box(parent.clone()))
-                })
-            },
-        );
+        group.bench_with_input(BenchmarkId::new("merge", size), size, |b, _| {
+            b.iter(|| black_box(child.clone()).merge(black_box(parent.clone())))
+        });
     }
 
     // Benchmark title resolution
@@ -71,7 +65,9 @@ fn benchmark_og_image_generation(c: &mut Criterion) {
 
     // Create generator once for all tests
     let generator = runtime.block_on(async {
-        OgImageGenerator::new().await.expect("Failed to create generator")
+        OgImageGenerator::new()
+            .await
+            .expect("Failed to create generator")
     });
 
     // Benchmark different image complexities
@@ -118,9 +114,8 @@ fn benchmark_og_image_generation(c: &mut Criterion) {
             BenchmarkId::new("generate", complexity),
             complexity,
             |b, _| {
-                b.to_async(&runtime).iter(|| async {
-                    generator.generate(black_box(params.clone())).await.unwrap()
-                })
+                b.to_async(&runtime)
+                    .iter(|| async { generator.generate(black_box(params.clone())).await.unwrap() })
             },
         );
     }
@@ -147,9 +142,8 @@ fn benchmark_og_image_generation(c: &mut Criterion) {
             BenchmarkId::new("size", format!("{}x{}", width, height)),
             &name,
             |b, _| {
-                b.to_async(&runtime).iter(|| async {
-                    generator.generate(black_box(params.clone())).await.unwrap()
-                })
+                b.to_async(&runtime)
+                    .iter(|| async { generator.generate(black_box(params.clone())).await.unwrap() })
             },
         );
     }
@@ -158,19 +152,20 @@ fn benchmark_og_image_generation(c: &mut Criterion) {
     let params = OgImageParams::simple("Cached Title", "Cached Description");
 
     // Prime the cache
-    runtime.block_on(generator.generate(params.clone())).unwrap();
+    runtime
+        .block_on(generator.generate(params.clone()))
+        .unwrap();
 
     group.bench_function("generate_cached", |b| {
-        b.to_async(&runtime).iter(|| async {
-            generator.generate(black_box(params.clone())).await.unwrap()
-        })
+        b.to_async(&runtime)
+            .iter(|| async { generator.generate(black_box(params.clone())).await.unwrap() })
     });
 
     group.bench_function("generate_uncached", |b| {
         b.to_async(&runtime).iter(|| async {
             let unique_params = OgImageParams::simple(
                 &format!("Unique Title {}", fastrand::u64(..)),
-                "Always unique description"
+                "Always unique description",
             );
             generator.generate(black_box(unique_params)).await.unwrap()
         })
@@ -212,7 +207,9 @@ fn benchmark_template_rendering(c: &mut Criterion) {
     "#;
 
     engine.register_template("simple", simple_template).unwrap();
-    engine.register_template("complex", complex_template).unwrap();
+    engine
+        .register_template("complex", complex_template)
+        .unwrap();
 
     // Simple template rendering
     group.bench_function("render_simple", |b| {
@@ -221,9 +218,7 @@ fn benchmark_template_rendering(c: &mut Criterion) {
             "background": "#667eea",
         });
 
-        b.iter(|| {
-            engine.render("simple", black_box(data.clone())).unwrap()
-        })
+        b.iter(|| engine.render("simple", black_box(data.clone())).unwrap())
     });
 
     // Complex template rendering
@@ -237,26 +232,26 @@ fn benchmark_template_rendering(c: &mut Criterion) {
             "tags": ["rust", "leptos", "performance", "web", "metadata"],
         });
 
-        b.iter(|| {
-            engine.render("complex", black_box(data.clone())).unwrap()
-        })
+        b.iter(|| engine.render("complex", black_box(data.clone())).unwrap())
     });
 
     // Template with loops
     group.bench_function("render_with_loops", |b| {
-        let items = (0..50).map(|i| liquid::object!({
-            "name": format!("Item {}", i),
-            "value": i * 10,
-        })).collect::<Vec<_>>();
+        let items = (0..50)
+            .map(|i| {
+                liquid::object!({
+                    "name": format!("Item {}", i),
+                    "value": i * 10,
+                })
+            })
+            .collect::<Vec<_>>();
 
         let data = liquid::object!({
             "title": "Loop Performance Test",
             "items": items,
         });
 
-        b.iter(|| {
-            engine.render("complex", black_box(data.clone())).unwrap()
-        })
+        b.iter(|| engine.render("complex", black_box(data.clone())).unwrap())
     });
 
     group.finish();
@@ -275,7 +270,7 @@ fn benchmark_json_ld_operations(c: &mut Criterion) {
                     Person::builder()
                         .name(black_box("John Doe"))
                         .url(black_box("https://johndoe.com"))
-                        .build()
+                        .build(),
                 )
                 .date_published(black_box("2024-01-15T10:00:00Z"))
                 .date_modified(black_box("2024-01-16T15:30:00Z"))
@@ -286,7 +281,7 @@ fn benchmark_json_ld_operations(c: &mut Criterion) {
                         .name(black_box("Example Publisher"))
                         .url(black_box("https://example.com"))
                         .logo(black_box("https://example.com/logo.png"))
-                        .build()
+                        .build(),
                 )
                 .build()
         })
@@ -306,13 +301,13 @@ fn benchmark_json_ld_operations(c: &mut Criterion) {
                         .region(black_box("TS"))
                         .postal_code(black_box("12345"))
                         .country(black_box("US"))
-                        .build()
+                        .build(),
                 )
                 .contact_point(
                     ContactPoint::builder()
                         .telephone(black_box("+1-555-123-4567"))
                         .contact_type(black_box("customer service"))
-                        .build()
+                        .build(),
                 )
                 .build()
         })
@@ -326,15 +321,11 @@ fn benchmark_json_ld_operations(c: &mut Criterion) {
         .build();
 
     group.bench_function("serialize_article", |b| {
-        b.iter(|| {
-            serde_json::to_string(black_box(&article)).unwrap()
-        })
+        b.iter(|| serde_json::to_string(black_box(&article)).unwrap())
     });
 
     group.bench_function("serialize_pretty", |b| {
-        b.iter(|| {
-            serde_json::to_string_pretty(black_box(&article)).unwrap()
-        })
+        b.iter(|| serde_json::to_string_pretty(black_box(&article)).unwrap())
     });
 
     group.finish();
@@ -374,24 +365,20 @@ fn benchmark_file_conventions(c: &mut Criterion) {
 
     group.bench_function("scan_shallow", |b| {
         let scanner = ConventionScanner::new(&app_dir);
-        b.iter(|| {
-            scanner.scan().unwrap()
-        })
+        b.iter(|| scanner.scan().unwrap())
     });
 
     group.bench_function("scan_deep", |b| {
         let scanner = ConventionScanner::new(temp_dir.path());
-        b.iter(|| {
-            scanner.scan().unwrap()
-        })
+        b.iter(|| scanner.scan().unwrap())
     });
 
     // Benchmark pattern matching
     group.bench_function("pattern_matching", |b| {
         let scanner = ConventionScanner::new(&app_dir);
-        let paths: Vec<_> = (0..100).map(|i| {
-            format!("icon-{}x{}.png", i * 16, i * 16)
-        }).collect();
+        let paths: Vec<_> = (0..100)
+            .map(|i| format!("icon-{}x{}.png", i * 16, i * 16))
+            .collect();
 
         b.iter(|| {
             for path in &paths {
@@ -411,19 +398,23 @@ fn benchmark_concurrent_operations(c: &mut Criterion) {
     group.bench_function("concurrent_og_generation", |b| {
         b.to_async(&runtime).iter(|| async {
             let generator = std::sync::Arc::new(
-                OgImageGenerator::new().await.expect("Failed to create generator")
+                OgImageGenerator::new()
+                    .await
+                    .expect("Failed to create generator"),
             );
 
-            let tasks: Vec<_> = (0..10).map(|i| {
-                let gen = generator.clone();
-                tokio::spawn(async move {
-                    let params = OgImageParams::simple(
-                        &format!("Concurrent Title {}", i),
-                        &format!("Concurrent Description {}", i)
-                    );
-                    gen.generate(params).await.unwrap()
+            let tasks: Vec<_> = (0..10)
+                .map(|i| {
+                    let gen = generator.clone();
+                    tokio::spawn(async move {
+                        let params = OgImageParams::simple(
+                            &format!("Concurrent Title {}", i),
+                            &format!("Concurrent Description {}", i),
+                        );
+                        gen.generate(params).await.unwrap()
+                    })
                 })
-            }).collect();
+                .collect();
 
             futures::future::join_all(tasks).await
         })
@@ -432,16 +423,18 @@ fn benchmark_concurrent_operations(c: &mut Criterion) {
     // Benchmark concurrent metadata operations
     group.bench_function("concurrent_metadata_merge", |b| {
         b.to_async(&runtime).iter(|| async {
-            let tasks: Vec<_> = (0..100).map(|i| {
-                tokio::spawn(async move {
-                    let parent = create_metadata_with_fields(10);
-                    let child = Metadata {
-                        title: Some(Title::Static(format!("Child {}", i))),
-                        ..Default::default()
-                    };
-                    child.merge(parent)
+            let tasks: Vec<_> = (0..100)
+                .map(|i| {
+                    tokio::spawn(async move {
+                        let parent = create_metadata_with_fields(10);
+                        let child = Metadata {
+                            title: Some(Title::Static(format!("Child {}", i))),
+                            ..Default::default()
+                        };
+                        child.merge(parent)
+                    })
                 })
-            }).collect();
+                .collect();
 
             futures::future::join_all(tasks).await
         })
@@ -467,9 +460,9 @@ fn create_metadata_with_fields(count: usize) -> Metadata {
         open_graph: Some(OpenGraph {
             title: Some("OG Title".into()),
             description: Some("OG Description".into()),
-            images: (0..std::cmp::min(count, 5)).map(|i| {
-                OgImage::new(&format!("/image{}.jpg", i))
-            }).collect(),
+            images: (0..std::cmp::min(count, 5))
+                .map(|i| OgImage::new(&format!("/image{}.jpg", i)))
+                .collect(),
             ..Default::default()
         }),
         other,

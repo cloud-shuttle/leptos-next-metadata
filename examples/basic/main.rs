@@ -7,13 +7,13 @@
 //! - Work with Open Graph images
 //! - Use JSON-LD structured data
 
-use leptos::*;
 use leptos::prelude::ElementChild;
+use leptos::*;
 // use leptos_next_metadata::prelude::*;
 use leptos_next_metadata_macros::metadata;
 
 fn main() {
-    mount_to_body(App);
+    leptos::mount::mount_to_body(App);
 }
 
 #[component]

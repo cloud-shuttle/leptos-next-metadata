@@ -1,0 +1,728 @@
+openapi: 3.0.3
+info:
+  title: Leptos Next Metadata API
+  description: |
+    High-performance metadata generation and management API for Leptos applications.
+    Provides comprehensive metadata handling including Open Graph, Twitter Cards,
+    JSON-LD structured data, and SEO optimization.
+  version: 1.0.0
+  contact:
+    name: Leptos Next Metadata Team
+    url: https://github.com/leptos-rs/leptos-next-metadata
+    email: support@leptos.dev
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.leptos.dev/metadata/v1
+    description: Production server
+  - url: https://staging-api.leptos.dev/metadata/v1
+    description: Staging server
+  - url: http://localhost:3000/api/metadata/v1
+    description: Development server
+
+paths:
+  /metadata:
+    post:
+      summary: Generate metadata for a page
+      description: |
+        Generates comprehensive metadata including Open Graph, Twitter Cards,
+        JSON-LD structured data, and SEO tags for a given page configuration.
+      operationId: generateMetadata
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MetadataRequest'
+            examples:
+              basic:
+                summary: Basic metadata generation
+                value:
+                  title: "Welcome to My Site"
+                  description: "A comprehensive guide to modern web development"
+                  url: "https://example.com/welcome"
+                  image: "https://example.com/images/welcome.jpg"
+              advanced:
+                summary: Advanced metadata with structured data
+                value:
+                  title: "Product Review: Amazing Widget"
+                  description: "In-depth review of the Amazing Widget product"
+                  url: "https://example.com/reviews/amazing-widget"
+                  image: "https://example.com/images/widget-review.jpg"
+                  openGraph:
+                    type: "article"
+                    siteName: "Tech Reviews"
+                  twitter:
+                    card: "summary_large_image"
+                    creator: "@techreviews"
+                  jsonLd:
+                    type: "Review"
+                    itemReviewed:
+                      name: "Amazing Widget"
+                      brand: "WidgetCorp"
+                    reviewRating:
+                      ratingValue: 5
+                      bestRating: 5
+      responses:
+        '200':
+          description: Successfully generated metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetadataResponse'
+            text/html:
+              schema:
+                type: string
+                description: HTML meta tags
+              examples:
+                html_output:
+                  summary: Generated HTML meta tags
+                  value: |
+                    <title>Welcome to My Site</title>
+                    <meta name="description" content="A comprehensive guide to modern web development">
+                    <meta property="og:title" content="Welcome to My Site">
+                    <meta property="og:description" content="A comprehensive guide to modern web development">
+                    <meta property="og:url" content="https://example.com/welcome">
+                    <meta property="og:image" content="https://example.com/images/welcome.jpg">
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /metadata/validate:
+    post:
+      summary: Validate metadata configuration
+      description: |
+        Validates a metadata configuration and returns detailed feedback
+        including SEO recommendations and potential issues.
+      operationId: validateMetadata
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MetadataRequest'
+      responses:
+        '200':
+          description: Validation results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /og-image:
+    post:
+      summary: Generate Open Graph image
+      description: |
+        Generates a custom Open Graph image using the provided template
+        and data. Supports multiple formats and sizes.
+      operationId: generateOgImage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OgImageRequest'
+      responses:
+        '200':
+          description: Successfully generated OG image
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/webp:
+              schema:
+                type: string
+                format: binary
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /conventions/scan:
+    post:
+      summary: Scan for file conventions
+      description: |
+        Scans a directory for file conventions (favicon, manifest, robots.txt, etc.)
+        and returns metadata about found files.
+      operationId: scanConventions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConventionScanRequest'
+      responses:
+        '200':
+          description: Convention scan results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConventionScanResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+components:
+  schemas:
+    MetadataRequest:
+      type: object
+      required:
+        - title
+        - url
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 60
+          description: Page title
+          example: "Welcome to My Site"
+        description:
+          type: string
+          minLength: 1
+          maxLength: 160
+          description: Page description
+          example: "A comprehensive guide to modern web development"
+        url:
+          type: string
+          format: uri
+          description: Canonical URL of the page
+          example: "https://example.com/welcome"
+        image:
+          type: string
+          format: uri
+          description: Primary image URL
+          example: "https://example.com/images/welcome.jpg"
+        keywords:
+          type: array
+          items:
+            type: string
+          description: SEO keywords
+          example: ["web development", "tutorial", "guide"]
+        openGraph:
+          $ref: '#/components/schemas/OpenGraphConfig'
+        twitter:
+          $ref: '#/components/schemas/TwitterConfig'
+        jsonLd:
+          type: object
+          description: JSON-LD structured data
+          additionalProperties: true
+        robots:
+          $ref: '#/components/schemas/RobotsConfig'
+        canonical:
+          type: string
+          format: uri
+          description: Canonical URL override
+        themeColor:
+          type: string
+          pattern: '^#[0-9A-Fa-f]{6}$'
+          description: Theme color in hex format
+          example: "#ffffff"
+        colorScheme:
+          type: string
+          enum: [light, dark, auto]
+          description: Color scheme preference
+        viewport:
+          $ref: '#/components/schemas/ViewportConfig'
+
+    OpenGraphConfig:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [website, article, book, profile, music.song, music.album, music.playlist, music.radio_station, video.movie, video.episode, video.tv_show, video.other]
+          description: Open Graph object type
+        siteName:
+          type: string
+          description: Site name
+        locale:
+          type: string
+          description: Locale
+          example: "en_US"
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageConfig'
+        article:
+          $ref: '#/components/schemas/ArticleConfig'
+        profile:
+          $ref: '#/components/schemas/ProfileConfig'
+
+    TwitterConfig:
+      type: object
+      properties:
+        card:
+          type: string
+          enum: [summary, summary_large_image, app, player]
+          description: Twitter card type
+        site:
+          type: string
+          description: Twitter site handle
+          example: "@mysite"
+        creator:
+          type: string
+          description: Twitter creator handle
+          example: "@author"
+        title:
+          type: string
+          description: Twitter-specific title
+        description:
+          type: string
+          description: Twitter-specific description
+        image:
+          type: string
+          format: uri
+          description: Twitter-specific image URL
+        imageAlt:
+          type: string
+          description: Twitter image alt text
+
+    ImageConfig:
+      type: object
+      required:
+        - url
+      properties:
+        url:
+          type: string
+          format: uri
+          description: Image URL
+        width:
+          type: integer
+          minimum: 1
+          maximum: 4096
+          description: Image width in pixels
+        height:
+          type: integer
+          minimum: 1
+          maximum: 4096
+          description: Image height in pixels
+        alt:
+          type: string
+          description: Image alt text
+        type:
+          type: string
+          description: MIME type of the image
+
+    ArticleConfig:
+      type: object
+      properties:
+        publishedTime:
+          type: string
+          format: date-time
+          description: Article publication time
+        modifiedTime:
+          type: string
+          format: date-time
+          description: Article last modified time
+        expirationTime:
+          type: string
+          format: date-time
+          description: Article expiration time
+        author:
+          type: string
+          format: uri
+          description: Author URL
+        section:
+          type: string
+          description: Article section
+        tags:
+          type: array
+          items:
+            type: string
+          description: Article tags
+
+    ProfileConfig:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: First name
+        lastName:
+          type: string
+          description: Last name
+        username:
+          type: string
+          description: Username
+
+    RobotsConfig:
+      type: object
+      properties:
+        index:
+          type: boolean
+          description: Allow indexing
+        follow:
+          type: boolean
+          description: Allow following links
+        noarchive:
+          type: boolean
+          description: Prevent archiving
+        nosnippet:
+          type: boolean
+          description: Prevent snippets
+        noimageindex:
+          type: boolean
+          description: Prevent image indexing
+        nocache:
+          type: boolean
+          description: Prevent caching
+        crawlDelay:
+          type: integer
+          minimum: 0
+          maximum: 3600
+          description: Crawl delay in seconds
+
+    ViewportConfig:
+      type: object
+      properties:
+        width:
+          type: string
+          description: Viewport width
+          example: "device-width"
+        initialScale:
+          type: number
+          minimum: 0.1
+          maximum: 10.0
+          description: Initial zoom level
+          example: 1.0
+        minimumScale:
+          type: number
+          minimum: 0.1
+          maximum: 10.0
+          description: Minimum zoom level
+        maximumScale:
+          type: number
+          minimum: 0.1
+          maximum: 10.0
+          description: Maximum zoom level
+        userScalable:
+          type: boolean
+          description: Allow user scaling
+
+    OgImageRequest:
+      type: object
+      required:
+        - template
+        - title
+      properties:
+        template:
+          type: string
+          description: Template name or custom template
+          example: "simple"
+        title:
+          type: string
+          description: Title text
+          example: "Welcome to My Site"
+        description:
+          type: string
+          description: Description text
+          example: "A comprehensive guide"
+        width:
+          type: integer
+          minimum: 200
+          maximum: 4096
+          default: 1200
+          description: Image width
+        height:
+          type: integer
+          minimum: 200
+          maximum: 4096
+          default: 630
+          description: Image height
+        format:
+          type: string
+          enum: [png, jpeg, webp]
+          default: png
+          description: Image format
+        quality:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 90
+          description: Image quality (for JPEG)
+        data:
+          type: object
+          description: Additional template data
+          additionalProperties: true
+
+    ConventionScanRequest:
+      type: object
+      required:
+        - path
+      properties:
+        path:
+          type: string
+          description: Directory path to scan
+          example: "/app/public"
+        maxDepth:
+          type: integer
+          minimum: 1
+          maximum: 10
+          default: 3
+          description: Maximum scan depth
+        includeHidden:
+          type: boolean
+          default: false
+          description: Include hidden files
+
+    MetadataResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/MetadataRequest'
+        html:
+          type: string
+          description: Generated HTML meta tags
+        jsonLd:
+          type: object
+          description: Generated JSON-LD structured data
+        validation:
+          $ref: '#/components/schemas/ValidationResponse'
+        performance:
+          $ref: '#/components/schemas/PerformanceMetrics'
+
+    ConventionScanResponse:
+      type: object
+      properties:
+        conventions:
+          type: object
+          properties:
+            favicon:
+              type: array
+              items:
+                $ref: '#/components/schemas/ConventionFile'
+            manifest:
+              type: array
+              items:
+                $ref: '#/components/schemas/ConventionFile'
+            robots:
+              type: array
+              items:
+                $ref: '#/components/schemas/ConventionFile'
+            sitemap:
+              type: array
+              items:
+                $ref: '#/components/schemas/ConventionFile'
+            ogImage:
+              type: array
+              items:
+                $ref: '#/components/schemas/ConventionFile'
+            twitterImage:
+              type: array
+              items:
+                $ref: '#/components/schemas/ConventionFile'
+        scanInfo:
+          type: object
+          properties:
+            path:
+              type: string
+            scannedFiles:
+              type: integer
+            scanDuration:
+              type: number
+              description: Scan duration in milliseconds
+
+    ConventionFile:
+      type: object
+      properties:
+        path:
+          type: string
+          description: File path
+        name:
+          type: string
+          description: File name
+        size:
+          type: integer
+          description: File size in bytes
+        mimeType:
+          type: string
+          description: MIME type
+        lastModified:
+          type: string
+          format: date-time
+          description: Last modified time
+
+    ValidationResponse:
+      type: object
+      properties:
+        isValid:
+          type: boolean
+          description: Whether the metadata is valid
+        score:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Overall validation score
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+        warnings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationWarning'
+        recommendations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationRecommendation'
+
+    ValidationError:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Error code
+        message:
+          type: string
+          description: Error message
+        field:
+          type: string
+          description: Field that caused the error
+        suggestion:
+          type: string
+          description: Suggested fix
+
+    ValidationWarning:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Warning code
+        message:
+          type: string
+          description: Warning message
+        field:
+          type: string
+          description: Field that caused the warning
+        suggestion:
+          type: string
+          description: Suggested improvement
+
+    ValidationRecommendation:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [seo, performance, accessibility, social]
+          description: Recommendation type
+        message:
+          type: string
+          description: Recommendation message
+        impact:
+          type: string
+          enum: [low, medium, high]
+          description: Impact level
+
+    PerformanceMetrics:
+      type: object
+      properties:
+        generationTime:
+          type: number
+          description: Generation time in milliseconds
+        memoryUsage:
+          type: integer
+          description: Memory usage in bytes
+        cacheHit:
+          type: boolean
+          description: Whether result was served from cache
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Error code
+            message:
+              type: string
+              description: Error message
+            details:
+              type: object
+              description: Additional error details
+            timestamp:
+              type: string
+              format: date-time
+              description: Error timestamp
+            requestId:
+              type: string
+              description: Request ID for tracking
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              code: "INVALID_REQUEST"
+              message: "The request is invalid"
+              timestamp: "2024-01-15T10:30:00Z"
+              requestId: "req_123456789"
+
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              code: "VALIDATION_ERROR"
+              message: "Request validation failed"
+              details:
+                field: "title"
+                reason: "Title is required"
+              timestamp: "2024-01-15T10:30:00Z"
+              requestId: "req_123456789"
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              code: "INTERNAL_ERROR"
+              message: "An internal server error occurred"
+              timestamp: "2024-01-15T10:30:00Z"
+              requestId: "req_123456789"
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for authentication
+
+security:
+  - ApiKeyAuth: []
+
+tags:
+  - name: Metadata
+    description: Metadata generation and management
+  - name: Validation
+    description: Metadata validation and recommendations
+  - name: Images
+    description: Open Graph image generation
+  - name: Conventions
+    description: File convention scanning

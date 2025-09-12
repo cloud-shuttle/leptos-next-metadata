@@ -1,6 +1,6 @@
 [package]
 name = "leptos-next-metadata"
-version = "1.0.0"
+version = "1.1.0"
 edition = "2021"
 authors = ["Peter Hanssens <peter@cloudshuttle.com.au>"]
 description = "Next.js-style metadata management for Leptos v0.8+ with type-safe APIs, blazing-fast OG image generation, and AI-assisted development. Part of the Cloud Shuttle ecosystem."
@@ -46,6 +46,9 @@ reqwest = { version = "0.11", optional = true, features = ["json"] }
 cached = { version = "0.45", optional = true }
 lru = { version = "0.12", optional = true }
 tempfile = { version = "3.0", optional = true }
+openapiv3 = { version = "1.0", optional = true }
+validator = { version = "0.18", features = ["derive"], optional = true }
+serde_yaml = { version = "0.9", optional = true }
 
 # Procedural macro dependencies
 proc-macro2 = { version = "1.0", optional = true }
@@ -73,6 +76,7 @@ caching = ["cached", "lru"]
 http = ["reqwest"]
 macros = ["leptos-next-metadata-macros", "proc-macro2", "quote", "syn"]
 debug = []
+api-contracts = ["openapiv3", "validator", "serde_yaml"]
 
 [lib]
 name = "leptos_next_metadata"

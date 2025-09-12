@@ -4,7 +4,7 @@
 //! following Next.js file conventions, including favicon.ico, robots.txt,
 //! sitemap.xml, and more.
 
-use crate::{Result, Error};
+use crate::{Error, Result};
 use std::path::{Path, PathBuf};
 // Only import what we actually use
 
@@ -14,11 +14,11 @@ const MAX_PREVIEW_LINES: usize = 10;
 
 // Use external crates when file-conventions feature is enabled
 #[cfg(feature = "file-conventions")]
-use walkdir::WalkDir;
+use image;
 #[cfg(feature = "file-conventions")]
 use mime_guess::MimeGuess;
 #[cfg(feature = "file-conventions")]
-use image;
+use walkdir::WalkDir;
 
 /// Scanner for file conventions
 ///
@@ -300,16 +300,12 @@ impl ConventionScanner {
                     .max_depth(self.max_depth)
                     .into_iter()
             } else {
-                WalkDir::new(&self.root_dir)
-                    .max_depth(1)
-                    .into_iter()
+                WalkDir::new(&self.root_dir).max_depth(1).into_iter()
             };
 
             for entry in walker.filter_map(|e| e.ok()) {
                 let path = entry.path();
-                let file_name = path.file_name()
-                    .and_then(|n| n.to_str())
-                    .unwrap_or("");
+                let file_name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
 
                 // Skip directories, hidden files, and symlinks for security
                 if path.is_dir() || file_name.starts_with('.') {
@@ -328,42 +324,41 @@ impl ConventionScanner {
 
                 // Check file conventions with error handling
                 // Continue processing even if individual files fail
-                let _ = self.check_favicon(path, &mut conventions)
+                let _ = self.check_favicon(path, &mut conventions).or_else(|e| {
+                    eprintln!("Warning: Failed to process favicon {:?}: {}", path, e);
+                    Ok::<(), crate::Error>(())
+                });
+                let _ = self.check_icon(path, &mut conventions).or_else(|e| {
+                    eprintln!("Warning: Failed to process icon {:?}: {}", path, e);
+                    Ok::<(), crate::Error>(())
+                });
+                let _ = self
+                    .check_apple_touch_icon(path, &mut conventions)
                     .or_else(|e| {
-                        eprintln!("Warning: Failed to process favicon {:?}: {}", path, e);
+                        eprintln!(
+                            "Warning: Failed to process apple touch icon {:?}: {}",
+                            path, e
+                        );
                         Ok::<(), crate::Error>(())
                     });
-                let _ = self.check_icon(path, &mut conventions)
-                    .or_else(|e| {
-                        eprintln!("Warning: Failed to process icon {:?}: {}", path, e);
-                        Ok::<(), crate::Error>(())
-                    });
-                let _ = self.check_apple_touch_icon(path, &mut conventions)
-                    .or_else(|e| {
-                        eprintln!("Warning: Failed to process apple touch icon {:?}: {}", path, e);
-                        Ok::<(), crate::Error>(())
-                    });
-                let _ = self.check_robots_txt(path, &mut conventions)
-                    .or_else(|e| {
-                        eprintln!("Warning: Failed to process robots.txt {:?}: {}", path, e);
-                        Ok::<(), crate::Error>(())
-                    });
-                let _ = self.check_sitemap(path, &mut conventions)
-                    .or_else(|e| {
-                        eprintln!("Warning: Failed to process sitemap {:?}: {}", path, e);
-                        Ok::<(), crate::Error>(())
-                    });
-                let _ = self.check_manifest(path, &mut conventions)
-                    .or_else(|e| {
-                        eprintln!("Warning: Failed to process manifest {:?}: {}", path, e);
-                        Ok::<(), crate::Error>(())
-                    });
-                let _ = self.check_og_image(path, &mut conventions)
-                    .or_else(|e| {
-                        eprintln!("Warning: Failed to process OG image {:?}: {}", path, e);
-                        Ok::<(), crate::Error>(())
-                    });
-                let _ = self.check_twitter_image(path, &mut conventions)
+                let _ = self.check_robots_txt(path, &mut conventions).or_else(|e| {
+                    eprintln!("Warning: Failed to process robots.txt {:?}: {}", path, e);
+                    Ok::<(), crate::Error>(())
+                });
+                let _ = self.check_sitemap(path, &mut conventions).or_else(|e| {
+                    eprintln!("Warning: Failed to process sitemap {:?}: {}", path, e);
+                    Ok::<(), crate::Error>(())
+                });
+                let _ = self.check_manifest(path, &mut conventions).or_else(|e| {
+                    eprintln!("Warning: Failed to process manifest {:?}: {}", path, e);
+                    Ok::<(), crate::Error>(())
+                });
+                let _ = self.check_og_image(path, &mut conventions).or_else(|e| {
+                    eprintln!("Warning: Failed to process OG image {:?}: {}", path, e);
+                    Ok::<(), crate::Error>(())
+                });
+                let _ = self
+                    .check_twitter_image(path, &mut conventions)
                     .or_else(|e| {
                         eprintln!("Warning: Failed to process Twitter image {:?}: {}", path, e);
                         Ok::<(), crate::Error>(())
@@ -405,9 +400,7 @@ impl ConventionScanner {
 
     /// Check if a file is a favicon
     fn check_favicon(&self, path: &Path, conventions: &mut FileConventions) -> Result<()> {
-        let file_name = path.file_name()
-            .and_then(|n| n.to_str())
-            .unwrap_or("");
+        let file_name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
 
         if file_name == "favicon.ico" || file_name == "favicon.png" || file_name == "favicon.svg" {
             let metadata = self.get_file_metadata(path)?;
@@ -426,9 +419,7 @@ impl ConventionScanner {
 
     /// Check if a file is an icon
     fn check_icon(&self, path: &Path, conventions: &mut FileConventions) -> Result<()> {
-        let file_name = path.file_name()
-            .and_then(|n| n.to_str())
-            .unwrap_or("");
+        let file_name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
 
         if file_name.starts_with("icon") {
             let metadata = self.get_file_metadata(path)?;
@@ -456,9 +447,7 @@ impl ConventionScanner {
 
     /// Check if a file is an Apple touch icon
     fn check_apple_touch_icon(&self, path: &Path, conventions: &mut FileConventions) -> Result<()> {
-        let file_name = path.file_name()
-            .and_then(|n| n.to_str())
-            .unwrap_or("");
+        let file_name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
 
         if file_name.starts_with("apple-touch-icon") {
             let metadata = self.get_file_metadata(path)?;
@@ -483,7 +472,11 @@ impl ConventionScanner {
                 color,
             };
 
-            conventions.apple_touch_icons.as_mut().unwrap().push(apple_icon);
+            conventions
+                .apple_touch_icons
+                .as_mut()
+                .unwrap()
+                .push(apple_icon);
         }
 
         Ok(())
@@ -491,9 +484,7 @@ impl ConventionScanner {
 
     /// Check if a file is robots.txt
     fn check_robots_txt(&self, path: &Path, conventions: &mut FileConventions) -> Result<()> {
-        let file_name = path.file_name()
-            .and_then(|n| n.to_str())
-            .unwrap_or("");
+        let file_name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
 
         if file_name == "robots.txt" {
             let metadata = self.get_file_metadata(path)?;
@@ -513,9 +504,7 @@ impl ConventionScanner {
 
     /// Check if a file is a sitemap
     fn check_sitemap(&self, path: &Path, conventions: &mut FileConventions) -> Result<()> {
-        let file_name = path.file_name()
-            .and_then(|n| n.to_str())
-            .unwrap_or("");
+        let file_name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
 
         if file_name.ends_with(".xml") && file_name.contains("sitemap") {
             let metadata = self.get_file_metadata(path)?;
@@ -542,9 +531,7 @@ impl ConventionScanner {
 
     /// Check if a file is a manifest
     fn check_manifest(&self, path: &Path, conventions: &mut FileConventions) -> Result<()> {
-        let file_name = path.file_name()
-            .and_then(|n| n.to_str())
-            .unwrap_or("");
+        let file_name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
 
         if file_name.ends_with("manifest.json") || file_name == "manifest.json" {
             let metadata = self.get_file_metadata(path)?;
@@ -569,11 +556,12 @@ impl ConventionScanner {
 
     /// Check if a file is an Open Graph image
     fn check_og_image(&self, path: &Path, conventions: &mut FileConventions) -> Result<()> {
-        let file_name = path.file_name()
-            .and_then(|n| n.to_str())
-            .unwrap_or("");
+        let file_name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
 
-        if file_name == "opengraph-image.png" || file_name == "opengraph-image.jpg" || file_name == "opengraph-image.svg" {
+        if file_name == "opengraph-image.png"
+            || file_name == "opengraph-image.jpg"
+            || file_name == "opengraph-image.svg"
+        {
             let metadata = self.get_file_metadata(path)?;
 
             // Extract route pattern from directory structure
@@ -595,11 +583,12 @@ impl ConventionScanner {
 
     /// Check if a file is a Twitter image
     fn check_twitter_image(&self, path: &Path, conventions: &mut FileConventions) -> Result<()> {
-        let file_name = path.file_name()
-            .and_then(|n| n.to_str())
-            .unwrap_or("");
+        let file_name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
 
-        if file_name == "twitter-image.png" || file_name == "twitter-image.jpg" || file_name == "twitter-image.svg" {
+        if file_name == "twitter-image.png"
+            || file_name == "twitter-image.jpg"
+            || file_name == "twitter-image.svg"
+        {
             let metadata = self.get_file_metadata(path)?;
 
             // Extract route pattern from directory structure
@@ -613,7 +602,11 @@ impl ConventionScanner {
                 route_pattern,
             };
 
-            conventions.twitter_images.as_mut().unwrap().push(twitter_image);
+            conventions
+                .twitter_images
+                .as_mut()
+                .unwrap()
+                .push(twitter_image);
         }
 
         Ok(())
@@ -621,12 +614,15 @@ impl ConventionScanner {
 
     /// Get file metadata with size limits and error handling
     fn get_file_metadata(&self, path: &Path) -> Result<FileMetadata> {
-        let metadata = std::fs::metadata(path)
-            .map_err(|e| match e.kind() {
-                std::io::ErrorKind::NotFound => Error::ConfigError(format!("File not found: {:?}", path)),
-                std::io::ErrorKind::PermissionDenied => Error::ConfigError(format!("Permission denied: {:?}", path)),
-                _ => Error::IoError(e),
-            })?;
+        let metadata = std::fs::metadata(path).map_err(|e| match e.kind() {
+            std::io::ErrorKind::NotFound => {
+                Error::ConfigError(format!("File not found: {:?}", path))
+            }
+            std::io::ErrorKind::PermissionDenied => {
+                Error::ConfigError(format!("Permission denied: {:?}", path))
+            }
+            _ => Error::IoError(e),
+        })?;
 
         let file_size = metadata.len();
 
@@ -648,7 +644,8 @@ impl ConventionScanner {
 
         let dimensions = if mime_type.starts_with("image/") {
             // Only try to get dimensions for reasonable image sizes
-            if file_size <= 50 * 1024 * 1024 { // 50MB for images
+            if file_size <= 50 * 1024 * 1024 {
+                // 50MB for images
                 self.get_image_dimensions(path)?
             } else {
                 None
@@ -674,13 +671,14 @@ impl ConventionScanner {
                 std::io::ErrorKind::InvalidData => {
                     // File might be binary or invalid UTF-8
                     return Ok("<Binary or invalid UTF-8 content>".to_string());
-                },
+                }
                 _ => return Err(Error::IoError(e)),
             },
         };
 
         // Limit content size to prevent memory issues
-        if content.len() > 64 * 1024 { // 64KB limit for preview
+        if content.len() > 64 * 1024 {
+            // 64KB limit for preview
             let preview_lines: Vec<&str> = content.lines().take(lines).collect();
             let mut preview = preview_lines.join("\n");
 
@@ -702,9 +700,7 @@ impl ConventionScanner {
         #[cfg(feature = "file-conventions")]
         {
             // Use a timeout to prevent hanging on large or corrupted images
-            match std::panic::catch_unwind(|| {
-                image::image_dimensions(path)
-            }) {
+            match std::panic::catch_unwind(|| image::image_dimensions(path)) {
                 Ok(Ok((width, height))) => {
                     // Sanity check on dimensions
                     if width > 0 && height > 0 && width <= 50000 && height <= 50000 {
@@ -712,9 +708,9 @@ impl ConventionScanner {
                     } else {
                         Ok(None) // Invalid dimensions
                     }
-                },
+                }
                 Ok(Err(_)) => Ok(None), // Invalid image format
-                Err(_) => Ok(None), // Panic occurred, corrupted image
+                Err(_) => Ok(None),     // Panic occurred, corrupted image
             }
         }
 
@@ -726,7 +722,8 @@ impl ConventionScanner {
 
     /// Extract route pattern from file path
     fn extract_route_pattern(&self, path: &Path) -> Result<Option<String>> {
-        let relative_path = path.strip_prefix(&self.root_dir)
+        let relative_path = path
+            .strip_prefix(&self.root_dir)
             .map_err(|_| Error::ConfigError("Failed to get relative path".to_string()))?;
 
         let parent = relative_path.parent();
@@ -772,7 +769,12 @@ impl FileConventions {
     pub fn get_icons_by_type(&self, icon_type: &IconType) -> Vec<&IconFile> {
         self.icons
             .as_ref()
-            .map(|icons| icons.iter().filter(|icon| &icon.icon_type == icon_type).collect())
+            .map(|icons| {
+                icons
+                    .iter()
+                    .filter(|icon| &icon.icon_type == icon_type)
+                    .collect()
+            })
             .unwrap_or_default()
     }
 
@@ -780,7 +782,12 @@ impl FileConventions {
     pub fn get_apple_touch_icons_by_color(&self, color: &str) -> Vec<&AppleTouchIcon> {
         self.apple_touch_icons
             .as_ref()
-            .map(|icons| icons.iter().filter(|icon| icon.color.as_ref().is_some_and(|c| c == color)).collect())
+            .map(|icons| {
+                icons
+                    .iter()
+                    .filter(|icon| icon.color.as_ref().is_some_and(|c| c == color))
+                    .collect()
+            })
             .unwrap_or_default()
     }
 
@@ -788,7 +795,12 @@ impl FileConventions {
     pub fn get_sitemaps_by_type(&self, sitemap_type: &SitemapType) -> Vec<&SitemapFile> {
         self.sitemaps
             .as_ref()
-            .map(|sitemaps| sitemaps.iter().filter(|sitemap| &sitemap.sitemap_type == sitemap_type).collect())
+            .map(|sitemaps| {
+                sitemaps
+                    .iter()
+                    .filter(|sitemap| &sitemap.sitemap_type == sitemap_type)
+                    .collect()
+            })
             .unwrap_or_default()
     }
 
@@ -797,14 +809,14 @@ impl FileConventions {
         self.og_images
             .as_ref()
             .map(|images| {
-                images.iter()
+                images
+                    .iter()
                     .filter(|image| {
-                        image.route_pattern.as_ref()
-                            .is_none_or(|pattern| {
-                                // Handle route patterns - routes typically start with / but patterns don't
-                                let normalized_route = route.strip_prefix('/').unwrap_or(route);
-                                normalized_route.starts_with(pattern)
-                            })
+                        image.route_pattern.as_ref().is_none_or(|pattern| {
+                            // Handle route patterns - routes typically start with / but patterns don't
+                            let normalized_route = route.strip_prefix('/').unwrap_or(route);
+                            normalized_route.starts_with(pattern)
+                        })
                     })
                     .collect()
             })
@@ -816,14 +828,14 @@ impl FileConventions {
         self.twitter_images
             .as_ref()
             .map(|images| {
-                images.iter()
+                images
+                    .iter()
                     .filter(|image| {
-                        image.route_pattern.as_ref()
-                            .is_none_or(|pattern| {
-                                // Handle route patterns - routes typically start with / but patterns don't
-                                let normalized_route = route.strip_prefix('/').unwrap_or(route);
-                                normalized_route.starts_with(pattern)
-                            })
+                        image.route_pattern.as_ref().is_none_or(|pattern| {
+                            // Handle route patterns - routes typically start with / but patterns don't
+                            let normalized_route = route.strip_prefix('/').unwrap_or(route);
+                            normalized_route.starts_with(pattern)
+                        })
                     })
                     .collect()
             })
@@ -832,14 +844,14 @@ impl FileConventions {
 
     /// Check if any conventions were found
     pub fn is_empty(&self) -> bool {
-        self.favicon.is_none() &&
-        self.icons.is_none() &&
-        self.apple_touch_icons.is_none() &&
-        self.robots_txt.is_none() &&
-        self.sitemaps.is_none() &&
-        self.manifests.is_none() &&
-        self.og_images.is_none() &&
-        self.twitter_images.is_none()
+        self.favicon.is_none()
+            && self.icons.is_none()
+            && self.apple_touch_icons.is_none()
+            && self.robots_txt.is_none()
+            && self.sitemaps.is_none()
+            && self.manifests.is_none()
+            && self.og_images.is_none()
+            && self.twitter_images.is_none()
     }
 }
 
@@ -1092,7 +1104,11 @@ mod tests {
         // Create multiple file types
         fs::write(temp_dir.path().join("favicon.ico"), b"favicon data").unwrap();
         fs::write(temp_dir.path().join("icon.png"), b"icon data").unwrap();
-        fs::write(temp_dir.path().join("robots.txt"), "User-agent: *\nDisallow: /").unwrap();
+        fs::write(
+            temp_dir.path().join("robots.txt"),
+            "User-agent: *\nDisallow: /",
+        )
+        .unwrap();
         fs::write(temp_dir.path().join("sitemap.xml"), "<sitemap></sitemap>").unwrap();
         fs::write(temp_dir.path().join("manifest.json"), r#"{"name": "App"}"#).unwrap();
 
@@ -1115,7 +1131,11 @@ mod tests {
 
         // Create different sitemap types
         fs::write(temp_dir.path().join("sitemap.xml"), "<sitemap></sitemap>").unwrap();
-        fs::write(temp_dir.path().join("sitemap-index.xml"), "<sitemapindex></sitemapindex>").unwrap();
+        fs::write(
+            temp_dir.path().join("sitemap-index.xml"),
+            "<sitemapindex></sitemapindex>",
+        )
+        .unwrap();
 
         let scanner = ConventionScanner::new(temp_dir.path());
         let conventions = scanner.scan().unwrap();
@@ -1164,7 +1184,11 @@ mod tests {
 
         // Create different manifest types
         fs::write(temp_dir.path().join("manifest.json"), r#"{"name": "App"}"#).unwrap();
-        fs::write(temp_dir.path().join("pwa-manifest.json"), r#"{"name": "PWA App"}"#).unwrap();
+        fs::write(
+            temp_dir.path().join("pwa-manifest.json"),
+            r#"{"name": "PWA App"}"#,
+        )
+        .unwrap();
 
         let scanner = ConventionScanner::new(temp_dir.path());
         let conventions = scanner.scan().unwrap();
@@ -1173,8 +1197,14 @@ mod tests {
         let manifests = conventions.manifests.as_ref().unwrap();
         assert_eq!(manifests.len(), 2);
 
-        let web_manifests = manifests.iter().filter(|m| m.manifest_type == ManifestType::WebAppManifest).count();
-        let pwa_manifests = manifests.iter().filter(|m| m.manifest_type == ManifestType::PWAManifest).count();
+        let web_manifests = manifests
+            .iter()
+            .filter(|m| m.manifest_type == ManifestType::WebAppManifest)
+            .count();
+        let pwa_manifests = manifests
+            .iter()
+            .filter(|m| m.manifest_type == ManifestType::PWAManifest)
+            .count();
 
         assert_eq!(web_manifests, 1);
         assert_eq!(pwa_manifests, 1);
@@ -1204,7 +1234,6 @@ mod tests {
         let admin_images = conventions.get_og_images_for_route("/admin/users");
         let root_images = conventions.get_og_images_for_route("/");
 
-
         assert_eq!(blog_images.len(), 1);
         assert_eq!(admin_images.len(), 1);
         assert_eq!(root_images.len(), 0); // Root route doesn't match specific subdirectory patterns
@@ -1224,7 +1253,7 @@ mod tests {
         match result {
             Ok(conventions) => {
                 assert!(conventions.is_empty());
-            },
+            }
             Err(_) => {
                 // Error is also acceptable for non-existent paths
             }
@@ -1248,7 +1277,12 @@ mod tests {
         assert!(conventions.get_primary_favicon().is_none());
         assert_eq!(conventions.get_icons_by_type(&IconType::Icon).len(), 0);
         assert_eq!(conventions.get_apple_touch_icons_by_color("red").len(), 0);
-        assert_eq!(conventions.get_sitemaps_by_type(&SitemapType::Sitemap).len(), 0);
+        assert_eq!(
+            conventions
+                .get_sitemaps_by_type(&SitemapType::Sitemap)
+                .len(),
+            0
+        );
         assert_eq!(conventions.get_og_images_for_route("/test").len(), 0);
         assert_eq!(conventions.get_twitter_images_for_route("/test").len(), 0);
     }
@@ -1273,10 +1307,14 @@ mod tests {
         let icons = conventions.icons.as_ref().unwrap();
 
         // Check MIME types are detected correctly
-        assert!(favicon.mime_type.contains("image") || favicon.mime_type == "application/octet-stream");
+        assert!(
+            favicon.mime_type.contains("image") || favicon.mime_type == "application/octet-stream"
+        );
 
         for icon in icons {
-            assert!(icon.mime_type.contains("image") || icon.mime_type == "application/octet-stream");
+            assert!(
+                icon.mime_type.contains("image") || icon.mime_type == "application/octet-stream"
+            );
         }
     }
 

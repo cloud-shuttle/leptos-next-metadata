@@ -1,0 +1,22 @@
+# Rustfmt configuration for leptos-next-metadata
+# Enforces consistent code formatting across the project
+
+# Edition and basic formatting
+edition = "2021"
+max_width = 100
+tab_spaces = 4
+newline_style = "Unix"
+
+# Import organization
+use_small_heuristics = "Default"
+
+# Function and struct formatting
+fn_params_layout = "Tall"
+
+# Other formatting options
+force_explicit_abi = true
+merge_derives = true
+reorder_modules = true
+reorder_imports = true
+use_field_init_shorthand = true
+use_try_shorthand = true

@@ -101,8 +101,6 @@ pub enum Title {
         /// Default value if template variables are missing
         default: String,
     },
-
-
 }
 
 /// Page description
@@ -458,8 +456,6 @@ impl From<serde_json::Value> for AdditionalValue {
     }
 }
 
-
-
 /// Canonical URL
 pub type CanonicalUrl = String;
 
@@ -745,7 +741,7 @@ impl From<Vec<Author>> for Authors {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use chrono::{TimeZone, Utc};
+    use chrono::Utc;
 
     #[test]
     fn test_metadata_creation() {
@@ -771,14 +767,20 @@ mod tests {
     #[test]
     fn test_metadata_with_title() {
         let metadata = Metadata::with_title("Test Title");
-        assert_eq!(metadata.title, Some(Title::Static("Test Title".to_string())));
+        assert_eq!(
+            metadata.title,
+            Some(Title::Static("Test Title".to_string()))
+        );
         assert!(metadata.description.is_none());
     }
 
     #[test]
     fn test_metadata_with_title_and_description() {
         let metadata = Metadata::with_title_and_description("Test Title", "Test Description");
-        assert_eq!(metadata.title, Some(Title::Static("Test Title".to_string())));
+        assert_eq!(
+            metadata.title,
+            Some(Title::Static("Test Title".to_string()))
+        );
         assert_eq!(metadata.description, Some("Test Description".to_string()));
     }
 
@@ -793,9 +795,18 @@ mod tests {
             .color_scheme(ColorScheme::Light)
             .referrer(ReferrerPolicy::NoReferrer);
 
-        assert_eq!(metadata.title, Some(Title::Static("Test Title".to_string())));
+        assert_eq!(
+            metadata.title,
+            Some(Title::Static("Test Title".to_string()))
+        );
         assert_eq!(metadata.description, Some("Test Description".to_string()));
-        assert_eq!(metadata.keywords, Some(Keywords::Multiple(vec!["test".to_string(), "metadata".to_string()])));
+        assert_eq!(
+            metadata.keywords,
+            Some(Keywords::Multiple(vec![
+                "test".to_string(),
+                "metadata".to_string()
+            ]))
+        );
         assert_eq!(metadata.canonical, Some("https://example.com".to_string()));
         assert_eq!(metadata.theme_color, Some("#ffffff".to_string()));
         assert_eq!(metadata.color_scheme, Some(ColorScheme::Light));
@@ -876,7 +887,10 @@ mod tests {
         assert_eq!(author.name, "John Doe");
         assert_eq!(author.url, Some("https://example.com".to_string()));
         assert_eq!(author.email, Some("john@example.com".to_string()));
-        assert_eq!(author.image, Some("https://example.com/avatar.jpg".to_string()));
+        assert_eq!(
+            author.image,
+            Some("https://example.com/avatar.jpg".to_string())
+        );
     }
 
     #[test]
@@ -969,22 +983,28 @@ mod tests {
         assert!(og_image.alt.is_none());
         assert!(og_image.r#type.is_none());
 
-        let og_image_with_dimensions = OgImage::with_dimensions("https://example.com/image.jpg", 1200, 630);
-        assert_eq!(og_image_with_dimensions.url, "https://example.com/image.jpg");
+        let og_image_with_dimensions =
+            OgImage::with_dimensions("https://example.com/image.jpg", 1200, 630);
+        assert_eq!(
+            og_image_with_dimensions.url,
+            "https://example.com/image.jpg"
+        );
         assert_eq!(og_image_with_dimensions.width, Some(1200));
         assert_eq!(og_image_with_dimensions.height, Some(630));
     }
 
     #[test]
     fn test_open_graph_struct() {
-        let mut og = OpenGraph::default();
-        og.title = Some("Test Title".to_string());
-        og.description = Some("Test Description".to_string());
-        og.url = Some("https://example.com".to_string());
-        og.r#type = Some("website".to_string());
-        og.site_name = Some("Test Site".to_string());
-        og.locale = Some("en_US".to_string());
-        og.images = vec![OgImage::new("https://example.com/image.jpg")];
+        let og = OpenGraph {
+            title: Some("Test Title".to_string()),
+            description: Some("Test Description".to_string()),
+            url: Some("https://example.com".to_string()),
+            r#type: Some("website".to_string()),
+            site_name: Some("Test Site".to_string()),
+            locale: Some("en_US".to_string()),
+            images: vec![OgImage::new("https://example.com/image.jpg")],
+            ..Default::default()
+        };
 
         assert_eq!(og.title, Some("Test Title".to_string()));
         assert_eq!(og.description, Some("Test Description".to_string()));
@@ -998,21 +1018,25 @@ mod tests {
 
     #[test]
     fn test_twitter_struct() {
-        let mut twitter = Twitter::default();
-        twitter.card = Some(TwitterCard::SummaryLargeImage);
-        twitter.site = Some("@testsite".to_string());
-        twitter.creator = Some("@testcreator".to_string());
-        twitter.title = Some("Test Title".to_string());
-        twitter.description = Some("Test Description".to_string());
-        twitter.image = Some("https://example.com/image.jpg".to_string());
-        twitter.image_alt = Some("Test Image Alt".to_string());
+        let twitter = Twitter {
+            card: Some(TwitterCard::SummaryLargeImage),
+            site: Some("@testsite".to_string()),
+            creator: Some("@testcreator".to_string()),
+            title: Some("Test Title".to_string()),
+            description: Some("Test Description".to_string()),
+            image: Some("https://example.com/image.jpg".to_string()),
+            image_alt: Some("Test Image Alt".to_string()),
+        };
 
         assert_eq!(twitter.card, Some(TwitterCard::SummaryLargeImage));
         assert_eq!(twitter.site, Some("@testsite".to_string()));
         assert_eq!(twitter.creator, Some("@testcreator".to_string()));
         assert_eq!(twitter.title, Some("Test Title".to_string()));
         assert_eq!(twitter.description, Some("Test Description".to_string()));
-        assert_eq!(twitter.image, Some("https://example.com/image.jpg".to_string()));
+        assert_eq!(
+            twitter.image,
+            Some("https://example.com/image.jpg".to_string())
+        );
         assert_eq!(twitter.image_alt, Some("Test Image Alt".to_string()));
     }
 
@@ -1046,9 +1070,15 @@ mod tests {
         assert_eq!(article.published_time, Some(now));
         assert_eq!(article.modified_time, Some(now));
         assert!(article.expiration_time.is_none());
-        assert_eq!(article.author, Some("https://example.com/author".to_string()));
+        assert_eq!(
+            article.author,
+            Some("https://example.com/author".to_string())
+        );
         assert_eq!(article.section, Some("Technology".to_string()));
-        assert_eq!(article.tags, Some(vec!["rust".to_string(), "leptos".to_string()]));
+        assert_eq!(
+            article.tags,
+            Some(vec!["rust".to_string(), "leptos".to_string()])
+        );
     }
 
     #[test]
@@ -1079,7 +1109,10 @@ mod tests {
         assert_eq!(book.author, Some("John Doe".to_string()));
         assert_eq!(book.isbn, Some("978-0-123456-47-2".to_string()));
         assert_eq!(book.release_date, Some(now));
-        assert_eq!(book.tags, Some(vec!["fiction".to_string(), "adventure".to_string()]));
+        assert_eq!(
+            book.tags,
+            Some(vec!["fiction".to_string(), "adventure".to_string()])
+        );
     }
 
     #[test]
@@ -1092,7 +1125,10 @@ mod tests {
 
         assert_eq!(alternate.href, "https://example.com/es".to_string());
         assert_eq!(alternate.hreflang, "es".to_string());
-        assert_eq!(alternate.media, Some("only screen and (max-width: 640px)".to_string()));
+        assert_eq!(
+            alternate.media,
+            Some("only screen and (max-width: 640px)".to_string())
+        );
     }
 
     #[test]
@@ -1185,9 +1221,18 @@ mod tests {
             .additional("bool_field", serde_json::json!(true));
 
         assert_eq!(metadata.additional.len(), 3);
-        assert_eq!(metadata.additional["custom_field"], AdditionalValue::Json(serde_json::json!("custom_value")));
-        assert_eq!(metadata.additional["number_field"], AdditionalValue::Json(serde_json::json!(42)));
-        assert_eq!(metadata.additional["bool_field"], AdditionalValue::Json(serde_json::json!(true)));
+        assert_eq!(
+            metadata.additional["custom_field"],
+            AdditionalValue::Json(serde_json::json!("custom_value"))
+        );
+        assert_eq!(
+            metadata.additional["number_field"],
+            AdditionalValue::Json(serde_json::json!(42))
+        );
+        assert_eq!(
+            metadata.additional["bool_field"],
+            AdditionalValue::Json(serde_json::json!(true))
+        );
     }
 
     #[test]
@@ -1199,9 +1244,18 @@ mod tests {
             .additional("bool_field", "true".to_string());
 
         assert_eq!(metadata.additional.len(), 3);
-        assert_eq!(metadata.additional["custom_field"], AdditionalValue::String("custom_value".to_string()));
-        assert_eq!(metadata.additional["number_field"], AdditionalValue::String("42".to_string()));
-        assert_eq!(metadata.additional["bool_field"], AdditionalValue::String("true".to_string()));
+        assert_eq!(
+            metadata.additional["custom_field"],
+            AdditionalValue::String("custom_value".to_string())
+        );
+        assert_eq!(
+            metadata.additional["number_field"],
+            AdditionalValue::String("42".to_string())
+        );
+        assert_eq!(
+            metadata.additional["bool_field"],
+            AdditionalValue::String("true".to_string())
+        );
     }
 
     #[test]
@@ -1233,9 +1287,18 @@ mod tests {
 
         // When json-ld feature is disabled, we can't test serialization
         // but we can test that the metadata was created correctly
-        assert_eq!(metadata.title, Some(Title::Static("Test Title".to_string())));
+        assert_eq!(
+            metadata.title,
+            Some(Title::Static("Test Title".to_string()))
+        );
         assert_eq!(metadata.description, Some("Test Description".to_string()));
-        assert_eq!(metadata.keywords, Some(Keywords::Multiple(vec!["test".to_string(), "metadata".to_string()])));
+        assert_eq!(
+            metadata.keywords,
+            Some(Keywords::Multiple(vec![
+                "test".to_string(),
+                "metadata".to_string()
+            ]))
+        );
         assert_eq!(metadata.canonical, Some("https://example.com".to_string()));
     }
 }

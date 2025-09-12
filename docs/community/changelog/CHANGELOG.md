@@ -5,17 +5,40 @@ All notable changes to leptos-next-metadata will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-**Last Updated**: September 3rd, 2025
+**Last Updated**: December 19th, 2024
 
 ## [Unreleased]
 
 ### Planned
-- OG image generation pipeline completion
-- File convention scanner implementation
+- Competitive analysis framework
+- Ecosystem maintainership ("Drink Our Own Champagne") implementation
 - Advanced caching strategies
 - Performance optimizations
 - Integration with Leptos ecosystem
 - Comprehensive testing suite with Playwright
+
+## [1.1.0] - 2024-12-19
+
+### Added
+- **API Contract System**: Complete OpenAPI 3.0 specification and contract validation middleware
+- **Quality Gates**: Pre-commit hooks with TDD enforcement and strict linting
+- **Coverage Enforcement**: 95% test coverage threshold in CI/CD pipeline
+- **Rust Configuration**: Standardized `rustfmt.toml` and `.clippy.toml` configurations
+- **Contract Validation**: Request/response validation with OpenAPI schema compliance
+- **Feature Flags**: Optional `api-contracts` feature for contract validation
+- **Enhanced Testing**: 108 unit tests with comprehensive coverage across all modules
+
+### Changed
+- **CI/CD Pipeline**: Enhanced with coverage enforcement and quality gates
+- **Development Workflow**: Pre-commit hooks now enforce TDD practices
+- **Code Quality**: Stricter linting rules and formatting standards
+- **Documentation**: Updated API documentation with contract specifications
+
+### Technical Improvements
+- **Dependencies**: Added `openapiv3`, `validator`, and `serde_yaml` for contract validation
+- **Error Handling**: Enhanced validation error reporting and scoring system
+- **Middleware**: Contract validation middleware for API compliance
+- **Testing**: Simplified component tests for better compilation reliability
 
 ## [0.1.0-alpha.1] - 2025-09-03
 

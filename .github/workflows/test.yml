@@ -103,7 +103,8 @@ jobs:
             pkg-config \
             libfreetype6-dev \
             libglib2.0-dev \
-            libxml2-dev
+            libxml2-dev \
+            bc
 
       - name: Install cargo-llvm-cov
         uses: taiki-e/install-action@cargo-llvm-cov
@@ -113,6 +114,21 @@ jobs:
           cargo llvm-cov --all-features --workspace \
             --ignore-filename-regex '(benches|tests|examples)/' \
             --lcov --output-path lcov.info
+
+      - name: Check coverage threshold
+        run: |
+          # Extract coverage percentage from lcov.info
+          COVERAGE=$(grep -o 'lines.*: [0-9.]*%' lcov.info | head -1 | grep -o '[0-9.]*' || echo "0")
+          echo "Current coverage: ${COVERAGE}%"
+
+          # Check if coverage meets 95% threshold
+          if (( $(echo "$COVERAGE < 95" | bc -l) )); then
+            echo "❌ Coverage ${COVERAGE}% is below 95% threshold"
+            echo "::error::Test coverage ${COVERAGE}% is below the required 95% threshold"
+            exit 1
+          else
+            echo "✅ Coverage ${COVERAGE}% meets 95% threshold"
+          fi
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -140,7 +156,8 @@ jobs:
             pkg-config \
             libfreetype6-dev \
             libglib2.0-dev \
-            libxml2-dev
+            libxml2-dev \
+            bc
 
       - name: Run benchmarks
         run: |
@@ -180,7 +197,8 @@ jobs:
             pkg-config \
             libfreetype6-dev \
             libglib2.0-dev \
-            libxml2-dev
+            libxml2-dev \
+            bc
 
       - name: Install Playwright browsers
         run: |
@@ -259,7 +277,8 @@ jobs:
             pkg-config \
             libfreetype6-dev \
             libglib2.0-dev \
-            libxml2-dev
+            libxml2-dev \
+            bc
 
       - name: Check MSRV compatibility
         run: cargo check --all-features
@@ -345,7 +364,8 @@ jobs:
             pkg-config \
             libfreetype6-dev \
             libglib2.0-dev \
-            libxml2-dev
+            libxml2-dev \
+            bc
 
       - name: Check documentation
         run: |

@@ -159,7 +159,11 @@ impl ValidationResult {
         let warning_penalty = self.warnings.len() * 5; // Each warning costs 5 points
 
         let total_penalty = error_penalty + warning_penalty;
-        self.score = if total_penalty >= 100 { 0 } else { 100 - total_penalty as u8 };
+        self.score = if total_penalty >= 100 {
+            0
+        } else {
+            100 - total_penalty as u8
+        };
     }
 }
 
@@ -246,21 +250,28 @@ impl Metadata {
                             code: ValidationErrorCode::MissingRequired,
                             message: "Title cannot be empty".to_string(),
                             field: Some("title".to_string()),
-                            suggestion: Some("Provide a descriptive title for the page".to_string()),
+                            suggestion: Some(
+                                "Provide a descriptive title for the page".to_string(),
+                            ),
                         });
                     } else if s.len() < 10 {
                         result.add_warning(ValidationWarning {
                             code: ValidationWarningCode::CouldImprove,
                             message: "Title is quite short".to_string(),
                             field: Some("title".to_string()),
-                            suggestion: Some("Consider making the title more descriptive (10-60 characters)".to_string()),
+                            suggestion: Some(
+                                "Consider making the title more descriptive (10-60 characters)"
+                                    .to_string(),
+                            ),
                         });
                     } else if s.len() > 60 {
                         result.add_warning(ValidationWarning {
                             code: ValidationWarningCode::CouldImprove,
                             message: "Title is quite long".to_string(),
                             field: Some("title".to_string()),
-                            suggestion: Some("Consider shortening the title to under 60 characters".to_string()),
+                            suggestion: Some(
+                                "Consider shortening the title to under 60 characters".to_string(),
+                            ),
                         });
                     }
                 }
@@ -282,7 +293,6 @@ impl Metadata {
                         });
                     }
                 }
-
             }
         } else {
             result.add_warning(ValidationWarning {
@@ -309,14 +319,19 @@ impl Metadata {
                     code: ValidationWarningCode::CouldImprove,
                     message: "Description is quite short".to_string(),
                     field: Some("description".to_string()),
-                    suggestion: Some("Consider making the description more detailed (50-160 characters)".to_string()),
+                    suggestion: Some(
+                        "Consider making the description more detailed (50-160 characters)"
+                            .to_string(),
+                    ),
                 });
             } else if description.len() > 160 {
                 result.add_warning(ValidationWarning {
                     code: ValidationWarningCode::CouldImprove,
                     message: "Description is quite long".to_string(),
                     field: Some("description".to_string()),
-                    suggestion: Some("Consider shortening the description to under 160 characters".to_string()),
+                    suggestion: Some(
+                        "Consider shortening the description to under 160 characters".to_string(),
+                    ),
                 });
             }
         } else {
@@ -346,7 +361,9 @@ impl Metadata {
                 code: ValidationWarningCode::MissingRecommended,
                 message: "Open Graph description is missing".to_string(),
                 field: Some("openGraph.description".to_string()),
-                suggestion: Some("Add an Open Graph description for better social sharing".to_string()),
+                suggestion: Some(
+                    "Add an Open Graph description for better social sharing".to_string(),
+                ),
             });
         }
 
@@ -356,7 +373,9 @@ impl Metadata {
                 code: ValidationWarningCode::MissingRecommended,
                 message: "Open Graph images are missing".to_string(),
                 field: Some("openGraph.images".to_string()),
-                suggestion: Some("Add at least one Open Graph image for better social sharing".to_string()),
+                suggestion: Some(
+                    "Add at least one Open Graph image for better social sharing".to_string(),
+                ),
             });
         } else {
             for (i, image) in og.images.iter().enumerate() {
@@ -382,7 +401,20 @@ impl Metadata {
 
         // Validate type
         if let Some(ref og_type) = og.r#type {
-            let valid_types = ["website", "article", "book", "profile", "music.song", "music.album", "music.playlist", "music.radio_station", "video.movie", "video.episode", "video.tv_show", "video.other"];
+            let valid_types = [
+                "website",
+                "article",
+                "book",
+                "profile",
+                "music.song",
+                "music.album",
+                "music.playlist",
+                "music.radio_station",
+                "video.movie",
+                "video.episode",
+                "video.tv_show",
+                "video.other",
+            ];
             if !valid_types.contains(&og_type.as_str()) {
                 result.add_warning(ValidationWarning {
                     code: ValidationWarningCode::CouldImprove,
@@ -423,7 +455,17 @@ impl Metadata {
         // Basic JSON-LD validation
         if let Some(schema_type) = json_ld.get("@type") {
             if let Some(type_str) = schema_type.as_str() {
-                let valid_types = ["Article", "BlogPosting", "WebPage", "Product", "Organization", "Person", "Event", "Recipe", "Review"];
+                let valid_types = [
+                    "Article",
+                    "BlogPosting",
+                    "WebPage",
+                    "Product",
+                    "Organization",
+                    "Person",
+                    "Event",
+                    "Recipe",
+                    "Review",
+                ];
                 if !valid_types.contains(&type_str) {
                     result.add_warning(ValidationWarning {
                         code: ValidationWarningCode::CouldImprove,
@@ -484,7 +526,9 @@ impl Metadata {
                     code: ValidationWarningCode::PerformanceConsideration,
                     message: "Crawl delay is quite high".to_string(),
                     field: Some("robots.crawlDelay".to_string()),
-                    suggestion: Some("Consider reducing crawl delay for better indexing".to_string()),
+                    suggestion: Some(
+                        "Consider reducing crawl delay for better indexing".to_string(),
+                    ),
                 });
             }
         }
@@ -545,7 +589,9 @@ impl MetadataValidator {
                 code: ValidationWarningCode::CouldImprove,
                 message: "Title is quite short".to_string(),
                 field: Some("title".to_string()),
-                suggestion: Some("Consider making the title more descriptive (10-60 characters)".to_string()),
+                suggestion: Some(
+                    "Consider making the title more descriptive (10-60 characters)".to_string(),
+                ),
             });
         }
 
@@ -554,7 +600,9 @@ impl MetadataValidator {
                 code: ValidationWarningCode::CouldImprove,
                 message: "Title is quite long".to_string(),
                 field: Some("title".to_string()),
-                suggestion: Some("Consider shortening the title to under 60 characters".to_string()),
+                suggestion: Some(
+                    "Consider shortening the title to under 60 characters".to_string(),
+                ),
             });
         }
 
@@ -570,7 +618,9 @@ impl MetadataValidator {
                 code: ValidationWarningCode::CouldImprove,
                 message: "Description is quite short".to_string(),
                 field: Some("description".to_string()),
-                suggestion: Some("Consider making the description more detailed (50-160 characters)".to_string()),
+                suggestion: Some(
+                    "Consider making the description more detailed (50-160 characters)".to_string(),
+                ),
             });
         }
 
@@ -579,7 +629,9 @@ impl MetadataValidator {
                 code: ValidationWarningCode::CouldImprove,
                 message: "Description is quite long".to_string(),
                 field: Some("description".to_string()),
-                suggestion: Some("Consider shortening the description to under 160 characters".to_string()),
+                suggestion: Some(
+                    "Consider shortening the description to under 160 characters".to_string(),
+                ),
             });
         }
 
@@ -622,7 +674,10 @@ mod tests {
         let result = metadata.validate();
 
         assert!(!result.is_valid());
-        assert!(result.errors.iter().any(|e| e.field.as_ref().unwrap() == "title"));
+        assert!(result
+            .errors
+            .iter()
+            .any(|e| e.field.as_ref().unwrap() == "title"));
     }
 
     #[test]
@@ -632,7 +687,10 @@ mod tests {
 
         assert!(result.is_valid());
         assert!(result.has_warnings());
-        assert!(result.warnings.iter().any(|w| w.field.as_ref().unwrap() == "description"));
+        assert!(result
+            .warnings
+            .iter()
+            .any(|w| w.field.as_ref().unwrap() == "description"));
     }
 
     #[test]
@@ -646,7 +704,11 @@ mod tests {
         let result = metadata.validate();
 
         assert!(!result.is_valid());
-        assert!(result.errors.iter().any(|e| e.field.as_ref().unwrap().contains("openGraph.images")));
+        assert!(result.errors.iter().any(|e| e
+            .field
+            .as_ref()
+            .unwrap()
+            .contains("openGraph.images")));
     }
 
     #[test]

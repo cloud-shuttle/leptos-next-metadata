@@ -1,13 +1,13 @@
 use axum::{
-    routing::{get, post},
-    response::{Html, Json},
     extract::{Path, Query},
+    response::{Html, Json},
+    routing::{get, post},
     Router,
 };
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::net::SocketAddr;
 use std::fs;
+use std::net::SocketAddr;
 use tower_http::cors::CorsLayer;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -44,15 +44,14 @@ async fn main() {
     println!("🔧 API endpoints available at /api/*");
     println!("🧪 Test cases available at /test/*");
 
-    axum::serve(
-        tokio::net::TcpListener::bind(addr).await.unwrap(),
-        app
-    ).await.unwrap();
+    axum::serve(tokio::net::TcpListener::bind(addr).await.unwrap(), app)
+        .await
+        .unwrap();
 }
 
 async fn serve_test_page() -> Html<String> {
-    let html_content = fs::read_to_string("examples/test_server/static/index.html")
-        .unwrap_or_else(|_| {
+    let html_content =
+        fs::read_to_string("examples/test_server/static/index.html").unwrap_or_else(|_| {
             r#"
             <!DOCTYPE html>
             <html lang="en">
@@ -68,7 +67,8 @@ async fn serve_test_page() -> Html<String> {
                 <p>Check the console for available endpoints.</p>
             </body>
             </html>
-            "#.to_string()
+            "#
+            .to_string()
         });
 
     Html(html_content)
@@ -82,9 +82,7 @@ async fn health_check() -> Json<MetadataResponse> {
     })
 }
 
-async fn handle_metadata(
-    Json(payload): Json<MetadataRequest>,
-) -> Json<MetadataResponse> {
+async fn handle_metadata(Json(payload): Json<MetadataRequest>) -> Json<MetadataResponse> {
     let mut metadata = HashMap::new();
 
     if let Some(title) = payload.title {
@@ -111,8 +109,14 @@ async fn serve_test_case(
     Path(test_type): Path<String>,
     Query(params): Query<HashMap<String, String>>,
 ) -> Html<String> {
-    let title = params.get("title").cloned().unwrap_or_else(|| "Test Page".to_string());
-    let description = params.get("description").cloned().unwrap_or_else(|| "A test page for metadata validation".to_string());
+    let title = params
+        .get("title")
+        .cloned()
+        .unwrap_or_else(|| "Test Page".to_string());
+    let description = params
+        .get("description")
+        .cloned()
+        .unwrap_or_else(|| "A test page for metadata validation".to_string());
 
     let html = match test_type.as_str() {
         "basic" => format!(
