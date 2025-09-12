@@ -55,6 +55,7 @@
 #[cfg(feature = "api-contracts")]
 pub mod api;
 pub mod body;
+pub mod competitive_analysis;
 pub mod conventions;
 pub mod enhanced_title;
 pub mod hashed_stylesheet;
@@ -89,6 +90,13 @@ pub mod prelude {
     pub use crate::meta_tags::MetaTags;
     pub use crate::metadata::context::{
         provide_metadata_context, MetadataContext, MetadataProvider,
+    };
+
+    // Competitive analysis
+    pub use crate::competitive_analysis::{
+        CompetitiveAnalysisService, Competitor, CompetitorCategory, Capability,
+        ImplementationType, PerformanceMetrics, ClientValue, DemoCreator,
+        CompetitiveBenchmark, BenchmarkScenario, BenchmarkReport,
     };
 }
 
