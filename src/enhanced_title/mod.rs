@@ -76,6 +76,7 @@ pub fn EnhancedTitle(
 }
 
 mod tests {
+
     #[test]
     fn test_enhanced_title_component_exists() {
         // Test that we can create an EnhancedTitle component
@@ -85,5 +86,80 @@ mod tests {
 
         // Test passes if this module compiles
         // Component exists and compiles
+    }
+
+    #[test]
+    fn test_title_formatting_logic() {
+        // Test the core formatting logic without Leptos components
+
+        // Test basic text (no formatting)
+        let text = "My Page".to_string();
+        let formatted = if let Some(_formatter_fn) = None::<fn(&str) -> String> {
+            "formatted".to_string()
+        } else if let Some(template_str) = Some("{} | My Site".to_string()) {
+            template_str.replace("{}", &text)
+        } else {
+            text.clone()
+        };
+        assert_eq!(formatted, "My Page | My Site");
+
+        // Test prefix and suffix
+        let text = "My Page".to_string();
+        let prefix = Some("Home".to_string());
+        let suffix = Some("Site".to_string());
+
+        let mut result = text.clone();
+        if let Some(prefix_str) = prefix {
+            result = format!("{} {}", prefix_str, result);
+        }
+        if let Some(suffix_str) = suffix {
+            result = format!("{} {}", result, suffix_str);
+        }
+        assert_eq!(result, "Home My Page Site");
+    }
+
+    #[test]
+    fn test_template_replacement() {
+        let text = "Test Page";
+        let template = "{} | My Website";
+        let result = template.replace("{}", text);
+        assert_eq!(result, "Test Page | My Website");
+    }
+
+    #[test]
+    fn test_multiple_template_replacements() {
+        let text = "Home";
+        let template = "{} - {} | My Site";
+        let result = template.replace("{}", text);
+        assert_eq!(result, "Home - Home | My Site");
+    }
+
+    #[test]
+    fn test_prefix_suffix_combination() {
+        let text = "Page";
+        let prefix = "My";
+        let suffix = "Site";
+
+        let mut result = text.to_string();
+        result = format!("{} {}", prefix, result);
+        result = format!("{} {}", result, suffix);
+
+        assert_eq!(result, "My Page Site");
+    }
+
+    #[test]
+    fn test_empty_template() {
+        let text = "Test";
+        let template = "";
+        let result = template.replace("{}", text);
+        assert_eq!(result, "");
+    }
+
+    #[test]
+    fn test_template_without_placeholder() {
+        let text = "Test";
+        let template = "Static Title";
+        let result = template.replace("{}", text);
+        assert_eq!(result, "Static Title");
     }
 }

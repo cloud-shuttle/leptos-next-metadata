@@ -69,8 +69,8 @@ pub fn merge_metadata(base: Metadata, other: Metadata) -> Metadata {
     }
 
     // Merge alternates (replace entirely)
-    if other.alternates.is_some() {
-        merged.alternates = other.alternates;
+    if !other.alternate_links.is_empty() {
+        merged.alternate_links = other.alternate_links;
     }
 
     // Merge additional fields

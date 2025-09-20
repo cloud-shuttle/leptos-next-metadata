@@ -94,9 +94,9 @@ pub mod prelude {
 
     // Competitive analysis
     pub use crate::competitive_analysis::{
-        CompetitiveAnalysisService, Competitor, CompetitorCategory, Capability,
-        ImplementationType, PerformanceMetrics, ClientValue, DemoCreator,
-        CompetitiveBenchmark, BenchmarkScenario, BenchmarkReport,
+        BenchmarkReport, BenchmarkScenario, Capability, ClientValue, CompetitiveAnalysisService,
+        CompetitiveBenchmark, Competitor, CompetitorCategory, DemoCreator, ImplementationType,
+        PerformanceMetrics,
     };
 }
 
@@ -138,6 +138,9 @@ pub enum Error {
 
     #[error("Image generation error: {0}")]
     ImageError(String),
+
+    #[error("Performance limit exceeded: {0}")]
+    PerformanceLimitExceeded(String),
 
     #[error("IO error: {0}")]
     IoError(#[from] std::io::Error),

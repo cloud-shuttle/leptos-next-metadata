@@ -1,4 +1,14 @@
-# Configuration for cargo-deny
+# Cargo-deny configuration for dependency management and security
+
+[graph]
+# Maximum depth for dependency graph traversal
+max-depth = 20
+
+# Allow duplicate dependencies with different versions
+allow-duplicates = false
+
+# Allow multiple versions of the same crate
+allow-multiple-versions = false
 
 [licenses]
 # Allow these licenses
@@ -10,72 +20,107 @@ allow = [
     "BSD-3-Clause",
     "ISC",
     "Unicode-DFS-2016",
+    "Zlib",
+    "0BSD",
     "CC0-1.0",
+    "MPL-2.0",
+    "MIT-0",
 ]
 
-# Deny unlicensed crates
-unlicensed = "deny"
-
-# Allow 1 or more licenses on a per-crate basis
-exceptions = [
-    # ring has a custom license but is widely used and trusted
-    { allow = ["LicenseRef-ring"], name = "ring" },
-    # webpki has a custom license but is part of the rustls ecosystem
-    { allow = ["LicenseRef-webpki"], name = "webpki" },
-]
-
-[bans]
-# Deny multiple versions of these crates
-multiple-versions = "warn"
-wildcards = "deny"
-
-# Skip analyzing these crates
-skip = [
-    # System dependencies that may have multiple versions
-    { name = "windows-sys" },
-    { name = "windows_*" },
-]
-
-# Deny these specific crates
+# Deny these licenses
 deny = [
-    # Security-sensitive crates with known issues
-    { name = "openssl", reason = "Use rustls instead" },
-    { name = "native-tls", reason = "Use rustls instead" },
-
-    # Outdated crypto crates
-    { name = "md-5", reason = "Use sha2 or blake3 instead" },
-    { name = "sha1", reason = "SHA1 is cryptographically broken" },
-
-    # Unmaintained crates
-    { name = "tempdir", reason = "Use tempfile instead" },
-    { name = "rand_os", reason = "Integrated into rand" },
+    "GPL-2.0",
+    "GPL-3.0",
+    "AGPL-3.0",
+    "LGPL-2.0",
+    "LGPL-2.1",
+    "LGPL-3.0",
+    "CDDL-1.0",
+    "CDDL-1.1",
+    "EPL-1.0",
+    "EPL-2.0",
+    "CPOL-1.02",
+    "Sleepycat",
+    "EUPL-1.1",
+    "EUPL-1.2",
 ]
 
-[advisories]
-# Database of known security advisories
-db-path = "~/.cargo/advisory-db"
-db-urls = ["https://github.com/rustsec/advisory-db"]
+# Allow these specific crates regardless of license
+allow-osi-fsf-free = "neither"
 
-# Vulnerabilities to ignore (use sparingly and with good reason)
-ignore = [
-    # Example: "RUSTSEC-2020-0001",
-]
+# Allow these specific crates regardless of license
+# allow = [
+#     # Allow specific crates that might have restrictive licenses
+#     # but are essential for functionality
+# ]
 
-# Security vulnerability severity threshold
-# severity-threshold = "low"  # Deprecated in newer versions
+# Deny these specific crates regardless of license
+# deny = []
+
+# Allow these specific crates regardless of license
+# exceptions = [
+#     # Add exceptions here if needed
+# ]
 
 [sources]
-# Crate sources configuration
-unknown-registry = "deny"
-unknown-git = "deny"
-
-# Allow these git repositories
-allow-git = [
-    "https://github.com/rust-lang/",
-    "https://github.com/leptos-rs/",
-]
-
 # Allow these registries
 allow-registry = [
     "https://github.com/rust-lang/crates.io-index",
 ]
+
+# Deny these registries
+deny-registry = []
+
+# Allow these git sources
+allow-git = [
+    "https://github.com/leptos-rs/leptos",
+    "https://github.com/cloud-shuttle/leptos-next-metadata",
+]
+
+# Deny these git sources
+deny-git = []
+
+# Allow these specific git sources
+allow-git-commit = []
+
+# Deny these specific git sources
+deny-git-commit = []
+
+[advisories]
+# Database to use for security advisories
+db-path = "~/.cargo/advisory-db"
+db-urls = ["https://github.com/RustSec/advisory-db"]
+
+# Ignore these advisories
+ignore = [
+    # Add advisory IDs to ignore here
+]
+
+# Informational advisories to warn about
+informational-warn = [
+    "unmaintained",
+    "unsound",
+    "yanked",
+]
+
+# Informational advisories to deny
+informational-deny = []
+
+# Severity levels to warn about
+severity-threshold = "low"
+
+# Allow these specific advisories
+allow = []
+
+# Deny these specific advisories
+deny = []
+
+[metadata]
+# Minimum Rust version
+msrv = "1.70.0"
+
+# Allow these specific crates to have different MSRV
+allow-msrv = []
+
+# Deny these specific crates to have different MSRV
+deny-msrv = []

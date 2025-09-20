@@ -61,7 +61,7 @@ jobs:
         run: cargo fmt --all -- --check
 
       - name: Run Clippy
-        run: cargo clippy ${{ matrix.features }} -- -D warnings
+        run: cargo clippy --workspace --all-targets ${{ matrix.features }} -- -D warnings
 
       - name: Run unit tests
         run: cargo test --lib ${{ matrix.features }}
@@ -255,6 +255,50 @@ jobs:
         with:
           log-level: warn
           command: check
+          arguments: --all-features
+
+      - name: Check security advisories
+        uses: EmbarkStudios/cargo-deny-action@v1
+        with:
+          log-level: warn
+          command: check advisories
+          arguments: --all-features
+
+  dependencies:
+    name: Dependency Management
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install cargo-outdated
+        run: cargo install cargo-outdated
+
+      - name: Check outdated dependencies
+        run: cargo outdated --depth=1 --exit-code=1
+
+      - name: Check dependency licenses
+        uses: EmbarkStudios/cargo-deny-action@v1
+        with:
+          log-level: warn
+          command: check licenses
+          arguments: --all-features
+
+      - name: Check dependency sources
+        uses: EmbarkStudios/cargo-deny-action@v1
+        with:
+          log-level: warn
+          command: check sources
+          arguments: --all-features
+
+      - name: Check dependency graph
+        uses: EmbarkStudios/cargo-deny-action@v1
+        with:
+          log-level: warn
+          command: check graph
           arguments: --all-features
 
   msrv:

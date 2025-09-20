@@ -8,12 +8,12 @@
 
 // Module exports
 
-pub mod types;
-pub mod service;
-pub mod demo_creator;
 pub mod benchmark;
+pub mod demo_creator;
+pub mod service;
+pub mod types;
 
-pub use types::*;
-pub use service::*;
-pub use demo_creator::*;
 pub use benchmark::*;
+pub use demo_creator::*;
+pub use service::*;
+pub use types::*;

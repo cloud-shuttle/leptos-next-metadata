@@ -3,8 +3,8 @@
 //! Core data structures for competitive analysis including competitors,
 //! capabilities, performance metrics, and client value assessments.
 
-use serde::{Deserialize, Serialize};
 use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
 
 /// Represents a competitor in the market
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -102,10 +102,10 @@ pub enum ImplementationType {
 /// Performance metrics for capabilities
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PerformanceMetrics {
-    pub throughput: Option<f64>, // records/second
-    pub latency: Option<f64>,    // milliseconds
+    pub throughput: Option<f64>,   // records/second
+    pub latency: Option<f64>,      // milliseconds
     pub memory_usage: Option<f64>, // MB
-    pub cpu_usage: Option<f64>,  // percentage
+    pub cpu_usage: Option<f64>,    // percentage
 }
 
 impl PerformanceMetrics {
@@ -155,8 +155,12 @@ impl ClientValue {
 
     /// Calculate overall client value score
     pub fn overall_score(&self) -> f64 {
-        (self.cost_effectiveness + self.ease_of_use + self.reliability +
-         self.scalability + self.innovation) / 5.0
+        (self.cost_effectiveness
+            + self.ease_of_use
+            + self.reliability
+            + self.scalability
+            + self.innovation)
+            / 5.0
     }
 }
 
@@ -205,8 +209,11 @@ impl PerformanceDifference {
 
     /// Calculate overall performance advantage
     pub fn overall_advantage(&self) -> f64 {
-        (self.throughput_improvement + self.latency_improvement +
-         self.memory_improvement + self.cpu_improvement) / 4.0
+        (self.throughput_improvement
+            + self.latency_improvement
+            + self.memory_improvement
+            + self.cpu_improvement)
+            / 4.0
     }
 }
 
@@ -229,7 +236,9 @@ mod tests {
         assert_eq!(competitor.name, "Next.js");
         assert_eq!(competitor.category, CompetitorCategory::WebFramework);
         assert_eq!(competitor.market_share, 25.5);
-        assert!(competitor.strengths.contains(&"Fast development".to_string()));
+        assert!(competitor
+            .strengths
+            .contains(&"Fast development".to_string()));
         assert!(competitor.weaknesses.contains(&"Complex setup".to_string()));
     }
 

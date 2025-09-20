@@ -232,6 +232,7 @@ struct MetadataField {
     value: MetadataValue,
 }
 
+#[allow(clippy::large_enum_variant)]
 enum MetadataValue {
     /// Simple string or expression
     Simple(Expr),

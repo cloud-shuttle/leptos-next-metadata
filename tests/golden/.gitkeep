@@ -1,0 +1,2 @@
+# This file ensures the golden directory is tracked by git
+# Golden files will be generated during testing

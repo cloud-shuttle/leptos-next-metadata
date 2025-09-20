@@ -42,7 +42,9 @@ impl CompetitiveAnalysisService {
 
     /// Analyze a specific competitor
     pub fn analyze_competitor(&self, competitor_name: &str) -> Option<CompetitorAnalysis> {
-        let competitor = self.competitors.iter()
+        let competitor = self
+            .competitors
+            .iter()
             .find(|c| c.name == competitor_name)?;
 
         Some(CompetitorAnalysis {
@@ -59,13 +61,19 @@ impl CompetitiveAnalysisService {
         competitor_name: &str,
         capability_name: &str,
     ) -> Option<BenchmarkResult> {
-        let competitor = self.competitors.iter()
+        let competitor = self
+            .competitors
+            .iter()
             .find(|c| c.name == competitor_name)?;
 
-        let competitor_capability = competitor.capabilities.iter()
+        let competitor_capability = competitor
+            .capabilities
+            .iter()
             .find(|c| c.name == capability_name)?;
 
-        let our_capability = self.our_capabilities.iter()
+        let our_capability = self
+            .our_capabilities
+            .iter()
             .find(|c| c.name == capability_name)?;
 
         Some(BenchmarkResult {
@@ -88,23 +96,31 @@ impl CompetitiveAnalysisService {
 
         // Check for capabilities we have that competitor doesn't
         for our_capability in &self.our_capabilities {
-            let competitor_has_capability = competitor.capabilities.iter()
+            let competitor_has_capability = competitor
+                .capabilities
+                .iter()
                 .any(|c| c.name == our_capability.name);
 
             if !competitor_has_capability {
-                gaps.push(format!("We have '{}' capability that {} lacks",
-                    our_capability.name, competitor.name));
+                gaps.push(format!(
+                    "We have '{}' capability that {} lacks",
+                    our_capability.name, competitor.name
+                ));
             }
         }
 
         // Check for capabilities competitor has that we don't
         for competitor_capability in &competitor.capabilities {
-            let we_have_capability = self.our_capabilities.iter()
+            let we_have_capability = self
+                .our_capabilities
+                .iter()
                 .any(|c| c.name == competitor_capability.name);
 
             if !we_have_capability {
-                gaps.push(format!("{} has '{}' capability that we lack",
-                    competitor.name, competitor_capability.name));
+                gaps.push(format!(
+                    "{} has '{}' capability that we lack",
+                    competitor.name, competitor_capability.name
+                ));
             }
         }
 
@@ -117,18 +133,26 @@ impl CompetitiveAnalysisService {
 
         // Analyze market share
         if competitor.market_share > 30.0 {
-            recommendations.push(format!("{} has significant market share ({}%). Consider strategic positioning.",
-                competitor.name, competitor.market_share));
+            recommendations.push(format!(
+                "{} has significant market share ({}%). Consider strategic positioning.",
+                competitor.name, competitor.market_share
+            ));
         }
 
         // Analyze strengths
         for strength in &competitor.strengths {
-            recommendations.push(format!("Learn from {}'s strength: {}", competitor.name, strength));
+            recommendations.push(format!(
+                "Learn from {}'s strength: {}",
+                competitor.name, strength
+            ));
         }
 
         // Analyze weaknesses
         for weakness in &competitor.weaknesses {
-            recommendations.push(format!("Exploit {}'s weakness: {}", competitor.name, weakness));
+            recommendations.push(format!(
+                "Exploit {}'s weakness: {}",
+                competitor.name, weakness
+            ));
         }
 
         recommendations
@@ -140,15 +164,19 @@ impl CompetitiveAnalysisService {
 
         // Compare capabilities
         for our_capability in &self.our_capabilities {
-            if let Some(competitor_capability) = competitor.capabilities.iter()
-                .find(|c| c.name == our_capability.name) {
-
+            if let Some(competitor_capability) = competitor
+                .capabilities
+                .iter()
+                .find(|c| c.name == our_capability.name)
+            {
                 let our_score = our_capability.client_value.overall_score();
                 let competitor_score = competitor_capability.client_value.overall_score();
 
                 if our_score > competitor_score {
-                    advantages.push(format!("We outperform {} in '{}' ({} vs {})",
-                        competitor.name, our_capability.name, our_score, competitor_score));
+                    advantages.push(format!(
+                        "We outperform {} in '{}' ({} vs {})",
+                        competitor.name, our_capability.name, our_score, competitor_score
+                    ));
                 }
             }
         }
@@ -163,28 +191,31 @@ impl CompetitiveAnalysisService {
         our_metrics: &PerformanceMetrics,
     ) -> PerformanceDifference {
         let throughput_improvement = if let (Some(ours), Some(theirs)) =
-            (our_metrics.throughput, competitor_metrics.throughput) {
+            (our_metrics.throughput, competitor_metrics.throughput)
+        {
             ((ours - theirs) / theirs) * 100.0
         } else {
             0.0
         };
 
-        let latency_improvement = if let (Some(ours), Some(theirs)) =
-            (our_metrics.latency, competitor_metrics.latency) {
-            ((theirs - ours) / theirs) * 100.0 // Lower latency is better
-        } else {
-            0.0
-        };
+        let latency_improvement =
+            if let (Some(ours), Some(theirs)) = (our_metrics.latency, competitor_metrics.latency) {
+                ((theirs - ours) / theirs) * 100.0 // Lower latency is better
+            } else {
+                0.0
+            };
 
         let memory_improvement = if let (Some(ours), Some(theirs)) =
-            (our_metrics.memory_usage, competitor_metrics.memory_usage) {
+            (our_metrics.memory_usage, competitor_metrics.memory_usage)
+        {
             ((theirs - ours) / theirs) * 100.0 // Lower memory usage is better
         } else {
             0.0
         };
 
         let cpu_improvement = if let (Some(ours), Some(theirs)) =
-            (our_metrics.cpu_usage, competitor_metrics.cpu_usage) {
+            (our_metrics.cpu_usage, competitor_metrics.cpu_usage)
+        {
             ((theirs - ours) / theirs) * 100.0 // Lower CPU usage is better
         } else {
             0.0
@@ -207,24 +238,33 @@ impl CompetitiveAnalysisService {
         let mut recommendations = Vec::new();
 
         // Throughput recommendations
-        if let (Some(ours), Some(theirs)) = (our_metrics.throughput, competitor_metrics.throughput) {
+        if let (Some(ours), Some(theirs)) = (our_metrics.throughput, competitor_metrics.throughput)
+        {
             if ours > theirs {
-                recommendations.push(format!("We have {}% better throughput",
-                    ((ours - theirs) / theirs) * 100.0));
+                recommendations.push(format!(
+                    "We have {}% better throughput",
+                    ((ours - theirs) / theirs) * 100.0
+                ));
             } else {
-                recommendations.push(format!("We need to improve throughput by {}% to match competitor",
-                    ((theirs - ours) / theirs) * 100.0));
+                recommendations.push(format!(
+                    "We need to improve throughput by {}% to match competitor",
+                    ((theirs - ours) / theirs) * 100.0
+                ));
             }
         }
 
         // Latency recommendations
         if let (Some(ours), Some(theirs)) = (our_metrics.latency, competitor_metrics.latency) {
             if ours < theirs {
-                recommendations.push(format!("We have {}% better latency",
-                    ((theirs - ours) / theirs) * 100.0));
+                recommendations.push(format!(
+                    "We have {}% better latency",
+                    ((theirs - ours) / theirs) * 100.0
+                ));
             } else {
-                recommendations.push(format!("We need to improve latency by {}% to match competitor",
-                    ((ours - theirs) / theirs) * 100.0));
+                recommendations.push(format!(
+                    "We need to improve latency by {}% to match competitor",
+                    ((ours - theirs) / theirs) * 100.0
+                ));
             }
         }
 

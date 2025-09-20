@@ -1,0 +1,577 @@
+//! Integration tests for API contract validation
+//!
+//! This module provides comprehensive integration tests for the API contract validation system,
+//! including real OpenAPI schema validation, middleware integration, and performance testing.
+
+#[cfg(feature = "api-contracts")]
+#[allow(dead_code)]
+mod integration_tests {
+    use leptos_next_metadata::api::contracts::*;
+    use serde_json::json;
+    use std::collections::HashMap;
+
+    /// Test OpenAPI schema validation with real schema
+    #[tokio::test]
+    async fn test_openapi_schema_validation() {
+        // Create a minimal OpenAPI spec for testing
+        let spec = openapiv3::OpenAPI {
+            openapi: "3.0.0".to_string(),
+            info: openapiv3::Info {
+                title: "Test API".to_string(),
+                version: "1.0.0".to_string(),
+                ..Default::default()
+            },
+            paths: openapiv3::Paths {
+                paths: {
+                    let mut paths = std::collections::HashMap::new();
+                    paths.insert(
+                        "/api/metadata".to_string(),
+                        openapiv3::ReferenceOr::Item(openapiv3::PathItem {
+                            post: Some(openapiv3::Operation {
+                                operation_id: Some("create_metadata".to_string()),
+                                request_body: Some(openapiv3::ReferenceOr::Item(openapiv3::RequestBody {
+                                    content: {
+                                        let mut content = std::collections::HashMap::new();
+                                        content.insert(
+                                            "application/json".to_string(),
+                                            openapiv3::MediaType {
+                                                schema: Some(openapiv3::ReferenceOr::Item(openapiv3::Schema {
+                                                    schema_kind: openapiv3::SchemaKind::Type(openapiv3::Type::Object(openapiv3::ObjectType {
+                                                        properties: {
+                                                            let mut props = std::collections::HashMap::new();
+                                                            props.insert(
+                                                                "title".to_string(),
+                                                                openapiv3::ReferenceOr::Item(openapiv3::Schema {
+                                                                    schema_kind: openapiv3::SchemaKind::Type(openapiv3::Type::String(openapiv3::StringType {
+                                                                        max_length: Some(100),
+                                                                        ..Default::default()
+                                                                    })),
+                                                                    ..Default::default()
+                                                                }),
+                                                            );
+                                                            props
+                                                        },
+                                                        required: vec!["title".to_string()],
+                                                        ..Default::default()
+                                                    })),
+                                                    ..Default::default()
+                                                })),
+                                                ..Default::default()
+                                            }),
+                                        );
+                                        content
+                                    },
+                                    ..Default::default()
+                                })),
+                                ..Default::default()
+                            }),
+                            ..Default::default()
+                        }),
+                    );
+                    paths
+                },
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+
+        let validator = ContractValidator::new(spec).unwrap();
+
+        // Test valid request
+        let valid_request = json!({
+            "title": "Test Title"
+        });
+
+        let result = validator.validate_request(
+            "POST",
+            "/api/metadata",
+            &HashMap::new(),
+            Some(&valid_request),
+        );
+
+        assert!(result.is_valid);
+        assert_eq!(result.error_count(), 0);
+
+        // Test invalid request (missing required field)
+        let invalid_request = json!({
+            "description": "Test Description"
+        });
+
+        let result = validator.validate_request(
+            "POST",
+            "/api/metadata",
+            &HashMap::new(),
+            Some(&invalid_request),
+        );
+
+        assert!(!result.is_valid);
+        assert!(result.error_count() > 0);
+    }
+
+    /// Test validation rules
+    #[tokio::test]
+    async fn test_validation_rules() {
+        let spec = create_minimal_spec();
+        let validator = ContractValidator::new(spec).unwrap();
+
+        // Test URL validation
+        let request_with_invalid_url = json!({
+            "title": "Test Title",
+            "image_url": "not-a-valid-url"
+        });
+
+        let result = validator.validate_request(
+            "POST",
+            "/api/metadata",
+            &HashMap::new(),
+            Some(&request_with_invalid_url),
+        );
+
+        // Should have validation errors for invalid URL
+        assert!(!result.is_valid);
+        assert!(result.error_count() > 0);
+
+        // Test valid URL
+        let request_with_valid_url = json!({
+            "title": "Test Title",
+            "image_url": "https://example.com/image.jpg"
+        });
+
+        let result = validator.validate_request(
+            "POST",
+            "/api/metadata",
+            &HashMap::new(),
+            Some(&request_with_valid_url),
+        );
+
+        assert!(result.is_valid);
+    }
+
+    /// Test OpenGraph validation
+    #[tokio::test]
+    async fn test_opengraph_validation() {
+        let spec = create_minimal_spec();
+        let validator = ContractValidator::new(spec).unwrap();
+
+        // Test OpenGraph with invalid image URL
+        let request_with_invalid_og = json!({
+            "title": "Test Title",
+            "open_graph": {
+                "title": "OG Title",
+                "image": {
+                    "url": "not-a-valid-url"
+                }
+            }
+        });
+
+        let result = validator.validate_request(
+            "POST",
+            "/api/metadata",
+            &HashMap::new(),
+            Some(&request_with_invalid_og),
+        );
+
+        assert!(!result.is_valid);
+        assert!(result.error_count() > 0);
+
+        // Test OpenGraph with title too long
+        let request_with_long_title = json!({
+            "title": "Test Title",
+            "open_graph": {
+                "title": "This is a very long OpenGraph title that exceeds the recommended 95 character limit and should trigger a validation error"
+            }
+        });
+
+        let result = validator.validate_request(
+            "POST",
+            "/api/metadata",
+            &HashMap::new(),
+            Some(&request_with_long_title),
+        );
+
+        assert!(!result.is_valid);
+        assert!(result.error_count() > 0);
+    }
+
+    /// Test Twitter Card validation
+    #[tokio::test]
+    async fn test_twitter_validation() {
+        let spec = create_minimal_spec();
+        let validator = ContractValidator::new(spec).unwrap();
+
+        // Test Twitter with invalid card type
+        let request_with_invalid_card = json!({
+            "title": "Test Title",
+            "twitter": {
+                "card": "invalid_card_type"
+            }
+        });
+
+        let result = validator.validate_request(
+            "POST",
+            "/api/metadata",
+            &HashMap::new(),
+            Some(&request_with_invalid_card),
+        );
+
+        assert!(!result.is_valid);
+        assert!(result.error_count() > 0);
+
+        // Test Twitter with valid card type
+        let request_with_valid_card = json!({
+            "title": "Test Title",
+            "twitter": {
+                "card": "summary_large_image",
+                "image": "https://example.com/image.jpg"
+            }
+        });
+
+        let result = validator.validate_request(
+            "POST",
+            "/api/metadata",
+            &HashMap::new(),
+            Some(&request_with_valid_card),
+        );
+
+        assert!(result.is_valid);
+    }
+
+    /// Test middleware integration
+    #[tokio::test]
+    async fn test_middleware_integration() {
+        let spec = create_minimal_spec();
+        let validator = ContractValidator::new(spec).unwrap();
+        let middleware = ContractMiddleware::new(validator);
+
+        // Test middleware validation
+        let request_body = json!({
+            "title": "Test Title"
+        });
+
+        let result = middleware.validate_request(
+            "POST",
+            "/api/metadata",
+            &HashMap::new(),
+            Some(&request_body),
+        );
+
+        assert!(result.is_valid);
+    }
+
+    /// Test path matching
+    #[tokio::test]
+    async fn test_path_matching() {
+        let spec = openapiv3::OpenAPI {
+            openapi: "3.0.0".to_string(),
+            info: openapiv3::Info {
+                title: "Test API".to_string(),
+                version: "1.0.0".to_string(),
+                ..Default::default()
+            },
+            paths: openapiv3::Paths {
+                paths: {
+                    let mut paths = std::collections::HashMap::new();
+                    paths.insert(
+                        "/api/users/{id}".to_string(),
+                        openapiv3::ReferenceOr::Item(openapiv3::PathItem {
+                            get: Some(openapiv3::Operation {
+                                operation_id: Some("get_user".to_string()),
+                                ..Default::default()
+                            }),
+                            ..Default::default()
+                        }),
+                    );
+                    paths
+                },
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+
+        let validator = ContractValidator::new(spec).unwrap();
+
+        // Test exact path match
+        let result = validator.validate_request(
+            "GET",
+            "/api/users/123",
+            &HashMap::new(),
+            None,
+        );
+
+        assert!(result.is_valid);
+
+        // Test non-matching path
+        let result = validator.validate_request(
+            "GET",
+            "/api/posts/123",
+            &HashMap::new(),
+            None,
+        );
+
+        assert!(!result.is_valid);
+        assert!(result.error_count() > 0);
+    }
+
+    /// Test response validation
+    #[tokio::test]
+    async fn test_response_validation() {
+        let spec = create_minimal_spec();
+        let validator = ContractValidator::new(spec).unwrap();
+
+        // Test successful response
+        let result = validator.validate_response(
+            "POST",
+            "/api/metadata",
+            200,
+            &HashMap::new(),
+            None,
+        );
+
+        assert!(result.is_valid);
+
+        // Test client error response
+        let result = validator.validate_response(
+            "POST",
+            "/api/metadata",
+            400,
+            &HashMap::new(),
+            None,
+        );
+
+        assert!(result.is_valid); // Should be valid but with warnings
+        assert!(result.warning_count() > 0);
+
+        // Test server error response
+        let result = validator.validate_response(
+            "POST",
+            "/api/metadata",
+            500,
+            &HashMap::new(),
+            None,
+        );
+
+        assert!(!result.is_valid);
+        assert!(result.error_count() > 0);
+    }
+
+    /// Test validation score calculation
+    #[tokio::test]
+    async fn test_validation_score() {
+        let spec = create_minimal_spec();
+        let validator = ContractValidator::new(spec).unwrap();
+
+        // Test perfect score
+        let result = validator.validate_request(
+            "POST",
+            "/api/metadata",
+            &HashMap::new(),
+            Some(&json!({"title": "Test Title"})),
+        );
+
+        assert_eq!(result.get_score(), 100);
+
+        // Test reduced score due to errors
+        let result = validator.validate_request(
+            "POST",
+            "/api/metadata",
+            &HashMap::new(),
+            Some(&json!({"invalid_field": "value"})),
+        );
+
+        assert!(result.get_score() < 100);
+    }
+
+    /// Test custom validation rules
+    #[tokio::test]
+    async fn test_custom_validation_rules() {
+        let spec = create_minimal_spec();
+        let mut validator = ContractValidator::new(spec).unwrap();
+
+        // Add a custom rule
+        validator.add_rule(ValidationRuleEnum::RequiredFields(super::rules::RequiredFieldsRule));
+
+        // Test with missing required fields
+        let result = validator.validate_request(
+            "POST",
+            "/api/metadata",
+            &HashMap::new(),
+            Some(&json!({})),
+        );
+
+        assert!(!result.is_valid);
+        assert!(result.error_count() > 0);
+    }
+
+    /// Test validation configuration
+    #[tokio::test]
+    async fn test_validation_configuration() {
+        let spec = create_minimal_spec();
+        let config = ValidationRules {
+            strict: true,
+            allow_additional_properties: false,
+            max_request_size: 1024,
+            max_response_size: 10240,
+        };
+
+        let validator = ContractValidator::with_config(spec, config).unwrap();
+        let retrieved_config = validator.get_config();
+
+        assert!(retrieved_config.strict);
+        assert!(!retrieved_config.allow_additional_properties);
+        assert_eq!(retrieved_config.max_request_size, 1024);
+        assert_eq!(retrieved_config.max_response_size, 10240);
+    }
+
+    /// Test rule enumeration
+    #[tokio::test]
+    async fn test_rule_enumeration() {
+        let spec = create_minimal_spec();
+        let validator = ContractValidator::new(spec).unwrap();
+        let rules = validator.get_rules();
+
+        assert!(rules.contains(&"schema-compliance"));
+        assert!(rules.contains(&"required-fields"));
+        assert!(rules.contains(&"type-constraints"));
+        assert!(rules.contains(&"format-validation"));
+        assert!(rules.contains(&"open-graph-validation"));
+        assert!(rules.contains(&"twitter-validation"));
+    }
+
+    /// Helper function to create minimal OpenAPI spec
+    fn create_minimal_spec() -> openapiv3::OpenAPI {
+        openapiv3::OpenAPI {
+            openapi: "3.0.0".to_string(),
+            info: openapiv3::Info {
+                title: "Test API".to_string(),
+                version: "1.0.0".to_string(),
+                ..Default::default()
+            },
+            paths: openapiv3::Paths {
+                paths: {
+                    let mut paths = std::collections::HashMap::new();
+                    paths.insert(
+                        "/api/metadata".to_string(),
+                        openapiv3::ReferenceOr::Item(openapiv3::PathItem {
+                            post: Some(openapiv3::Operation {
+                                operation_id: Some("create_metadata".to_string()),
+                                ..Default::default()
+                            }),
+                            ..Default::default()
+                        }),
+                    );
+                    paths
+                },
+                ..Default::default()
+            },
+            ..Default::default()
+        }
+    }
+}
+
+/// Performance tests for API contract validation
+#[cfg(feature = "api-contracts")]
+mod performance_tests {
+    use leptos_next_metadata::api::contracts::*;
+    use serde_json::json;
+    use std::collections::HashMap;
+    use std::time::Instant;
+
+    /// Test validation performance
+    #[tokio::test]
+    async fn test_validation_performance() {
+        let spec = create_minimal_spec();
+        let validator = ContractValidator::new(spec).unwrap();
+
+        let request_body = json!({
+            "title": "Test Title",
+            "description": "Test Description",
+            "open_graph": {
+                "title": "OG Title",
+                "image": {
+                    "url": "https://example.com/image.jpg"
+                }
+            },
+            "twitter": {
+                "card": "summary_large_image",
+                "image": "https://example.com/image.jpg"
+            }
+        });
+
+        // Measure validation time
+        let start = Instant::now();
+        let result = validator.validate_request(
+            "POST",
+            "/api/metadata",
+            &HashMap::new(),
+            Some(&request_body),
+        );
+        let duration = start.elapsed();
+
+        assert!(result.is_valid);
+
+        // Should complete in under 10ms as per design requirements
+        assert!(duration.as_millis() < 10, "Validation took {}ms, expected < 10ms", duration.as_millis());
+    }
+
+    /// Test batch validation performance
+    #[tokio::test]
+    async fn test_batch_validation_performance() {
+        let spec = create_minimal_spec();
+        let validator = ContractValidator::new(spec).unwrap();
+
+        let requests = (0..100).map(|i| {
+            json!({
+                "title": format!("Test Title {}", i),
+                "description": format!("Test Description {}", i)
+            })
+        }).collect::<Vec<_>>();
+
+        let start = Instant::now();
+
+        for request in &requests {
+            let result = validator.validate_request(
+                "POST",
+                "/api/metadata",
+                &HashMap::new(),
+                Some(request),
+            );
+            assert!(result.is_valid);
+        }
+
+        let duration = start.elapsed();
+        let avg_time = duration.as_millis() / requests.len() as u128;
+
+        // Average validation time should be under 1ms
+        assert!(avg_time < 1, "Average validation time: {}ms, expected < 1ms", avg_time);
+    }
+
+    /// Helper function to create minimal OpenAPI spec
+    fn create_minimal_spec() -> openapiv3::OpenAPI {
+        openapiv3::OpenAPI {
+            openapi: "3.0.0".to_string(),
+            info: openapiv3::Info {
+                title: "Test API".to_string(),
+                version: "1.0.0".to_string(),
+                ..Default::default()
+            },
+            paths: openapiv3::Paths {
+                paths: {
+                    let mut paths = std::collections::HashMap::new();
+                    paths.insert(
+                        "/api/metadata".to_string(),
+                        openapiv3::ReferenceOr::Item(openapiv3::PathItem {
+                            post: Some(openapiv3::Operation {
+                                operation_id: Some("create_metadata".to_string()),
+                                ..Default::default()
+                            }),
+                            ..Default::default()
+                        }),
+                    );
+                    paths
+                },
+                ..Default::default()
+            },
+            ..Default::default()
+        }
+    }
+}

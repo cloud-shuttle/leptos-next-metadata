@@ -1,0 +1,376 @@
+//! Golden file testing for OG image generation
+//!
+//! This module provides visual regression testing by comparing generated images
+//! against reference "golden" files to ensure visual consistency.
+
+use leptos_next_metadata::og_image::*;
+use image::{DynamicImage, GenericImageView};
+use std::path::Path;
+use tempfile::TempDir;
+
+/// Calculate structural similarity between two images
+/// Returns a value between 0.0 and 1.0, where 1.0 is identical
+fn calculate_structural_similarity(img1: &DynamicImage, img2: &DynamicImage) -> f32 {
+    // Ensure both images have the same dimensions
+    if img1.dimensions() != img2.dimensions() {
+        return 0.0;
+    }
+
+    let (width, height) = img1.dimensions();
+    let mut total_diff = 0.0;
+    let mut total_pixels = 0;
+
+    // Compare pixel by pixel
+    for y in 0..height {
+        for x in 0..width {
+            let pixel1 = img1.get_pixel(x, y);
+            let pixel2 = img2.get_pixel(x, y);
+
+            // Calculate RGB difference
+            let r_diff = (pixel1[0] as f32 - pixel2[0] as f32).abs();
+            let g_diff = (pixel1[1] as f32 - pixel2[1] as f32).abs();
+            let b_diff = (pixel1[2] as f32 - pixel2[2] as f32).abs();
+
+            let pixel_diff = (r_diff + g_diff + b_diff) / 3.0;
+            total_diff += pixel_diff;
+            total_pixels += 1;
+        }
+    }
+
+    if total_pixels == 0 {
+        return 0.0;
+    }
+
+    let avg_diff = total_diff / total_pixels as f32;
+    // Convert to similarity (0-1 scale, where 1 is identical)
+    1.0 - (avg_diff / 255.0)
+}
+
+/// Assert that two images are visually similar within a threshold
+fn assert_images_similar(actual: &[u8], expected: &[u8], threshold: f32) {
+    let actual_img = image::load_from_memory(actual)
+        .expect("Failed to load actual image");
+    let expected_img = image::load_from_memory(expected)
+        .expect("Failed to load expected image");
+
+    let similarity = calculate_structural_similarity(&actual_img, &expected_img);
+
+    assert!(
+        similarity >= threshold,
+        "Image similarity {} below threshold {}. Images are too different.",
+        similarity,
+        threshold
+    );
+}
+
+/// Load golden file from tests/golden/ directory
+fn load_golden_file(filename: &str) -> Vec<u8> {
+    let path = format!("tests/golden/{}", filename);
+    std::fs::read(&path)
+        .unwrap_or_else(|_| {
+            panic!("Golden file not found: {}. Run 'cargo test -- --ignored' to generate golden files.", path);
+        })
+}
+
+/// Save image as golden file for future reference
+fn save_golden_file(filename: &str, data: &[u8]) {
+    let path = format!("tests/golden/{}", filename);
+    std::fs::create_dir_all("tests/golden").unwrap();
+    std::fs::write(&path, data).unwrap();
+    println!("Saved golden file: {}", path);
+}
+
+#[tokio::test]
+async fn test_basic_template_golden() {
+    let generator = OgImageGenerator::new();
+    let params = OgImageParams {
+        template: "default".to_string(),
+        data: std::collections::HashMap::new(),
+        size: Some((1200, 630)),
+    };
+
+    let result = generator.generate(params).await.unwrap();
+
+    // Try to load golden file, if it doesn't exist, save current result
+    let golden_path = "tests/golden/basic_template.png";
+    if !Path::new(golden_path).exists() {
+        save_golden_file("basic_template.png", &result.data);
+        return; // Skip comparison on first run
+    }
+
+    let expected = load_golden_file("basic_template.png");
+    assert_images_similar(&result.data, &expected, 0.95);
+}
+
+#[tokio::test]
+async fn test_title_description_golden() {
+    let generator = OgImageGenerator::new();
+    let mut data = std::collections::HashMap::new();
+    data.insert("title".to_string(), "Test Page Title".to_string());
+    data.insert("description".to_string(), "This is a test description for the golden file test".to_string());
+
+    let params = OgImageParams {
+        template: "default".to_string(),
+        data,
+        size: Some((1200, 630)),
+    };
+
+    let result = generator.generate(params).await.unwrap();
+
+    let golden_path = "tests/golden/title_description.png";
+    if !Path::new(golden_path).exists() {
+        save_golden_file("title_description.png", &result.data);
+        return;
+    }
+
+    let expected = load_golden_file("title_description.png");
+    assert_images_similar(&result.data, &expected, 0.95);
+}
+
+#[tokio::test]
+async fn test_custom_colors_golden() {
+    let generator = OgImageGenerator::new();
+    let mut data = std::collections::HashMap::new();
+    data.insert("title".to_string(), "Custom Colors".to_string());
+    data.insert("background".to_string(), "#ff6b6b".to_string());
+    data.insert("text_color".to_string(), "#ffffff".to_string());
+
+    let params = OgImageParams {
+        template: "default".to_string(),
+        data,
+        size: Some((1200, 630)),
+    };
+
+    let result = generator.generate(params).await.unwrap();
+
+    let golden_path = "tests/golden/custom_colors.png";
+    if !Path::new(golden_path).exists() {
+        save_golden_file("custom_colors.png", &result.data);
+        return;
+    }
+
+    let expected = load_golden_file("custom_colors.png");
+    assert_images_similar(&result.data, &expected, 0.95);
+}
+
+#[tokio::test]
+async fn test_different_sizes_golden() {
+    let generator = OgImageGenerator::new();
+    let mut data = std::collections::HashMap::new();
+    data.insert("title".to_string(), "Different Sizes".to_string());
+
+    let sizes = vec![
+        (1200, 630), // Standard OG
+        (1200, 600), // Twitter large
+        (600, 314),  // Twitter summary
+    ];
+
+    for (width, height) in sizes {
+        let params = OgImageParams {
+            template: "default".to_string(),
+            data: data.clone(),
+            size: Some((width, height)),
+        };
+
+        let result = generator.generate(params).await.unwrap();
+
+        let filename = format!("size_{}x{}.png", width, height);
+        let golden_path = format!("tests/golden/{}", filename);
+
+        if !Path::new(&golden_path).exists() {
+            save_golden_file(&filename, &result.data);
+            continue;
+        }
+
+        let expected = load_golden_file(&filename);
+        assert_images_similar(&result.data, &expected, 0.95);
+    }
+}
+
+#[tokio::test]
+async fn test_webp_format_golden() {
+    #[cfg(feature = "webp-support")]
+    {
+        let generator = OgImageGenerator::new();
+        let mut data = std::collections::HashMap::new();
+        data.insert("title".to_string(), "WebP Format Test".to_string());
+
+        let params = OgImageParams {
+            template: "default".to_string(),
+            data,
+            size: Some((1200, 630)),
+        };
+
+        let result = generator.generate(params).await.unwrap();
+
+        let golden_path = "tests/golden/webp_format.webp";
+        if !Path::new(golden_path).exists() {
+            save_golden_file("webp_format.webp", &result.data);
+            return;
+        }
+
+        let expected = load_golden_file("webp_format.webp");
+        // For WebP, we'll do a byte-level comparison since it's a different format
+        assert_eq!(result.data.len(), expected.len());
+        assert_eq!(result.data, expected);
+    }
+
+    #[cfg(not(feature = "webp-support"))]
+    {
+        // Skip test when WebP support is not available
+        println!("Skipping WebP golden test - feature not enabled");
+    }
+}
+
+#[tokio::test]
+async fn test_long_text_handling_golden() {
+    let generator = OgImageGenerator::new();
+    let mut data = std::collections::HashMap::new();
+    data.insert("title".to_string(), "This is a very long title that should be handled gracefully by the template system and should not overflow or cause layout issues".to_string());
+    data.insert("description".to_string(), "This is an extremely long description that contains multiple sentences and should be properly wrapped and truncated by the template system to ensure it fits within the image boundaries without causing any visual artifacts or layout problems.".to_string());
+
+    let params = OgImageParams {
+        template: "default".to_string(),
+        data,
+        size: Some((1200, 630)),
+    };
+
+    let result = generator.generate(params).await.unwrap();
+
+    let golden_path = "tests/golden/long_text.png";
+    if !Path::new(golden_path).exists() {
+        save_golden_file("long_text.png", &result.data);
+        return;
+    }
+
+    let expected = load_golden_file("long_text.png");
+    assert_images_similar(&result.data, &expected, 0.90); // Lower threshold for text wrapping
+}
+
+#[tokio::test]
+async fn test_unicode_text_golden() {
+    let generator = OgImageGenerator::new();
+    let mut data = std::collections::HashMap::new();
+    data.insert("title".to_string(), "Unicode Test: 你好世界 🌍".to_string());
+    data.insert("description".to_string(), "Testing unicode characters: émojis 🚀, accents café, and symbols ∑∆π".to_string());
+
+    let params = OgImageParams {
+        template: "default".to_string(),
+        data,
+        size: Some((1200, 630)),
+    };
+
+    let result = generator.generate(params).await.unwrap();
+
+    let golden_path = "tests/golden/unicode_text.png";
+    if !Path::new(golden_path).exists() {
+        save_golden_file("unicode_text.png", &result.data);
+        return;
+    }
+
+    let expected = load_golden_file("unicode_text.png");
+    assert_images_similar(&result.data, &expected, 0.90); // Lower threshold for font rendering differences
+}
+
+/// Test to generate all golden files (run with --ignored flag)
+#[tokio::test]
+#[ignore]
+async fn generate_all_golden_files() {
+    println!("Generating all golden files...");
+
+    let generator = OgImageGenerator::new();
+
+    // Basic template
+    let params = OgImageParams {
+        template: "default".to_string(),
+        data: std::collections::HashMap::new(),
+        size: Some((1200, 630)),
+    };
+    let result = generator.generate(params).await.unwrap();
+    save_golden_file("basic_template.png", &result.data);
+
+    // Title and description
+    let mut data = std::collections::HashMap::new();
+    data.insert("title".to_string(), "Test Page Title".to_string());
+    data.insert("description".to_string(), "This is a test description for the golden file test".to_string());
+
+    let params = OgImageParams {
+        template: "default".to_string(),
+        data,
+        size: Some((1200, 630)),
+    };
+    let result = generator.generate(params).await.unwrap();
+    save_golden_file("title_description.png", &result.data);
+
+    // Custom colors
+    let mut data = std::collections::HashMap::new();
+    data.insert("title".to_string(), "Custom Colors".to_string());
+    data.insert("background".to_string(), "#ff6b6b".to_string());
+    data.insert("text_color".to_string(), "#ffffff".to_string());
+
+    let params = OgImageParams {
+        template: "default".to_string(),
+        data,
+        size: Some((1200, 630)),
+    };
+    let result = generator.generate(params).await.unwrap();
+    save_golden_file("custom_colors.png", &result.data);
+
+    // Different sizes
+    let mut data = std::collections::HashMap::new();
+    data.insert("title".to_string(), "Different Sizes".to_string());
+
+    let sizes = vec![(1200, 630), (1200, 600), (600, 314)];
+    for (width, height) in sizes {
+        let params = OgImageParams {
+            template: "default".to_string(),
+            data: data.clone(),
+            size: Some((width, height)),
+        };
+        let result = generator.generate(params).await.unwrap();
+        save_golden_file(&format!("size_{}x{}.png", width, height), &result.data);
+    }
+
+    // Long text
+    let mut data = std::collections::HashMap::new();
+    data.insert("title".to_string(), "This is a very long title that should be handled gracefully by the template system and should not overflow or cause layout issues".to_string());
+    data.insert("description".to_string(), "This is an extremely long description that contains multiple sentences and should be properly wrapped and truncated by the template system to ensure it fits within the image boundaries without causing any visual artifacts or layout problems.".to_string());
+
+    let params = OgImageParams {
+        template: "default".to_string(),
+        data,
+        size: Some((1200, 630)),
+    };
+    let result = generator.generate(params).await.unwrap();
+    save_golden_file("long_text.png", &result.data);
+
+    // Unicode text
+    let mut data = std::collections::HashMap::new();
+    data.insert("title".to_string(), "Unicode Test: 你好世界 🌍".to_string());
+    data.insert("description".to_string(), "Testing unicode characters: émojis 🚀, accents café, and symbols ∑∆π".to_string());
+
+    let params = OgImageParams {
+        template: "default".to_string(),
+        data,
+        size: Some((1200, 630)),
+    };
+    let result = generator.generate(params).await.unwrap();
+    save_golden_file("unicode_text.png", &result.data);
+
+    #[cfg(feature = "webp-support")]
+    {
+        // WebP format
+        let mut data = std::collections::HashMap::new();
+        data.insert("title".to_string(), "WebP Format Test".to_string());
+
+        let params = OgImageParams {
+            template: "default".to_string(),
+            data,
+            size: Some((1200, 630)),
+        };
+        let result = generator.generate(params).await.unwrap();
+        save_golden_file("webp_format.webp", &result.data);
+    }
+
+    println!("All golden files generated successfully!");
+}

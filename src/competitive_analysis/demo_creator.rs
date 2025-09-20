@@ -60,7 +60,10 @@ impl DemoCreator {
     }
 
     /// Analyze competitor demo
-    fn analyze_competitor_demo(&self, _url: &str) -> Result<CompetitorDemoAnalysis, DemoCreationError> {
+    fn analyze_competitor_demo(
+        &self,
+        _url: &str,
+    ) -> Result<CompetitorDemoAnalysis, DemoCreationError> {
         // This would involve web scraping, performance testing, etc.
         // For now, return a mock analysis
         Ok(CompetitorDemoAnalysis {
@@ -77,11 +80,16 @@ impl DemoCreator {
     }
 
     /// Create our demo
-    fn create_our_demo(&self, _competitor_analysis: &CompetitorDemoAnalysis) -> Result<Demo, DemoCreationError> {
+    fn create_our_demo(
+        &self,
+        _competitor_analysis: &CompetitorDemoAnalysis,
+    ) -> Result<Demo, DemoCreationError> {
         Ok(Demo {
             name: format!("{} vs {}", self.target_capability, self.target_competitor),
-            description: format!("Demo showcasing our {} capabilities against {}",
-                self.target_capability, self.target_competitor),
+            description: format!(
+                "Demo showcasing our {} capabilities against {}",
+                self.target_capability, self.target_competitor
+            ),
             features: vec!["Advanced functionality".to_string()],
             performance_metrics: PerformanceMetrics::new(
                 Some(2000.0), // Better throughput
@@ -107,12 +115,7 @@ impl DemoCreator {
                 Some(512.0),
                 Some(50.0),
             ),
-            our_metrics: PerformanceMetrics::new(
-                Some(2000.0),
-                Some(50.0),
-                Some(256.0),
-                Some(25.0),
-            ),
+            our_metrics: PerformanceMetrics::new(Some(2000.0), Some(50.0), Some(256.0), Some(25.0)),
             performance_difference: PerformanceDifference::new(100.0, 50.0, 50.0, 50.0),
             recommendations: vec!["Continue current approach".to_string()],
         })
@@ -138,7 +141,12 @@ impl DemoCreator {
 
         // Check memory target (lower is better)
         if let Some(target) = targets.memory_target {
-            if benchmark_result.our_metrics.memory_usage.unwrap_or(f64::MAX) > target {
+            if benchmark_result
+                .our_metrics
+                .memory_usage
+                .unwrap_or(f64::MAX)
+                > target
+            {
                 return false;
             }
         }
@@ -155,7 +163,7 @@ impl DemoCreator {
 }
 
 /// Demo requirements
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct DemoRequirements {
     pub performance_targets: PerformanceTargets,
     pub feature_requirements: Vec<String>,
@@ -163,24 +171,13 @@ pub struct DemoRequirements {
     pub technical_constraints: Vec<String>,
 }
 
-impl Default for DemoRequirements {
-    fn default() -> Self {
-        Self {
-            performance_targets: PerformanceTargets::default(),
-            feature_requirements: Vec::new(),
-            user_experience_goals: Vec::new(),
-            technical_constraints: Vec::new(),
-        }
-    }
-}
-
 /// Performance targets for demos
 #[derive(Debug, Clone)]
 pub struct PerformanceTargets {
-    pub throughput_target: Option<f64>,  // records/second
-    pub latency_target: Option<f64>,     // milliseconds
-    pub memory_target: Option<f64>,      // MB
-    pub cpu_target: Option<f64>,         // percentage
+    pub throughput_target: Option<f64>, // records/second
+    pub latency_target: Option<f64>,    // milliseconds
+    pub memory_target: Option<f64>,     // MB
+    pub cpu_target: Option<f64>,        // percentage
 }
 
 impl Default for PerformanceTargets {

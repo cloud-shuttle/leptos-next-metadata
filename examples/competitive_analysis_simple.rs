@@ -51,8 +51,14 @@ fn main() {
         "Next.js".to_string(),
         CompetitorCategory::WebFramework,
         vec![nextjs_capability],
-        vec!["Large ecosystem".to_string(), "Great developer experience".to_string()],
-        vec!["JavaScript performance".to_string(), "Bundle size".to_string()],
+        vec![
+            "Large ecosystem".to_string(),
+            "Great developer experience".to_string(),
+        ],
+        vec![
+            "JavaScript performance".to_string(),
+            "Bundle size".to_string(),
+        ],
         25.5,
     );
 
@@ -69,7 +75,10 @@ fn main() {
         CompetitorCategory::WebFramework,
         vec![react_capability],
         vec!["Huge ecosystem".to_string(), "Mature library".to_string()],
-        vec!["Performance overhead".to_string(), "Complex setup".to_string()],
+        vec![
+            "Performance overhead".to_string(),
+            "Complex setup".to_string(),
+        ],
         40.0,
     );
 
@@ -108,22 +117,38 @@ fn main() {
     println!("\n⚡ Performance Benchmarking...");
 
     for competitor_name in ["Next.js", "React"] {
-        if let Some(benchmark) = service.benchmark_against_competitor(competitor_name, "SSR Performance") {
+        if let Some(benchmark) =
+            service.benchmark_against_competitor(competitor_name, "SSR Performance")
+        {
             println!("\n🏁 Benchmarking against: {}", competitor_name);
-            println!("   Our Throughput: {:.0} req/s",
-                benchmark.our_metrics.throughput.unwrap_or(0.0));
-            println!("   Competitor Throughput: {:.0} req/s",
-                benchmark.competitor_metrics.throughput.unwrap_or(0.0));
-            println!("   Throughput Improvement: +{:.1}%",
-                benchmark.performance_difference.throughput_improvement);
-            println!("   Latency Improvement: +{:.1}%",
-                benchmark.performance_difference.latency_improvement);
-            println!("   Memory Improvement: +{:.1}%",
-                benchmark.performance_difference.memory_improvement);
-            println!("   CPU Improvement: +{:.1}%",
-                benchmark.performance_difference.cpu_improvement);
-            println!("   Overall Advantage: {:.1}%",
-                benchmark.performance_difference.overall_advantage());
+            println!(
+                "   Our Throughput: {:.0} req/s",
+                benchmark.our_metrics.throughput.unwrap_or(0.0)
+            );
+            println!(
+                "   Competitor Throughput: {:.0} req/s",
+                benchmark.competitor_metrics.throughput.unwrap_or(0.0)
+            );
+            println!(
+                "   Throughput Improvement: +{:.1}%",
+                benchmark.performance_difference.throughput_improvement
+            );
+            println!(
+                "   Latency Improvement: +{:.1}%",
+                benchmark.performance_difference.latency_improvement
+            );
+            println!(
+                "   Memory Improvement: +{:.1}%",
+                benchmark.performance_difference.memory_improvement
+            );
+            println!(
+                "   CPU Improvement: +{:.1}%",
+                benchmark.performance_difference.cpu_improvement
+            );
+            println!(
+                "   Overall Advantage: {:.1}%",
+                benchmark.performance_difference.overall_advantage()
+            );
 
             println!("   📋 Recommendations:");
             for rec in &benchmark.recommendations {
@@ -177,7 +202,10 @@ fn main() {
     };
 
     benchmark.add_scenario(scenario);
-    println!("✅ Added benchmark scenario: {}", benchmark.benchmark_scenarios()[0].name);
+    println!(
+        "✅ Added benchmark scenario: {}",
+        benchmark.benchmark_scenarios()[0].name
+    );
 
     println!("\n🎉 Competitive Analysis Complete!");
     println!("=================================");

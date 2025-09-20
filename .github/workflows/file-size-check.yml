@@ -1,0 +1,71 @@
+name: File Size Enforcement
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  file-size-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+
+      - name: Check file sizes
+        run: |
+          echo "Checking for files exceeding 300 lines..."
+
+          # Find all Rust files in src/ and check their line counts
+          oversized_files=()
+
+          while IFS= read -r -d '' file; do
+            # Skip backup files
+            if [[ "$file" == *"_old.rs" ]]; then
+              continue
+            fi
+            line_count=$(wc -l < "$file")
+            if [ "$line_count" -gt 300 ]; then
+              oversized_files+=("$file:$line_count")
+            fi
+          done < <(find src/ -name "*.rs" -type f -print0)
+
+          # Check macros/ directory as well
+          while IFS= read -r -d '' file; do
+            line_count=$(wc -l < "$file")
+            if [ "$line_count" -gt 300 ]; then
+              oversized_files+=("$file:$line_count")
+            fi
+          done < <(find macros/ -name "*.rs" -type f -print0)
+
+          if [ ${#oversized_files[@]} -gt 0 ]; then
+            echo "❌ Found files exceeding 300 lines:"
+            for file_info in "${oversized_files[@]}"; do
+              file=$(echo "$file_info" | cut -d: -f1)
+              lines=$(echo "$file_info" | cut -d: -f2)
+              echo "  - $file: $lines lines"
+            done
+            echo ""
+            echo "Please refactor these files to be under 300 lines each."
+            echo "Consider splitting them into smaller, focused modules."
+            exit 1
+          else
+            echo "✅ All files are under 300 lines"
+          fi
+
+      - name: Run cargo check
+        run: cargo check --all-features
+
+      - name: Run tests
+        run: cargo test --all-features
+
+      - name: Run clippy
+        run: cargo clippy --all-features -- -D warnings

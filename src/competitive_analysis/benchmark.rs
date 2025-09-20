@@ -10,7 +10,6 @@ use chrono::{DateTime, Utc};
 pub struct CompetitiveBenchmark {
     competitor_name: String,
     benchmark_scenarios: Vec<BenchmarkScenario>,
-    results: Vec<BenchmarkResult>,
 }
 
 impl CompetitiveBenchmark {
@@ -19,7 +18,6 @@ impl CompetitiveBenchmark {
         Self {
             competitor_name,
             benchmark_scenarios: Vec::new(),
-            results: Vec::new(),
         }
     }
 
@@ -67,12 +65,7 @@ impl CompetitiveBenchmark {
         // For now, return mock results
         Ok(BenchmarkResult {
             competitor_metrics: PerformanceMetrics::new(None, None, None, None),
-            our_metrics: PerformanceMetrics::new(
-                Some(1000.0),
-                Some(50.0),
-                Some(128.0),
-                Some(30.0),
-            ),
+            our_metrics: PerformanceMetrics::new(Some(1000.0), Some(50.0), Some(128.0), Some(30.0)),
             performance_difference: PerformanceDifference::new(0.0, 0.0, 0.0, 0.0),
             recommendations: vec!["Our implementation performed well".to_string()],
         })
@@ -170,11 +163,7 @@ impl CompetitiveBenchmark {
     }
 
     /// Calculate CPU improvement (lower is better)
-    fn calculate_cpu_improvement(
-        &self,
-        our_cpu: Option<f64>,
-        competitor_cpu: Option<f64>,
-    ) -> f64 {
+    fn calculate_cpu_improvement(&self, our_cpu: Option<f64>, competitor_cpu: Option<f64>) -> f64 {
         if let (Some(ours), Some(theirs)) = (our_cpu, competitor_cpu) {
             ((theirs - ours) / theirs) * 100.0
         } else {
@@ -241,26 +230,38 @@ impl CompetitiveBenchmark {
         let mut recommendations = Vec::new();
 
         // Throughput recommendations
-        if let (Some(ours), Some(theirs)) =
-            (our_result.our_metrics.throughput, competitor_result.competitor_metrics.throughput) {
+        if let (Some(ours), Some(theirs)) = (
+            our_result.our_metrics.throughput,
+            competitor_result.competitor_metrics.throughput,
+        ) {
             if ours > theirs {
-                recommendations.push(format!("We have {}% better throughput",
-                    ((ours - theirs) / theirs) * 100.0));
+                recommendations.push(format!(
+                    "We have {}% better throughput",
+                    ((ours - theirs) / theirs) * 100.0
+                ));
             } else {
-                recommendations.push(format!("We need to improve throughput by {}%",
-                    ((theirs - ours) / theirs) * 100.0));
+                recommendations.push(format!(
+                    "We need to improve throughput by {}%",
+                    ((theirs - ours) / theirs) * 100.0
+                ));
             }
         }
 
         // Latency recommendations
-        if let (Some(ours), Some(theirs)) =
-            (our_result.our_metrics.latency, competitor_result.competitor_metrics.latency) {
+        if let (Some(ours), Some(theirs)) = (
+            our_result.our_metrics.latency,
+            competitor_result.competitor_metrics.latency,
+        ) {
             if ours < theirs {
-                recommendations.push(format!("We have {}% better latency",
-                    ((theirs - ours) / theirs) * 100.0));
+                recommendations.push(format!(
+                    "We have {}% better latency",
+                    ((theirs - ours) / theirs) * 100.0
+                ));
             } else {
-                recommendations.push(format!("We need to improve latency by {}%",
-                    ((ours - theirs) / theirs) * 100.0));
+                recommendations.push(format!(
+                    "We need to improve latency by {}%",
+                    ((ours - theirs) / theirs) * 100.0
+                ));
             }
         }
 
@@ -332,6 +333,12 @@ pub struct BenchmarkReport {
     pub scenario_results: std::collections::HashMap<String, BenchmarkComparison>,
     pub overall_winner: BenchmarkWinner,
     pub created_at: DateTime<Utc>,
+}
+
+impl Default for BenchmarkReport {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl BenchmarkReport {
@@ -432,7 +439,12 @@ mod tests {
         // Red: Test benchmark comparison
         let comparison = BenchmarkComparison {
             our_metrics: PerformanceMetrics::new(Some(1000.0), Some(50.0), Some(128.0), Some(30.0)),
-            competitor_metrics: PerformanceMetrics::new(Some(500.0), Some(100.0), Some(256.0), Some(60.0)),
+            competitor_metrics: PerformanceMetrics::new(
+                Some(500.0),
+                Some(100.0),
+                Some(256.0),
+                Some(60.0),
+            ),
             performance_difference: PerformanceDifference::new(100.0, 50.0, 50.0, 50.0),
             winner: BenchmarkWinner::Us,
             recommendations: vec!["We outperform competitor".to_string()],

@@ -13,12 +13,36 @@ categories = ["web-programming", "asynchronous"]
 readme = "README.md"
 date = "2025-09-03"
 
+[workspace]
+resolver = "2"
+members = ["macros"]
+
+[profile.dev]
+incremental = true
+debug = 1
+opt-level = 0
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[profile.release-lto]
+inherits = "release"
+lto = "fat"
+codegen-units = 1
+
+[profile.bench]
+inherits = "release"
+debug = false
+
 [dependencies]
 # Core dependencies
 leptos = { version = "0.8", features = ["ssr"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = { version = "1.0", optional = true }
-tokio = { version = "1.0", features = ["full"] }
+tokio = { version = "1.38", features = ["full"] }
 thiserror = "1.0"
 anyhow = "1.0"
 async-trait = "0.1"
@@ -35,7 +59,7 @@ leptos-next-metadata-macros = { path = "./macros", version = "1.0.0", optional =
 
 # Optional dependencies
 liquid = { version = "0.26", optional = true }
-image = { version = "0.24", optional = true }
+image = { version = "0.25", optional = true }
 resvg = { version = "0.36", optional = true }
 usvg = { version = "0.36", optional = true }
 tiny-skia = { version = "0.11", optional = true }
@@ -49,6 +73,9 @@ tempfile = { version = "3.0", optional = true }
 openapiv3 = { version = "1.0", optional = true }
 validator = { version = "0.18", features = ["derive"], optional = true }
 serde_yaml = { version = "0.9", optional = true }
+webp = { version = "0.2", optional = true }
+axum = { version = "0.7", optional = true }
+tower = { version = "0.4", optional = true }
 
 # Procedural macro dependencies
 proc-macro2 = { version = "1.0", optional = true }
@@ -62,6 +89,7 @@ mockall = "0.12"
 tokio-test = "0.4"
 tempfile = "3.0"
 axum = "0.7"
+tower = "0.4"
 tower-http = { version = "0.5", features = ["fs", "cors"] }
 
 [features]
@@ -76,7 +104,8 @@ caching = ["cached", "lru"]
 http = ["reqwest"]
 macros = ["leptos-next-metadata-macros", "proc-macro2", "quote", "syn"]
 debug = []
-api-contracts = ["openapiv3", "validator", "serde_yaml"]
+api-contracts = ["openapiv3", "validator", "serde_yaml", "axum", "tower"]
+webp-support = ["webp"]
 
 [lib]
 name = "leptos_next_metadata"
