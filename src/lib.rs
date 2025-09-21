@@ -136,6 +136,8 @@ pub mod prelude {
     #[cfg(target_arch = "wasm32")]
     pub use crate::wasm::storage::{MetadataStorage, StorageFactory};
     #[cfg(target_arch = "wasm32")]
+    pub use crate::wasm::worker_manager::{WasmWorkerManager, WorkerResult, WorkerTask};
+    #[cfg(target_arch = "wasm32")]
     pub use crate::wasm::{WasmCapabilities, WasmMetadataContext, WasmStorage};
 
     pub use crate::body::Body;

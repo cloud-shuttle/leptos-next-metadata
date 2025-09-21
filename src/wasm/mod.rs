@@ -18,6 +18,8 @@ pub mod feature_detection;
 pub mod performance;
 pub mod security;
 pub mod storage;
+pub mod worker;
+pub mod worker_manager;
 
 /// WASM-specific metadata context for client-side management
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -182,6 +184,18 @@ impl WasmMetadataContext {
     /// Get WASM user-friendly error message
     pub fn get_wasm_user_message(&self, error: &crate::error::MetadataError) -> String {
         crate::wasm::error_handler::WasmErrorUtils::get_wasm_user_message(error)
+    }
+
+    /// Create a new worker manager for background processing
+    pub fn create_worker_manager(
+        &self,
+    ) -> Result<crate::wasm::worker_manager::WasmWorkerManager, JsValue> {
+        crate::wasm::worker_manager::WasmWorkerManager::new()
+    }
+
+    /// Check if Web Workers are supported
+    pub fn are_workers_supported(&self) -> bool {
+        crate::wasm::worker_manager::WasmWorkerManager::is_supported()
     }
 
     /// Set metadata value
