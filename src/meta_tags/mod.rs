@@ -16,15 +16,7 @@ use leptos::prelude::*;
 /// #[component]
 /// fn App() -> impl IntoView {
 ///     provide_meta_context();
-///
-///     view! {
-///         <Title text="My App" />
-///         <Meta name="description" content="My awesome app" />
-///         <MetaTags />
-///         <main>
-///             <h1>"Welcome to My App"</h1>
-///         </main>
-///     }
+///     view! { <MetaTags /> }
 /// }
 /// ```
 #[component]

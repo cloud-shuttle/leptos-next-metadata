@@ -11,7 +11,6 @@ documentation = "https://docs.rs/leptos-next-metadata"
 keywords = ["leptos", "metadata", "seo", "og-image", "web"]
 categories = ["web-programming", "asynchronous"]
 readme = "README.md"
-date = "2025-09-03"
 
 [workspace]
 resolver = "2"
@@ -64,9 +63,9 @@ cached = { version = "0.45", optional = true }
 lru = { version = "0.12", optional = true }
 tempfile = { version = "3.0", optional = true }
 openapiv3 = { version = "1.0", optional = true }
-validator = { version = "0.18", features = ["derive"], optional = true }
+validator = { version = "0.19", features = ["derive"], optional = true }
 serde_yaml = { version = "0.9", optional = true }
-webp = { version = "0.2", optional = true }
+webp = { version = "0.3", optional = true }
 axum = { version = "0.7", optional = true }
 tower = { version = "0.4", optional = true }
 

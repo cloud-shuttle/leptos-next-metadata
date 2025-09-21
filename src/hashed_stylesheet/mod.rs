@@ -13,15 +13,7 @@
 ///
 /// #[component]
 /// fn App() -> impl IntoView {
-///     let options = LeptosOptions::builder()
-///         .output_name("my-app")
-///         .build();
-///
-///     view! {
-///         <main>
-///             <HashedStylesheet options=options />
-///         </main>
-///     }
+///     view! { <HashedStylesheet /> }
 /// }
 /// ```
 // Re-export the HashedStylesheet component from leptos_meta

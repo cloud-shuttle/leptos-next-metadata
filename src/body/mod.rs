@@ -14,20 +14,7 @@ use leptos::prelude::*;
 ///
 /// #[component]
 /// fn App() -> impl IntoView {
-///     let (prefers_dark, set_prefers_dark) = create_signal(false);
-///     let body_class = move || {
-///         if prefers_dark.get() {
-///             "dark".to_string()
-///         } else {
-///             "light".to_string()
-///         }
-///     };
-///
-///     view! {
-///         <main>
-///             <Body {..} class=body_class id="body"/>
-///         </main>
-///     }
+///     view! { <Body /> }
 /// }
 /// ```
 #[component]

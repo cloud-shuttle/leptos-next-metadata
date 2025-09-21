@@ -15,22 +15,7 @@ use leptos_meta::*;
 ///
 /// #[component]
 /// fn App() -> impl IntoView {
-///     // Basic usage
-///     let _title = view! { <EnhancedTitle text="My Page" /> };
-///
-///     // With formatter
-///     let formatter = |text: &str| format!("{} | My Site", text);
-///     let _formatted_title = view! {
-///         <EnhancedTitle text="My Page" formatter=formatter />
-///     };
-///
-///     // With template
-///     let _template_title = view! {
-///         <EnhancedTitle
-///             text="My Page"
-///             template="{} | My Site"
-///         />
-///     };
+///     view! { <EnhancedTitle text="My Page" /> }
 /// }
 /// ```
 #[component]
