@@ -9,7 +9,9 @@ use leptos::prelude::*;
 /// # Example
 ///
 /// ```rust
-/// use leptos_next_metadata::prelude::*;
+/// use leptos::prelude::*;
+/// use leptos_meta::{Title, Meta, provide_meta_context};
+/// use leptos_next_metadata::prelude::MetaTags;
 ///
 /// #[component]
 /// fn App() -> impl IntoView {

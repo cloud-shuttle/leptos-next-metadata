@@ -9,6 +9,7 @@ use leptos::prelude::*;
 /// # Example
 ///
 /// ```rust
+/// use leptos::prelude::*;
 /// use leptos_next_metadata::prelude::*;
 ///
 /// #[component]

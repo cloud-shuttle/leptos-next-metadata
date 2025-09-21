@@ -10,6 +10,7 @@ use leptos_meta::*;
 /// # Example
 ///
 /// ```rust
+/// use leptos::prelude::*;
 /// use leptos_next_metadata::prelude::*;
 ///
 /// #[component]

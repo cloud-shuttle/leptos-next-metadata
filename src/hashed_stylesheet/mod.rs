@@ -8,8 +8,8 @@
 /// # Example
 ///
 /// ```rust
+/// use leptos::prelude::*;
 /// use leptos_next_metadata::prelude::*;
-/// use leptos::prelude::LeptosOptions;
 ///
 /// #[component]
 /// fn App() -> impl IntoView {
