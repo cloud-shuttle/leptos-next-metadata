@@ -52,11 +52,8 @@
 //! - [`macros`] - Procedural macros for metadata
 //! - [`utils`] - Utility functions and helpers
 
-#[cfg(feature = "api-contracts")]
-pub mod api;
 pub mod body;
 pub mod competitive_analysis;
-pub mod conventions;
 pub mod enhanced_title;
 pub mod hashed_stylesheet;
 pub mod html;
@@ -64,7 +61,22 @@ pub mod json_ld;
 pub mod macros;
 pub mod meta_tags;
 pub mod metadata;
+
+// Server-only modules (exclude from WASM)
+#[cfg(not(target_arch = "wasm32"))]
 pub mod og_image;
+
+#[cfg(not(target_arch = "wasm32"))]
+pub mod conventions;
+
+#[cfg(all(not(target_arch = "wasm32"), feature = "api-contracts"))]
+pub mod api;
+
+// WASM-specific modules
+#[cfg(target_arch = "wasm32")]
+pub mod wasm;
+
+pub mod error;
 pub mod utils;
 
 /// Re-exports for common use cases
@@ -75,13 +87,47 @@ pub mod prelude {
         TwitterCard, Viewport,
     };
 
+    #[cfg(not(target_arch = "wasm32"))]
     pub use crate::conventions::{ConventionScanner, FileConventions};
     #[cfg(feature = "json-ld")]
     pub use crate::json_ld::{JsonLd, SchemaOrg};
+    #[cfg(not(target_arch = "wasm32"))]
     pub use crate::og_image::{GeneratedOgImage, OgImageGenerator, OgImageParams};
 
     #[cfg(feature = "macros")]
     pub use crate::macros::{generate_metadata, metadata};
+
+    // WASM-specific re-exports
+    #[cfg(target_arch = "wasm32")]
+    pub use crate::wasm::browser_api::BrowserApi;
+    #[cfg(target_arch = "wasm32")]
+    pub use crate::wasm::canvas_og::{
+        CanvasOgGenerator, CanvasOgParams, CanvasOgResult, CanvasOgUtils, LogoPosition, TextAlign,
+    };
+    #[cfg(target_arch = "wasm32")]
+    pub use crate::wasm::context::{StorageBackend, WasmContext};
+    #[cfg(target_arch = "wasm32")]
+    pub use crate::wasm::error_handler::{
+        QueueStatus, WasmErrorContext, WasmErrorHandler, WasmErrorReporter, WasmErrorUtils,
+    };
+    #[cfg(target_arch = "wasm32")]
+    pub use crate::wasm::feature_detection::FeatureDetection;
+    #[cfg(target_arch = "wasm32")]
+    pub use crate::wasm::performance::{
+        BrowserPerformanceInfo, BundleOptimizer, BundleRecommendations, BundleSavings,
+        MemoryOptimization, MemoryPressure, OptimizationStatus, PerformanceMonitor,
+        PerformanceSummary, PerformanceTip, RuntimeOptimizer, WasmProfiler,
+    };
+    #[cfg(target_arch = "wasm32")]
+    pub use crate::wasm::security::{
+        ComplianceStatus, CspConfig, SecureDefaults, SecurityAudit, SecurityCategory,
+        SecurityConfig, SecurityIssue, SecuritySeverity, SecurityUtils, SecurityValidator,
+        ValidationConfig, ValidationIssue, ValidationResult, ValidationSeverity,
+    };
+    #[cfg(target_arch = "wasm32")]
+    pub use crate::wasm::storage::{MetadataStorage, StorageFactory};
+    #[cfg(target_arch = "wasm32")]
+    pub use crate::wasm::{WasmCapabilities, WasmMetadataContext, WasmStorage};
 
     pub use crate::body::Body;
     pub use crate::enhanced_title::EnhancedTitle;
@@ -98,9 +144,16 @@ pub mod prelude {
         CompetitiveBenchmark, Competitor, CompetitorCategory, DemoCreator, ImplementationType,
         PerformanceMetrics,
     };
+
+    // Error handling
+    pub use crate::error::{
+        ErrorContext, ErrorContextBuilder, ErrorHandler, ErrorKind, ErrorReportingConfig,
+        ErrorSeverity, ErrorStats, ErrorUtils, MetadataError, MetadataResult,
+    };
 }
 
 pub use body::Body;
+#[cfg(not(target_arch = "wasm32"))]
 pub use conventions::{ConventionScanner, FileConventions};
 pub use enhanced_title::EnhancedTitle;
 pub use hashed_stylesheet::HashedStylesheet;
@@ -116,6 +169,7 @@ pub use metadata::{
     Authors, CanonicalUrl, ColorScheme, Description, FormatDetection, Keywords, Metadata,
     OpenGraph, ReferrerPolicy, Robots, ThemeColor, Title, Twitter, TwitterCard, Viewport,
 };
+#[cfg(not(target_arch = "wasm32"))]
 pub use og_image::{GeneratedOgImage, OgImageGenerator, OgImageParams};
 
 #[cfg(feature = "macros")]

@@ -6,6 +6,12 @@
 use std::collections::HashMap;
 use std::hash::{Hash, Hasher};
 use std::time::{Duration, Instant};
+
+// Conditional compilation for WASM compatibility
+#[cfg(target_arch = "wasm32")]
+use parking_lot::RwLock as AsyncRwLock;
+
+#[cfg(not(target_arch = "wasm32"))]
 use tokio::sync::RwLock as AsyncRwLock;
 
 use crate::og_image::types::*;

@@ -1,0 +1,113 @@
+# wasm-pack configuration for optimal WASM builds
+
+[package]
+name = "leptos-next-metadata"
+version = "1.3.0"
+authors = ["Leptos Next Metadata Team"]
+description = "Next.js-style metadata management for Leptos applications with WASM support"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/leptos-rs/leptos-next-metadata"
+keywords = ["leptos", "metadata", "seo", "wasm", "rust"]
+categories = ["web-programming", "wasm"]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+# Build optimizations
+[build]
+target = "wasm32-unknown-unknown"
+out-dir = "pkg"
+scope = "leptos-next-metadata"
+
+# Optimization settings
+[optimization]
+# Enable wasm-opt optimizations
+wasm-opt = true
+# Optimization level (0-4, 4 is most aggressive)
+wasm-opt-level = 4
+# Enable size optimization
+size-opt = true
+# Enable debug info (disable for production)
+debug = false
+
+# Feature flags for WASM builds
+[features]
+default = ["wasm"]
+wasm = []
+wasm-advanced = ["wasm", "canvas-og", "performance-monitoring"]
+canvas-og = []
+performance-monitoring = []
+
+# Dependencies optimization
+[dependencies]
+# Core dependencies (minimal set for WASM)
+wasm-bindgen = "0.2"
+web-sys = { version = "0.3", features = [
+    "console",
+    "Document",
+    "Element",
+    "HtmlElement",
+    "HtmlMetaElement",
+    "HtmlLinkElement",
+    "HtmlCanvasElement",
+    "CanvasRenderingContext2d",
+    "Window",
+    "Storage",
+    "Navigator",
+    "Screen",
+    "Location",
+    "Performance",
+    "Worker",
+    "ServiceWorker",
+    "IntersectionObserver",
+    "ResizeObserver",
+    "Geolocation",
+    "DeviceOrientationEvent",
+    "TouchEvent",
+    "PointerEvent",
+] }
+js-sys = "0.3"
+serde = { version = "1.0", features = ["derive"] }
+serde-wasm-bindgen = "0.6"
+base64 = "0.22"
+
+# Optional dependencies for advanced features
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+# Only include what's needed for WASM builds
+leptos = { version = "0.8", features = ["csr", "hydrate"] }
+leptos_meta = { version = "0.8", features = ["csr", "hydrate"] }
+leptos_router = { version = "0.8", features = ["csr", "hydrate"] }
+
+# Build scripts
+[scripts]
+# Pre-build optimization
+pre-build = "cargo check --target wasm32-unknown-unknown --features wasm"
+# Post-build optimization
+post-build = "wasm-opt -O4 -s pkg/leptos_next_metadata_bg.wasm -o pkg/leptos_next_metadata_bg.wasm"
+
+# Bundle analysis
+[analysis]
+# Enable bundle analysis
+bundle-analyzer = true
+# Generate size report
+size-report = true
+# Include dependency tree
+dependency-tree = true
+
+# Performance monitoring
+[monitoring]
+# Enable performance monitoring in development
+dev-monitoring = true
+# Performance thresholds
+max-bundle-size = "1MB"
+max-initial-load = "500ms"
+max-runtime-memory = "50MB"
+
+# Security settings
+[security]
+# Enable CSP headers
+csp-headers = true
+# Enable secure defaults
+secure-defaults = true
+# Disable eval
+no-eval = true

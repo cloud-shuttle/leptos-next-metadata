@@ -1,6 +1,8 @@
 # 🚀 leptos-next-metadata Project Status
 
-> **Navigation**: [📚 Documentation](docs/index.md) | [📋 Production Roadmap](docs/guides/PRODUCTION_ROADMAP.md) | [🐙 GitHub](https://github.com/cloud-shuttle/leptos-next-metadata)
+> **Navigation**: [📚 Documentation](docs/index.md) |
+> [📋 Production Roadmap](docs/guides/PRODUCTION_ROADMAP.md) |
+> [🐙 GitHub](https://github.com/cloud-shuttle/leptos-next-metadata)
 
 ## 🎯 **Current Status: BETA RELEASE COMPLETE**
 
@@ -72,6 +74,38 @@
 - [ ] **Release Management** - Breaking changes documentation
 - [ ] **v1.0.0 Launch** - Production stable release
 
+## 🌐 **WASM Support Roadmap v1.4.0**
+
+### **📅 Timeline: 8-12 Weeks to WASM Support**
+
+#### **Phase 1: Foundation & Core Support (Weeks 1-3)**
+
+- [ ] **Dependency Remediation** - Replace tokio with WASM-compatible alternatives
+- [ ] **Feature Flag Restructuring** - Create WASM-specific feature sets
+- [ ] **Module Architecture Updates** - Conditional compilation for WASM
+- [ ] **Build System Updates** - WASM build configuration and CI/CD
+
+#### **Phase 2: WASM-Specific Implementations (Weeks 4-6)**
+
+- [ ] **Client-Side Metadata Management** - WASM metadata context
+- [ ] **Browser API Integration** - DOM manipulation and Web Storage
+- [ ] **WASM-Specific Caching** - Web Storage cache implementation
+- [ ] **Feature Detection API** - Runtime feature availability checking
+
+#### **Phase 3: Advanced Features & Optimization (Weeks 7-9)**
+
+- [ ] **Client-Side OG Image Generation** - Canvas-based image generation
+- [ ] **Performance Optimization** - Bundle size and runtime optimization
+- [ ] **Security Implementation** - WASM-specific security measures
+- [ ] **Error Handling** - Unified error handling across environments
+
+#### **Phase 4: Testing & Documentation (Weeks 10-12)**
+
+- [ ] **Comprehensive Testing** - WASM unit tests and E2E testing
+- [ ] **Documentation Updates** - WASM-specific documentation
+- [ ] **TypeScript Definitions** - Generated TypeScript bindings
+- [ ] **Production Deployment** - WASM build and deployment pipeline
+
 ---
 
 ## 📊 **Progress Metrics**
@@ -111,23 +145,25 @@
 
 ## 🎯 **Immediate Next Steps (This Week)**
 
-### **Priority 1: API Documentation Completion**
+### **Priority 1: WASM Support Investigation Complete**
+
+- [x] **WASM Compatibility Analysis** - Comprehensive investigation completed
+- [x] **Dependency Analysis** - Identified tokio/mio as primary blockers
+- [x] **Feasibility Assessment** - Confirmed selective WASM support is viable
+- [x] **Remediation Plan** - 12-week implementation roadmap created
+- [x] **Design Documents** - Architecture and API design completed
+
+### **Priority 2: API Documentation Completion**
 
 - [ ] Complete rustdoc coverage for all public APIs
 - [ ] Validate all examples compile and run
 - [ ] Create comprehensive API reference
 
-### **Priority 2: Migration Guide Development**
+### **Priority 3: Migration Guide Development**
 
 - [ ] Write Next.js to Leptos metadata migration guide
 - [ ] Create common patterns and best practices
 - [ ] Document breaking changes and compatibility
-
-### **Priority 3: Performance Guide Creation**
-
-- [ ] Document performance optimization techniques
-- [ ] Create benchmarking guidelines
-- [ ] Establish performance targets and monitoring
 
 ---
 
@@ -215,6 +251,7 @@
 3. **✅ Documentation Organized** - Professional structure and navigation
 4. **✅ Testing Infrastructure** - Comprehensive test coverage and automation
 5. **✅ Performance Targets** - All performance goals met and exceeded
+6. **✅ WASM Support Investigation** - Comprehensive analysis and roadmap completed
 
 ### **Community Impact**
 
@@ -222,6 +259,7 @@
 - **Performance leadership** - 2-7x faster than browser-based solutions
 - **Type safety** - Full Rust type safety with compile-time validation
 - **Developer experience** - Next.js-compatible API surface
+- **WASM compatibility** - First metadata library with planned WASM support
 
 ---
 
@@ -247,6 +285,13 @@
 - Dynamic metadata generation
 - SEO optimization tools
 - Analytics integration
+
+### **v1.4: WASM Support** (Q2 2026)
+
+- WebAssembly compatibility
+- Client-side metadata management
+- Canvas-based OG image generation
+- Browser API integration
 
 ### **v2.0: Major Features** (Q3 2026)
 
@@ -303,7 +348,10 @@
 
 ## 🏆 **Project Summary**
 
-**leptos-next-metadata** is a comprehensive Rust crate that brings Next.js-style metadata management to the Leptos framework. With the beta release complete and feature set at 100%, we're now focused on production readiness and the path to v1.0.0 stable.
+**leptos-next-metadata** is a comprehensive Rust crate that brings Next.js-style
+metadata management to the Leptos framework. With the beta release complete and
+feature set at 100%, we're now focused on production readiness and the path to
+v1.0.0 stable.
 
 **Current Status**: 🚀 **Beta Release Complete - Production Ready**  
 **Next Milestone**: 🎯 **v1.0.0 Stable Release**  
@@ -311,8 +359,11 @@
 
 ---
 
-**🎉 Congratulations to the team on reaching this major milestone! The foundation is now in place for a successful production release.**
+**🎉 Congratulations to the team on reaching this major milestone! The foundation
+is now in place for a successful production release.**
 
 ---
 
-_This document is updated weekly during roadmap execution. For the most current information, check the [Production Roadmap](docs/guides/PRODUCTION_ROADMAP.md) and [Documentation Index](docs/index.md)._
+_This document is updated weekly during roadmap execution. For the most current
+information, check the [Production Roadmap](docs/guides/PRODUCTION_ROADMAP.md) and
+[Documentation Index](docs/index.md)._
