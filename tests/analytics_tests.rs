@@ -247,7 +247,7 @@ mod native_tests {
             .unwrap();
 
         // Generate insights
-        let insights = integration.generate_insights().unwrap();
+        let _insights = integration.generate_insights().unwrap();
         // Recommendations might be empty if no issues are detected
 
         integration.end_session().unwrap();

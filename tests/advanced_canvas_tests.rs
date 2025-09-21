@@ -384,7 +384,7 @@ mod native_tests {
             match (&shape, &deserialized) {
                 (ShapeType::Rectangle, ShapeType::Rectangle) => {}
                 (ShapeType::Circle, ShapeType::Circle) => {}
-                (ShapeType::Line { x2: x1, y2: y1 }, ShapeType::Line { x2: x2, y2: y2 }) => {
+                (ShapeType::Line { x2: x1, y2: y1 }, ShapeType::Line { x2, y2 }) => {
                     assert_eq!(x1, x2);
                     assert_eq!(y1, y2);
                 }

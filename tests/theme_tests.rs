@@ -340,7 +340,14 @@ mod native_tests {
 
         let preview = theme.generate_preview().unwrap();
         assert!(preview.starts_with("data:image/svg+xml;base64,"));
-        assert!(preview.contains("Preview Test Theme Preview"));
+
+        // Decode the base64 content to check the SVG
+        let base64_content = preview.strip_prefix("data:image/svg+xml;base64,").unwrap();
+        let decoded =
+            base64::Engine::decode(&base64::engine::general_purpose::STANDARD, base64_content)
+                .unwrap();
+        let svg_content = String::from_utf8(decoded).unwrap();
+        assert!(svg_content.contains("Preview Test Theme Preview"));
     }
 
     #[test]

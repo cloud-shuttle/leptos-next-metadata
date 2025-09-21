@@ -5,9 +5,12 @@
 
 use leptos::*;
 use leptos_next_metadata::prelude::*;
-use serde_json::json;
+use leptos_next_metadata::themes::create_predefined_themes;
+
+#[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
 
+#[cfg(target_arch = "wasm32")]
 #[wasm_bindgen]
 pub async fn run_theme_example() -> Result<JsValue, JsValue> {
     // Initialize a theme manager with predefined themes
@@ -62,7 +65,7 @@ pub async fn run_theme_example() -> Result<JsValue, JsValue> {
     .padding(60)
     .spacing(35)
     .content_alignment(ContentAlignment::Center)
-    .logo_position(LogoPosition::TopRight)
+    .logo_position(ThemeLogoPosition::TopRight)
     .text_alignment(TextAlignment::Center)
     .text_shadow(ThemeHelpers::simple_text_shadow(
         "#000000".to_string(),
@@ -264,9 +267,20 @@ pub async fn run_theme_example() -> Result<JsValue, JsValue> {
         "message": "Theme system example completed successfully!",
     });
 
+    #[cfg(target_arch = "wasm32")]
     Ok(serde_wasm_bindgen::to_value(&results)?)
 }
 
+#[cfg(not(target_arch = "wasm32"))]
+fn main() {
+    println!("Theme system example is only available in WASM environments");
+    println!("To use this example:");
+    println!("1. Build the project with wasm-pack");
+    println!("2. Load the generated WASM module in a browser");
+    println!("3. Call the run_theme_example() function");
+}
+
+#[cfg(target_arch = "wasm32")]
 #[wasm_bindgen]
 pub fn initialize_theme_example() {
     web_sys::console::log_1(&"Theme system example loaded successfully!".into());

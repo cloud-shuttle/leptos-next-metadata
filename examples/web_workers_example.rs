@@ -5,6 +5,7 @@
 
 #[cfg(target_arch = "wasm32")]
 use leptos_next_metadata::prelude::*;
+#[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
 
 #[cfg(target_arch = "wasm32")]
@@ -82,6 +83,7 @@ pub async fn example_web_workers_usage() -> Result<JsValue, JsValue> {
         "message": "All operations completed successfully in Web Workers!"
     });
 
+    #[cfg(target_arch = "wasm32")]
     Ok(serde_wasm_bindgen::to_value(&results)?)
 }
 

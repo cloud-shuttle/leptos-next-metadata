@@ -1,9 +1,16 @@
 use leptos::*;
-use leptos_next_metadata::prelude::*;
+use leptos_next_metadata::analytics::integration::{
+    AnalyticsContext, AnalyticsTrackable, AnalyticsWrapper, IntegrationConfig,
+    MetadataAnalyticsIntegration,
+};
+use leptos_next_metadata::analytics::{AnalyticsConfig, AnalyticsManager, PrivacySettings};
 use serde_json::json;
 use std::collections::HashMap;
+
+#[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
 
+#[cfg(target_arch = "wasm32")]
 #[wasm_bindgen]
 pub async fn run_analytics_example() -> Result<JsValue, JsValue> {
     // Initialize analytics with custom configuration
@@ -11,9 +18,7 @@ pub async fn run_analytics_example() -> Result<JsValue, JsValue> {
         enabled: true,
         batch_size: 5,
         flush_interval_seconds: 10,
-        track_performance: true,
-        track_errors: true,
-        track_interactions: true,
+        session_timeout_minutes: 30,
         privacy: PrivacySettings {
             anonymize_ip: true,
             hash_identifiers: true,
@@ -222,8 +227,11 @@ pub async fn run_analytics_example() -> Result<JsValue, JsValue> {
         .map_err(|e| JsValue::from_str(&format!("Failed to start operation: {}", e.message)))?;
 
     // Simulate some work
-    let promise = js_sys::Promise::resolve(&JsValue::undefined());
-    let _ = wasm_bindgen_futures::JsFuture::from(promise).await;
+    #[cfg(target_arch = "wasm32")]
+    {
+        let promise = js_sys::Promise::resolve(&JsValue::undefined());
+        let _ = wasm_bindgen_futures::JsFuture::from(promise).await;
+    }
 
     // Complete operation
     let mut completion_properties = HashMap::new();
@@ -327,9 +335,20 @@ pub async fn run_analytics_example() -> Result<JsValue, JsValue> {
         "message": "Analytics integration example completed successfully!",
     });
 
+    #[cfg(target_arch = "wasm32")]
     Ok(serde_wasm_bindgen::to_value(&results)?)
 }
 
+#[cfg(not(target_arch = "wasm32"))]
+fn main() {
+    println!("Analytics integration example is only available in WASM environments");
+    println!("To use this example:");
+    println!("1. Build the project with wasm-pack");
+    println!("2. Load the generated WASM module in a browser");
+    println!("3. Call the run_analytics_example() function");
+}
+
+#[cfg(target_arch = "wasm32")]
 #[wasm_bindgen(start)]
 pub fn main_js() -> Result<(), JsValue> {
     // This is for the example to run in a browser.
