@@ -78,6 +78,7 @@ pub mod wasm;
 
 pub mod canvas_types;
 pub mod error;
+pub mod themes;
 pub mod utils;
 
 /// Re-exports for common use cases
@@ -99,6 +100,14 @@ pub mod prelude {
     pub use crate::canvas_types::{
         CanvasOgParams, GradientType, ImageLayer, LogoPosition, OgImageLayer, OgImageTemplate,
         ShapeLayer, ShapeType, TextAlign, TextGradient, TextLayer, TextOutline, TextShadow,
+    };
+
+    // Theme system types
+    pub use crate::themes::{
+        BorderEffects, BorderStyle, ColorPalette, ContentAlignment, FontWeights, GradientConfig,
+        Layout, LogoPosition as ThemeLogoPosition, PatternConfig, PatternType, QuickThemes,
+        TextAlignment, TextEffects, Theme, ThemeBuilder, ThemeCategory, ThemeHelpers, ThemeManager,
+        ThemeMetadata, VisualEffects,
     };
 
     #[cfg(feature = "macros")]
