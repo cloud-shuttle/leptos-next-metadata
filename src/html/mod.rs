@@ -14,7 +14,16 @@ use leptos::prelude::*;
 ///
 /// #[component]
 /// fn App() -> impl IntoView {
-///     view! { <Html lang="en" /> }
+///     view! {
+///         <main>
+///             <Html
+///                 {..}
+///                 lang="en"
+///                 dir="ltr"
+///                 data-theme="light"
+///             />
+///         </main>
+///     }
 /// }
 /// ```
 #[component]

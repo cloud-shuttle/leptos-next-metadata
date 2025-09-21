@@ -7,6 +7,12 @@ use std::collections::HashMap;
 use wasm_bindgen::prelude::*;
 use web_sys::{CanvasRenderingContext2d, Document, HtmlCanvasElement, HtmlImageElement};
 
+// Re-export shared types
+pub use crate::canvas_types::{
+    CanvasOgParams, GradientType, ImageLayer, LogoPosition, OgImageLayer, OgImageTemplate,
+    ShapeLayer, ShapeType, TextAlign, TextGradient, TextLayer, TextOutline, TextShadow,
+};
+
 /// Canvas-based OG image generator
 #[derive(Debug, Clone)]
 pub struct CanvasOgGenerator {
@@ -23,55 +29,6 @@ pub struct CanvasOgGenerator {
     text_color: String,
     /// Font family
     font_family: String,
-}
-
-/// OG image parameters for canvas generation
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CanvasOgParams {
-    /// Image title
-    pub title: String,
-    /// Image description
-    pub description: Option<String>,
-    /// Image width
-    pub width: Option<u32>,
-    /// Image height
-    pub height: Option<u32>,
-    /// Background color (hex or CSS color)
-    pub background_color: Option<String>,
-    /// Text color (hex or CSS color)
-    pub text_color: Option<String>,
-    /// Font family
-    pub font_family: Option<String>,
-    /// Font size for title
-    pub title_font_size: Option<u32>,
-    /// Font size for description
-    pub description_font_size: Option<u32>,
-    /// Logo URL (optional)
-    pub logo_url: Option<String>,
-    /// Logo position
-    pub logo_position: Option<LogoPosition>,
-    /// Text alignment
-    pub text_align: Option<TextAlign>,
-    /// Padding
-    pub padding: Option<u32>,
-}
-
-/// Logo position options
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum LogoPosition {
-    TopLeft,
-    TopRight,
-    BottomLeft,
-    BottomRight,
-    Center,
-}
-
-/// Text alignment options
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum TextAlign {
-    Left,
-    Center,
-    Right,
 }
 
 /// Generated canvas image result
@@ -431,6 +388,278 @@ impl CanvasOgGenerator {
 
         Ok(())
     }
+
+    /// Generate an OG image from a predefined template
+    pub fn generate_from_template(
+        &mut self,
+        template: &OgImageTemplate,
+        data: HashMap<String, String>,
+    ) -> Result<CanvasOgResult, JsValue> {
+        let mut params = template.default_params.clone();
+
+        // Apply data to template
+        for (key, value) in data {
+            match key.as_str() {
+                "title" => params.title = value,
+                "description" => params.description = Some(value),
+                _ => {
+                    // Handle custom template variables
+                    if let Some(ref mut layers) = params.layers {
+                        for layer in layers {
+                            match layer {
+                                OgImageLayer::Text(text_layer) => {
+                                    if text_layer.content.contains(&format!("{{{}}}", key)) {
+                                        text_layer.content = text_layer
+                                            .content
+                                            .replace(&format!("{{{}}}", key), &value);
+                                    }
+                                }
+                                _ => {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        self.generate(params)
+    }
+
+    /// Load a custom font from a URL
+    pub async fn load_font(&self, font_name: &str, font_url: &str) -> Result<(), JsValue> {
+        if let Some(window) = web_sys::window() {
+            if let Some(document) = window.document() {
+                // Create a link element to load the font
+                let link = document.create_element("link")?;
+                link.set_attribute("rel", "stylesheet")?;
+                link.set_attribute("href", font_url)?;
+
+                // Add to document head
+                if let Some(head) = document.head() {
+                    head.append_child(&link)?;
+                }
+            }
+        }
+        Ok(())
+    }
+
+    /// Render a single layer onto the canvas
+    fn render_layer(
+        &self,
+        context: &CanvasRenderingContext2d,
+        layer: &OgImageLayer,
+    ) -> Result<(), JsValue> {
+        match layer {
+            OgImageLayer::Text(text_layer) => self.render_text_layer(context, text_layer),
+            OgImageLayer::Image(image_layer) => self.render_image_layer(context, image_layer),
+            OgImageLayer::Shape(shape_layer) => self.render_shape_layer(context, shape_layer),
+        }
+    }
+
+    /// Render a text layer with advanced effects
+    fn render_text_layer(
+        &self,
+        context: &CanvasRenderingContext2d,
+        layer: &TextLayer,
+    ) -> Result<(), JsValue> {
+        // Set font
+        context.set_font(&format!("{}px {}", layer.font_size, layer.font_family));
+
+        // Apply text shadow if specified
+        if let Some(shadow) = &layer.shadow {
+            context.set_shadow_color(&shadow.color);
+            context.set_shadow_blur(shadow.blur);
+            context.set_shadow_offset_x(shadow.offset_x);
+            context.set_shadow_offset_y(shadow.offset_y);
+        }
+
+        // Apply text gradient if specified
+        if let Some(gradient) = &layer.gradient {
+            let canvas_gradient = match gradient.gradient_type {
+                GradientType::Linear => context.create_linear_gradient(
+                    gradient.start_x,
+                    gradient.start_y,
+                    gradient.end_x,
+                    gradient.end_y,
+                ),
+                GradientType::Radial => context.create_radial_gradient(
+                    gradient.start_x,
+                    gradient.start_y,
+                    0.0,
+                    gradient.end_x,
+                    gradient.end_y,
+                    100.0,
+                ),
+            };
+
+            // Add color stops
+            for (i, color) in gradient.colors.iter().enumerate() {
+                let stop = i as f64 / (gradient.colors.len() - 1) as f64;
+                canvas_gradient.add_color_stop(stop, color)?;
+            }
+
+            context.set_fill_style(&canvas_gradient.into());
+        } else {
+            context.set_fill_style(&layer.color.into());
+        }
+
+        // Draw text with outline if specified
+        if let Some(outline) = &layer.outline {
+            context.set_stroke_style(&outline.color.into());
+            context.set_line_width(outline.width);
+            context.stroke_text(&layer.content, layer.x, layer.y)?;
+        }
+
+        // Draw filled text
+        context.fill_text(&layer.content, layer.x, layer.y)?;
+
+        // Reset shadow
+        context.set_shadow_color("transparent");
+        context.set_shadow_blur(0.0);
+        context.set_shadow_offset_x(0.0);
+        context.set_shadow_offset_y(0.0);
+
+        Ok(())
+    }
+
+    /// Render an image layer
+    fn render_image_layer(
+        &self,
+        context: &CanvasRenderingContext2d,
+        layer: &ImageLayer,
+    ) -> Result<(), JsValue> {
+        // Set global alpha for opacity
+        context.set_global_alpha(layer.opacity);
+
+        // Set blend mode if specified
+        if let Some(blend_mode) = &layer.blend_mode {
+            context.set_global_composite_operation(blend_mode)?;
+        }
+
+        // For now, draw a placeholder rectangle
+        // In a real implementation, you would load and draw the actual image
+        context.set_fill_style(&"#cccccc".into());
+        context.fill_rect(layer.x, layer.y, layer.width, layer.height);
+
+        // Reset composite operation and alpha
+        context.set_global_composite_operation("source-over")?;
+        context.set_global_alpha(1.0);
+
+        Ok(())
+    }
+
+    /// Render a shape layer
+    fn render_shape_layer(
+        &self,
+        context: &CanvasRenderingContext2d,
+        layer: &ShapeLayer,
+    ) -> Result<(), JsValue> {
+        match &layer.shape_type {
+            ShapeType::Rectangle => {
+                if let Some(fill_color) = &layer.fill_color {
+                    context.set_fill_style(&fill_color.into());
+                    context.fill_rect(layer.x, layer.y, layer.width, layer.height);
+                }
+
+                if let Some(stroke_color) = &layer.stroke_color {
+                    context.set_stroke_style(&stroke_color.into());
+                    if let Some(stroke_width) = layer.stroke_width {
+                        context.set_line_width(stroke_width);
+                    }
+                    context.stroke_rect(layer.x, layer.y, layer.width, layer.height);
+                }
+            }
+            ShapeType::Circle => {
+                context.begin_path();
+                let center_x = layer.x + layer.width / 2.0;
+                let center_y = layer.y + layer.height / 2.0;
+                let radius = (layer.width.min(layer.height)) / 2.0;
+                context.arc(center_x, center_y, radius, 0.0, 2.0 * std::f64::consts::PI)?;
+
+                if let Some(fill_color) = &layer.fill_color {
+                    context.set_fill_style(&fill_color.into());
+                    context.fill();
+                }
+
+                if let Some(stroke_color) = &layer.stroke_color {
+                    context.set_stroke_style(&stroke_color.into());
+                    if let Some(stroke_width) = layer.stroke_width {
+                        context.set_line_width(stroke_width);
+                    }
+                    context.stroke();
+                }
+            }
+            ShapeType::Line { x2, y2 } => {
+                context.begin_path();
+                context.move_to(layer.x, layer.y);
+                context.line_to(*x2, *y2);
+
+                if let Some(stroke_color) = &layer.stroke_color {
+                    context.set_stroke_style(&stroke_color.into());
+                    if let Some(stroke_width) = layer.stroke_width {
+                        context.set_line_width(stroke_width);
+                    }
+                    context.stroke();
+                }
+            }
+        }
+
+        Ok(())
+    }
+
+    /// Internal helper for text layout
+    fn layout_text(
+        &self,
+        text_layer: &TextLayer,
+        canvas_width: u32,
+        canvas_height: u32,
+    ) -> Vec<TextLine> {
+        let mut lines = Vec::new();
+        let words: Vec<&str> = text_layer.content.split_whitespace().collect();
+        let mut current_line = String::new();
+        let mut current_y = text_layer.y;
+
+        for word in words {
+            let test_line = if current_line.is_empty() {
+                word.to_string()
+            } else {
+                format!("{} {}", current_line, word)
+            };
+
+            // Estimate text width (simplified approach)
+            let estimated_width =
+                test_line.len() as f64 * 0.6 * (text_layer.font_size as f64 * 0.6);
+            if estimated_width > text_layer.max_width && !current_line.is_empty() {
+                lines.push(TextLine {
+                    text: current_line,
+                    x: text_layer.x,
+                    y: current_y,
+                });
+                current_line = word.to_string();
+                current_y += text_layer.line_height;
+            } else {
+                current_line = test_line;
+            }
+        }
+
+        if !current_line.is_empty() {
+            lines.push(TextLine {
+                text: current_line,
+                x: text_layer.x,
+                y: current_y,
+            });
+        }
+
+        lines
+    }
+}
+
+/// Text line for layout calculations
+#[derive(Debug, Clone)]
+struct TextLine {
+    text: String,
+    x: f64,
+    y: f64,
 }
 
 /// Utility functions for canvas OG generation

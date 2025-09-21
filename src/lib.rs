@@ -76,6 +76,7 @@ pub mod api;
 #[cfg(target_arch = "wasm32")]
 pub mod wasm;
 
+pub mod canvas_types;
 pub mod error;
 pub mod utils;
 
@@ -94,6 +95,12 @@ pub mod prelude {
     #[cfg(not(target_arch = "wasm32"))]
     pub use crate::og_image::{GeneratedOgImage, OgImageGenerator, OgImageParams};
 
+    // Advanced canvas types (available for both WASM and native for testing)
+    pub use crate::canvas_types::{
+        CanvasOgParams, GradientType, ImageLayer, LogoPosition, OgImageLayer, OgImageTemplate,
+        ShapeLayer, ShapeType, TextAlign, TextGradient, TextLayer, TextOutline, TextShadow,
+    };
+
     #[cfg(feature = "macros")]
     pub use crate::macros::{generate_metadata, metadata};
 
@@ -102,7 +109,9 @@ pub mod prelude {
     pub use crate::wasm::browser_api::BrowserApi;
     #[cfg(target_arch = "wasm32")]
     pub use crate::wasm::canvas_og::{
-        CanvasOgGenerator, CanvasOgParams, CanvasOgResult, CanvasOgUtils, LogoPosition, TextAlign,
+        CanvasOgGenerator, CanvasOgParams, CanvasOgResult, CanvasOgUtils, GradientType, ImageLayer,
+        LogoPosition, OgImageLayer, OgImageTemplate, ShapeLayer, ShapeType, TextAlign,
+        TextGradient, TextLayer, TextOutline, TextShadow,
     };
     #[cfg(target_arch = "wasm32")]
     pub use crate::wasm::context::{StorageBackend, WasmContext};
