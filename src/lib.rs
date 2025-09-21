@@ -76,6 +76,7 @@ pub mod api;
 #[cfg(target_arch = "wasm32")]
 pub mod wasm;
 
+pub mod analytics;
 pub mod canvas_types;
 pub mod error;
 pub mod themes;
