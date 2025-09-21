@@ -1,6 +1,6 @@
 [package]
 name = "leptos-next-metadata-macros"
-version = "1.4.0"
+version = "1.5.0"
 edition = "2021"
 authors = ["Peter Hanssens <peter@cloudshuttle.com.au>"]
 description = "Procedural macros for leptos-next-metadata - providing clean, declarative metadata syntax for Leptos v0.8+"
