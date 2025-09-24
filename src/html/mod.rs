@@ -28,8 +28,10 @@ use leptos::prelude::*;
 /// ```
 #[component]
 pub fn Html() -> impl IntoView {
-    // Use the Html component from leptos_meta
-    leptos_meta::Html()
+    // Use our own Html component
+    view! {
+        <html></html>
+    }
 }
 
 mod tests {

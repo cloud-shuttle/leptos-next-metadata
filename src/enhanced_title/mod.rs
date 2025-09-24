@@ -1,5 +1,4 @@
 use leptos::prelude::*;
-use leptos_meta::*;
 
 /// An enhanced Title component with formatter support.
 ///
@@ -55,9 +54,9 @@ pub fn EnhancedTitle(
         result
     };
 
-    // Use the standard Title component from leptos_meta
+    // Use our own Title component
     view! {
-        <Title text=formatted_text />
+        <title>{formatted_text}</title>
     }
 }
 

@@ -24,8 +24,20 @@
 ///     }
 /// }
 /// ```
-// Re-export the HashedStylesheet component from leptos_meta
-pub use leptos_meta::HashedStylesheet;
+// Simple HashedStylesheet component implementation
+use leptos::prelude::*;
+
+/// A simple HashedStylesheet component
+#[component]
+pub fn HashedStylesheet(
+    /// The stylesheet href
+    #[prop(into)]
+    href: String,
+) -> impl IntoView {
+    view! {
+        <link rel="stylesheet" href=href/>
+    }
+}
 
 mod tests {
     #[test]

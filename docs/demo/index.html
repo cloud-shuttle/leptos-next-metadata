@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leptos Next Metadata - Advanced SSR Metadata Management</title>
+    <meta name="description" content="A comprehensive demo of server-side metadata management with Leptos, featuring dynamic OG images, JSON-LD structured data, and performance optimization.">
+    <meta name="keywords" content="leptos, metadata, rust, ssr, seo, og-images, json-ld, performance">
+    <meta property="og:title" content="Leptos Next Metadata - Advanced SSR Demo">
+    <meta property="og:description" content="Comprehensive server-side metadata management with dynamic generation, OG images, and structured data.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://leptos-next-metadata.github.io/leptos-next-metadata/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Leptos Next Metadata Demo">
+    <meta name="twitter:description" content="Advanced metadata management for Leptos applications with SSR support.">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Leptos Next Metadata Demo",
+        "description": "A comprehensive demo of server-side metadata management with Leptos",
+        "url": "https://leptos-next-metadata.github.io/leptos-next-metadata/"
+    }
+    </script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 2em; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; padding: 2em; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        h1 { color: #2d3748; margin-bottom: 1em; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5em; margin: 2em 0; }
+        .feature-card { background: #f7fafc; padding: 1.5em; border-radius: 8px; border-left: 4px solid #667eea; }
+        .feature-card h3 { margin-top: 0; color: #2d3748; }
+        nav ul { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 1em; }
+        nav a { text-decoration: none; color: #667eea; font-weight: 500; padding: 0.5em 1em; border-radius: 6px; transition: all 0.2s; }
+        nav a:hover { background: #667eea; color: white; }
+        .status { background: #48bb78; color: white; padding: 0.5em 1em; border-radius: 6px; display: inline-block; margin: 1em 0; }
+        .demo-links { background: #f7fafc; padding: 1.5em; border-radius: 8px; margin: 1em 0; }
+        .demo-links h3 { margin-top: 0; color: #2d3748; }
+        .demo-links a { display: inline-block; margin: 0.5em 0.5em 0.5em 0; padding: 0.5em 1em; background: #667eea; color: white; text-decoration: none; border-radius: 6px; }
+        .demo-links a:hover { background: #5a67d8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Leptos Next Metadata - Server Demo</h1>
+        <div class="status">✅ Static HTML Demo - Showcasing Advanced Metadata Management!</div>
+        <p><strong>Note:</strong> This is a static HTML version of the demo because GitHub Pages doesn't support Rust servers. The actual library provides server-side rendering (SSR) capabilities for Leptos applications.</p>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>📊 Dynamic Metadata</h3>
+                <p>Server-side generation of title, description, and Open Graph tags based on route and content.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🖼️ OG Image Generation</h3>
+                <p>Automatic generation of social media preview images with custom layouts and branding.</p>
+            </div>
+            <div class="feature-card">
+                <h3>📈 JSON-LD Structured Data</h3>
+                <p>Rich snippets for search engines with structured data markup.</p>
+            </div>
+            <div class="feature-card">
+                <h3>⚡ Performance Monitoring</h3>
+                <p>Real-time performance metrics and caching strategies for optimal SEO.</p>
+            </div>
+        </div>
+        
+        <div class="demo-links">
+            <h3>🎯 Static Demo Pages</h3>
+            <p>Explore different aspects of the metadata management system (static HTML versions):</p>
+            <a href="about.html">About</a>
+            <a href="blog.html">Blog</a>
+            <a href="products.html">Products</a>
+            <a href="og-test.html">OG Image Test</a>
+            <a href="performance.html">Performance Test</a>
+            <a href="analytics.html">Analytics Demo</a>
+        </div>
+        
+        <div class="demo-links">
+            <h3>🦀 Live Rust Server Demo</h3>
+            <p>For the actual Rust server demo with dynamic metadata generation:</p>
+            <a href="https://github.com/leptos-next-metadata/leptos-next-metadata/tree/main/examples/server_demo" target="_blank">Server Demo Source</a>
+            <a href="https://github.com/leptos-next-metadata/leptos-next-metadata/tree/main/examples/wasm_demo" target="_blank">WASM Demo Source</a>
+        </div>
+        
+        <div class="demo-links">
+            <h3>🦀 Try the Real Rust Server Demo</h3>
+            <p>To experience the actual dynamic metadata generation:</p>
+            <pre style="background: #f7fafc; padding: 1em; border-radius: 6px; overflow-x: auto;"><code># Clone the repository
+git clone https://github.com/leptos-next-metadata/leptos-next-metadata.git
+cd leptos-next-metadata
+
+# Run the server demo
+cd examples/server_demo
+cargo run --features ssr
+
+# Access at http://127.0.0.1:3004</code></pre>
+        </div>
+        
+        <nav>
+            <ul>
+                <li><a href="https://github.com/leptos-next-metadata/leptos-next-metadata">GitHub Repository</a></li>
+                <li><a href="https://docs.rs/leptos-next-metadata">Documentation</a></li>
+                <li><a href="https://crates.io/crates/leptos-next-metadata">Crates.io</a></li>
+            </ul>
+        </nav>
+    </div>
+</body>
+</html>

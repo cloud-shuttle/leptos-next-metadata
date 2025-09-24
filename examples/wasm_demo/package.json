@@ -1,0 +1,29 @@
+{
+  "name": "leptos-next-metadata-wasm-demo",
+  "version": "0.1.0",
+  "description": "WASM demo for leptos-next-metadata",
+  "main": "index.html",
+  "scripts": {
+        "build": "wasm-pack build --target web --out-dir pkg --features wasm-advanced",
+    "build:dev": "wasm-pack build --target web --out-dir pkg --features wasm-advanced --dev",
+        "serve": "python3 -m http.server 8083",
+        "serve:node": "pnpx serve . -p 8083",
+    "dev": "pnpm run build:dev && pnpm run serve",
+    "start": "pnpm run build && pnpm run serve",
+    "clean": "rm -rf pkg/ target/",
+    "test": "echo 'WASM demo tests would go here'",
+    "lint": "echo 'WASM demo linting would go here'"
+  },
+  "keywords": [
+    "leptos",
+    "metadata",
+    "wasm",
+    "rust",
+    "demo"
+  ],
+  "author": "Leptos Next Metadata Team",
+  "license": "MIT OR Apache-2.0",
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

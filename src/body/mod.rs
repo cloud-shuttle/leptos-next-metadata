@@ -19,8 +19,10 @@ use leptos::prelude::*;
 /// ```
 #[component]
 pub fn Body() -> impl IntoView {
-    // Use the Body component from leptos_meta
-    leptos_meta::Body()
+    // Use our own Body component
+    view! {
+        <body></body>
+    }
 }
 
 mod tests {

@@ -102,7 +102,6 @@ fn generate_dynamic_metadata_code(input: GenerateMetadataInput) -> proc_macro2::
         {
             use leptos::*;
             use leptos::prelude::*;
-            use leptos_meta::*;
             use leptos_next_metadata::metadata::Metadata;
 
             // Create a signal to hold the metadata
@@ -319,7 +318,9 @@ fn generate_metadata_code(input: MetadataInput) -> Result<proc_macro2::TokenStre
 
     Ok(quote! {
         {
-            use leptos_meta::*;
+            use leptos::*;
+            use leptos::prelude::*;
+            use leptos_next_metadata::components::*;
 
             view! {
                 <>
@@ -426,22 +427,22 @@ fn generate_og_meta_tags(
         MetadataValue::Simple(expr) => {
             let tag = match field_name {
                 "title" => quote! {
-                    <Meta property="og:title" content=#expr/>
+                    <MetaProperty property="og:title" content=#expr/>
                 },
                 "description" => quote! {
-                    <Meta property="og:description" content=#expr/>
+                    <MetaProperty property="og:description" content=#expr/>
                 },
                 "type" => quote! {
-                    <Meta property="og:type" content=#expr/>
+                    <MetaProperty property="og:type" content=#expr/>
                 },
                 "url" => quote! {
-                    <Meta property="og:url" content=#expr/>
+                    <MetaProperty property="og:url" content=#expr/>
                 },
                 "siteName" | "site_name" => quote! {
-                    <Meta property="og:site_name" content=#expr/>
+                    <MetaProperty property="og:site_name" content=#expr/>
                 },
                 "locale" => quote! {
-                    <Meta property="og:locale" content=#expr/>
+                    <MetaProperty property="og:locale" content=#expr/>
                 },
                 _ => quote! {
                     <Meta property=format!("og:{}", #field_name) content=#expr/>
@@ -455,7 +456,7 @@ fn generate_og_meta_tags(
                     for image_value in array_values {
                         if let MetadataValue::Simple(url) = image_value {
                             tags.push(quote! {
-                                <Meta property="og:image" content=#url/>
+                                <MetaProperty property="og:image" content=#url/>
                             });
                         }
                     }
@@ -464,7 +465,7 @@ fn generate_og_meta_tags(
                     for video_value in array_values {
                         if let MetadataValue::Simple(url) = video_value {
                             tags.push(quote! {
-                                <Meta property="og:video" content=#url/>
+                                <MetaProperty property="og:video" content=#url/>
                             });
                         }
                     }

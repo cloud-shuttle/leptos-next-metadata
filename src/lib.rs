@@ -53,6 +53,7 @@
 //! - [`utils`] - Utility functions and helpers
 
 pub mod body;
+pub mod components;
 pub mod competitive_analysis;
 pub mod enhanced_title;
 pub mod hashed_stylesheet;

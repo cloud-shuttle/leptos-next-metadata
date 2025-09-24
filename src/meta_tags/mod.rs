@@ -21,9 +21,10 @@ use leptos::prelude::*;
 /// ```
 #[component]
 pub fn MetaTags() -> impl IntoView {
-    // Use the MetaTags component from leptos_meta
-    // This will inject all the meta tags that have been added to the context
-    leptos_meta::MetaTags()
+    // Simple MetaTags component - just a placeholder for now
+    view! {
+        <></>
+    }
 }
 
 mod tests {
