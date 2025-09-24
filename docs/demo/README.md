@@ -8,9 +8,9 @@ This is a **static HTML demonstration** of the `leptos-next-metadata` library ca
 
 ## 🌐 Live Demo
 
-**URL**: https://leptos-next-metadata.github.io/leptos-next-metadata/
+**URL**: https://cloud-shuttle.github.io/leptos-next-metadata/
 
-**For the actual Rust server demo**, see the [Server Demo Source](https://github.com/leptos-next-metadata/leptos-next-metadata/tree/main/examples/server_demo) and [WASM Demo Source](https://github.com/leptos-next-metadata/leptos-next-metadata/tree/main/examples/wasm_demo).
+**For the actual Rust server demo**, see the [Server Demo Source](https://github.com/cloud-shuttle/leptos-next-metadata/tree/main/examples/server_demo) and [WASM Demo Source](https://github.com/cloud-shuttle/leptos-next-metadata/tree/main/examples/wasm_demo).
 
 ## 📊 Features Demonstrated
 
@@ -96,7 +96,7 @@ python3 -m http.server 8080
 
 ## 🔗 Related Links
 
-- [GitHub Repository](https://github.com/leptos-next-metadata/leptos-next-metadata)
+- [GitHub Repository](https://github.com/cloud-shuttle/leptos-next-metadata)
 - [Documentation](https://docs.rs/leptos-next-metadata)
 - [Crates.io](https://crates.io/crates/leptos-next-metadata)
 
