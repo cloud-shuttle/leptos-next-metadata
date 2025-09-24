@@ -2,10 +2,10 @@ name: Deploy Demo to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
-      - 'docs/demo/**'
-      - '.github/workflows/pages.yml'
+      - "docs/demo/**"
+      - ".github/workflows/pages.yml"
   workflow_dispatch:
 
 permissions:

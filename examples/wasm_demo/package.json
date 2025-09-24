@@ -4,10 +4,10 @@
   "description": "WASM demo for leptos-next-metadata",
   "main": "index.html",
   "scripts": {
-        "build": "wasm-pack build --target web --out-dir pkg --features wasm-advanced",
+    "build": "wasm-pack build --target web --out-dir pkg --features wasm-advanced",
     "build:dev": "wasm-pack build --target web --out-dir pkg --features wasm-advanced --dev",
-        "serve": "python3 -m http.server 8083",
-        "serve:node": "pnpx serve . -p 8083",
+    "serve": "python3 -m http.server 8083",
+    "serve:node": "pnpx serve . -p 8083",
     "dev": "pnpm run build:dev && pnpm run serve",
     "start": "pnpm run build && pnpm run serve",
     "clean": "rm -rf pkg/ target/",

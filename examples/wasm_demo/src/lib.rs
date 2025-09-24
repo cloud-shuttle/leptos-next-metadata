@@ -27,7 +27,7 @@ fn App() -> impl IntoView {
         title: format!("WASM Demo - Count: {}", count.get()),
         description: "Interactive WASM demo for leptos-next-metadata",
         keywords: ["leptos", "metadata", "wasm", "rust", "demo"],
-        
+
         og_title: "Leptos Next Metadata - WASM Demo",
         og_description: "Interactive WASM demo for leptos-next-metadata",
         og_type: "website",
