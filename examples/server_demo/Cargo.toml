@@ -6,7 +6,7 @@ authors = ["Leptos Next Metadata Team"]
 description = "Server-side demo for leptos-next-metadata"
 license = "MIT OR Apache-2.0"
 
-[workspace]
+# [workspace] - removed to avoid multiple workspace roots
 
 [dependencies]
 # Core leptos-next-metadata with server features
